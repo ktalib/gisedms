@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ...existing code... -->
+	<!-- DataTables CSS -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+	<!-- DataTables Responsive CSS -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css"/>
+	<!-- Bootstrap CSS for Modal -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<!-- ...existing code... -->
+</head>
+<body>
+	<!-- ...existing code... -->
+  
+	<table id="example" class="display responsive nowrap" style="width:100%">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Email</th>
+				<th>...other columns...</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- ...existing rows... -->
+			<tr>
+				<td>1</td>
+				<td>John Doe</td>
+				<td>john@example.com</td>
+				<td>...data...</td>
+				<td>
+					<button class="view-btn btn btn-primary" data-toggle="modal" data-target="#recordModal" data-record='{"id":1, "name":"John Doe", "email":"john@example.com", "other":"..."}'>
+						View
+					</button>
+				</td>
+			</tr>
+			<!-- ...existing rows... -->
+		</tbody>
+	</table>
+  
+	<!-- Modal for displaying additional record details -->
+	<div class="modal fade" id="recordModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalLabel">Record Details</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="recordDetails"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+  
+	<!-- jQuery, DataTables JS, Responsive extension, and Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+	<script>
+		// ...existing code...
+		$(document).ready(function() {
+			$('#example').DataTable({
+				responsive: true
+				// Default search and pagination are enabled by DataTables
+			});
+      
+			// When a view button is clicked, extract record data and fill the modal.
+			$('.view-btn').on('click', function(){
+				var record = $(this).data('record');
+				var details = '';
+				$.each(record, function(key, value) {
+					details += '<strong>' + key + ':</strong> ' + value + '<br>';
+				});
+				$('#recordDetails').html(details);
+			});
+		});
+		// ...existing code...
+	</script>
+	<!-- ...existing code... -->
+</body>
+</html>
