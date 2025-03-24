@@ -95,7 +95,7 @@
                                             @endif
                                         
                                     </td>
-                                    <td>{{ $application->created_at->format('Y-m-d') }}</td>
+                                    <td>{{ $application->created_at}}</td>
                                     <td>{{ $application->application_status }}</td>
                                     <td>{{ $application->phone_number }}</td>
                                     <td>

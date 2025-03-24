@@ -296,7 +296,6 @@ public function search(Request $request)
         $validatedData = $request->validate([
             'mlsfNo'                     => 'nullable|string|max:255',
             'kangisFileNo'               => 'nullable|string|max:255',
-            'Previewflenumber'           => 'nullable|string|max:255',
             'plotNo'                     => 'nullable|string|max:255',
             'blockNo'                    => 'nullable|string|max:255',
             'approvedPlanNo'             => 'nullable|string|max:255',
@@ -330,18 +329,6 @@ public function search(Request $request)
         // Create and save a new property record ensuring we use the property_records table
         $record = new \App\Models\PropertyRecord($validatedData);
         $record->setDataSource('property_records');
-
-        // Handle Previewflenumber, mlsfNo, and kangisFileNo
-        if ($request->filled('Previewflenumber')) {
-            $record->kangisFileNo = $request->input('Previewflenumber');
-        }
-        if ($request->filled('mlsfNo')) {
-            $record->mlsfNo = $request->input('mlsfNo');
-        }
-        if ($request->filled('kangisFileNo')) {
-            $record->kangisFileNo = $request->input('kangisFileNo');
-        }
-        
         $record->save();
         
         return response()->json(['success' => true]);

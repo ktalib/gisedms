@@ -99,7 +99,7 @@
                                             <?php endif; ?>
                                         
                                     </td>
-                                    <td><?php echo e($application->created_at->format('Y-m-d')); ?></td>
+                                    <td><?php echo e($application->created_at); ?></td>
                                     <td><?php echo e($application->application_status); ?></td>
                                     <td><?php echo e($application->phone_number); ?></td>
                                     <td>

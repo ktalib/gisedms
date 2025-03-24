@@ -1,3 +1,7 @@
 /vendor/srmklive
 /.idea
 /.vscode
+/.env
+/bootstrap/cache
+storage/framework/views/
+storage/framework/sessions/

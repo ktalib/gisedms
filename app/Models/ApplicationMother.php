@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ApplicationMother extends Model
 {
     use HasFactory;
-
+    protected $connection = 'sqlsrv';
     protected $table = 'mother_applications';
 
     protected $fillable = [
