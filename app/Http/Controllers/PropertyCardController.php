@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\ApplicationMother;
-use App\Models\Subapplications;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,21 +12,18 @@ class PropertyCardController extends Controller
 {
     public function index()
     {
-        $Property_records = DB::table('property_records')
+        $Property_records = DB::connection('sqlsrv')
+            ->table('property_records')
             ->where('mlsfNo', '!=', '')
             ->where('kangisFileNo', '!=', '')->get();
 
-        $pageLength = 10; // set default page length
+        $pageLength = 50; // set default page length
         return view('propertycard.index', compact('pageLength'));
     } 
-    
      public function capture(Request $request){
-        $Property_records = DB::table('property_records')
-            ->where('mlsfNo', '!=', '')
-            ->where('kangisFileNo', '!=', '')->get();
-
-        $pageLength = 10; // set default page length
-        return view('propertycard.capture', compact('pageLength'));
+         
+        
+        return view('propertycard.capture');
     }
 
 

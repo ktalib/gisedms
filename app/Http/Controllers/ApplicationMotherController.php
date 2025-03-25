@@ -14,7 +14,57 @@ class ApplicationMotherController extends Controller
         $Main_application = DB::connection('sqlsrv')->table('dbo.mother_applications')->get();
         return view('sectionaltitling.index', compact('Main_application'));
     }
+    public function subApplication()
+    {
+        return view('sectionaltitling.sub_application');
+    }
 
+    public function Subapplications()
+    {
+        $subApplications = DB::connection('sqlsrv')
+            ->table('dbo.subapplications AS sub')
+            ->join('dbo.mother_applications AS main', 'sub.main_application_id', '=', 'main.id')
+            ->select(
+                'sub.*',
+                'main.fileno as main_fileno',
+                'main.plot_size',
+                'main.land_use',
+                'main.plot_house_no',
+                'main.plot_street_name',
+                'main.owner_district',
+                'main.address',
+                'main.approval_date'  // Added this line
+            )
+            ->get();
+
+        return view('sectionaltitling.sub_applications', compact('subApplications'));   
+    }
+
+    public function GenerateBill(Request $request)
+    {
+        // Convert query parameters to view data
+        $data = [
+            'id' => $request->query('id'),
+            'main_fileno' => $request->query('main_fileno'),
+            'fileno' => $request->query('fileno'),
+            'applicant_title' => $request->query('applicant_title'),
+            'owner_name' => $request->query('owner_name'),
+            'plot_house_no' => $request->query('plot_house_no'),
+            'plot_street_name' => $request->query('plot_street_name'),
+            'address' => $request->query('address'),
+            'owner_district' => $request->query('owner_district'),
+            'approval_date' => $request->query('approval_date'),
+            'plot_size' => $request->query('plot_size'),
+            'land_use' => $request->query('land_use'),
+        ];
+        
+        return view('sectionaltitling.generate_bill', $data);
+    }
+
+    public function AcceptLetter()
+    {
+        return view('sectionaltitling.AcceptLetter');
+    }
     public function storeMotherApp(Request $request)
     {
         try {
@@ -83,7 +133,7 @@ class ApplicationMotherController extends Controller
 
             // Generate sub-application fileno
             $lastSubApplication = DB::connection('sqlsrv')
-                ->table('dbo.sub_applications')
+                ->table('dbo.subapplications')
                 ->where('main_application_id', $mainAppId)
                 ->orderBy('id', 'desc')
                 ->first();

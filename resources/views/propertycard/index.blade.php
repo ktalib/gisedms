@@ -150,7 +150,12 @@
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
             <!-- SweetAlert2 -->
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-           <script>
+      {{-- filepath: c:\wamp64\www\gisedms\resources\views\propertycard\index.blade.php --}}
+ 
+
+ 
+
+<script>
     $(document).ready(function() {
         $('#recordsTable').DataTable({
             processing: true,
@@ -174,6 +179,7 @@
         });
     });
 </script>
+ 
         </div>
     </div>
 @endsection

@@ -28,6 +28,7 @@ use App\Http\Controllers\SubApplicationController;
 use App\Http\Controllers\ApplicationMotherController;
 use App\Http\Controllers\PropertyCardController;
 use App\Http\Controllers\RecordController;
+use App\Http\Controllers\LegalSearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -366,7 +367,8 @@ Route::get('/sectionaltitling', [ApplicationMotherController::class, 'index'])->
 Route::get('/sectionaltitling/create', [ApplicationMotherController::class, 'create'])->name('sectionaltitling.create');
 
 Route::get('/sectionaltitling/sub_application', [ApplicationMotherController::class, 'subApplication'])->name('sectionaltitling.sub_application');
- 
+
+ Route:: get('/sectionaltitling/generate_bill', [ApplicationMotherController::class, 'GenerateBill'])->name('sectionaltitling.generate_bill');
  
 Route::get('/sectionaltitling/AcceptLetter', [ApplicationMotherController::class, 'AcceptLetter'])
     ->name('sectionaltitling.AcceptLetter');
@@ -390,5 +392,8 @@ Route::get('/propertycard/data', [PropertyCardController::class, 'getData'])->na
 Route::post('/propertycard/search', [PropertyCardController::class, 'search'])->name('propertycard.search');
 Route::post('/propertycard/save-record', [PropertyCardController::class, 'savePropertyRecord'])->name('propertycard.saveRecord');
 Route::post('/propertycard/navigate', [PropertyCardController::class, 'navigateRecord'])->name('propertycard.navigate');
-  
+
+
+
+Route::get('/legal_search', [LegalSearchController::class, 'index'])->name('legal_search.index');
 Route::impersonate();
