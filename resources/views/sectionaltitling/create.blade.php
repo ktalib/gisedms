@@ -110,6 +110,20 @@ input:focus {
                 @csrf
                 <!-- Applicant Type Selection -->
                 <div class="form-section">
+                    <h2 class="section-title">Landuse Type</h2>
+                    <div class="bg-gray-50 p-4 rounded-md">
+                        <label class="block text-sm font-medium text-gray-700">Select Landuse Type</label>
+                        <select name="landuse_type" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="" disabled selected>Select Landuse Type</option>
+                            <option value="residential">Residential</option>
+                            <option value="commercial">Commercial</option>
+                            <option value="industrial">Industrial</option>
+
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-section">
                     <h2 class="section-title">Applicant Type</h2>
                     <div class="flex gap-4">
                         <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700" onclick="setApplicantType('individual'); showIndividualFields()">Individual</button>
@@ -131,8 +145,10 @@ input:focus {
                                 <div class="grid grid-cols-3 gap-4">
                                     <!-- Title -->
                                     <div class="w-full">
-                                        <label class="block text-sm font-medium text-gray-700">Title</label>
-                                        <select id="applicantTitle" name="applicant_title" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  onchange="updateApplicantNamePreview()">
+                                        <label class="block text-sm font-medium text-gray-700">
+                                            Title <span style="color:red">*</span>
+                                        </label>
+                                        <select id="applicantTitle" name="applicant_title" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  onchange="updateApplicantNamePreview()" required>
                                             <option value="" disabled selected>Select title</option>
                                             <option value="Mr.">Mr.</option>
                                             <option value="Mrs.">Mrs.</option>
@@ -163,8 +179,10 @@ input:focus {
 
                                     <!-- First Name -->
                                     <div class="w-full">
-                                        <label class="block text-sm font-medium text-gray-700">First Name</label>
-                                        <input type="text" id="applicantName" name="first_name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter first name" oninput="updateApplicantNamePreview()">
+                                        <label class="block text-sm font-medium text-gray-700">
+                                            First Name <span style="color:red">*</span>
+                                        </label>
+                                        <input type="text" id="applicantName" name="first_name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter first name" oninput="updateApplicantNamePreview()" required>
                                     </div>
 
                                     <!-- Middle Name -->
@@ -175,8 +193,10 @@ input:focus {
 
                                     <!-- Surname -->
                                     <div class="w-full col-span-3">
-                                        <label class="block text-sm font-medium text-gray-700">Surname</label>
-                                        <input type="text" id="applicantSurname" name="surname" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter surname" oninput="updateApplicantNamePreview()">
+                                        <label class="block text-sm font-medium text-gray-700">
+                                            Surname <span style="color:red">*</span>
+                                        </label>
+                                        <input type="text" id="applicantSurname" name="surname" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter surname" oninput="updateApplicantNamePreview()" required>
                                     </div>
 
                                     <!-- Name of Applicant -->
@@ -245,12 +265,16 @@ input:focus {
                             <div class="md:col-span-3">
                                 <div class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Name of Corporate Body</label>
-                                        <input type="text" id="corporateName" name="corporate_name" class="w-full p-2 border border-gray-300 rounded-md"  placeholder="Enter corporate body name">
+                                        <label class="block text-sm font-medium text-gray-700">
+                                            Name of Corporate Body <span style="color:red">*</span>
+                                        </label>
+                                        <input type="text" id="corporateName" name="corporate_name" class="w-full p-2 border border-gray-300 rounded-md"  placeholder="Enter corporate body name" required>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">RC Number</label>
-                                        <input type="text" id="rcNumber" name="rc_number" class="w-full p-2 border border-gray-300 rounded-md"  placeholder="Enter RC number">
+                                        <label class="block text-sm font-medium text-gray-700">
+                                            RC Number <span style="color:red">*</span>
+                                        </label>
+                                        <input type="text" id="rcNumber" name="rc_number" class="w-full p-2 border border-gray-300 rounded-md"  placeholder="Enter RC number" required>
                                     </div>
                                 </div>
                             </div>
@@ -317,25 +341,34 @@ input:focus {
                         </div>
                     </div>
                 </div>
+            
+
+                
 
                 <!-- Contact Information -->
                 <div class="form-section flex-1 space-y-4">
                     <h3 class="section-title">Contact Information</h3>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">2.Contact Address</label>
-                        <input type="text" name="address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter address">
+                        <label class="block text-sm font-medium text-gray-700">
+                            2.Contact Address <span style="color:red">*</span>
+                        </label>
+                        <input type="text" name="address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter address" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">3. Phone Number(s)</label>
+                        <label class="block text-sm font-medium text-gray-700">
+                            3. Phone Number(s) <span style="color:red">*</span>
+                        </label>
                         <div class="grid grid-cols-3 gap-4">
-                            <input type="text" name="phone_number_1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter phone number 1 ">
+                            <input type="text" name="phone_number_1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter phone number 1 " required>
                             <input type="text" name="phone_number_1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter phone number 2  (Optional)">
                             <input type="text" name="phone_number_1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter phone number 3  (Optional)">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">4. Email Address</label>
-                        <input type="text" name="email" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter email address">
+                        <label class="block text-sm font-medium text-gray-700">
+                            4. Email Address <span style="color:red">*</span>
+                        </label>
+                        <input type="text" name="email" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter email address" required>
                     </div>
                 </div>
 
@@ -449,22 +482,53 @@ input:focus {
                 </div>
 
                 <!-- GROUP 5: OFFICIAL USE ONLY -->
-                <div class="form-section bg-gray-200 shadow-md rounded-md">
-                    <h3 class="section-title bg-gray-700 text-white px-6 py-3 rounded-t-md">FOR OFFICIAL USE ONLY</h3>
+                {{-- <div class="form-section bg-gray-200 shadow-md rounded-md">
+                    <h3 class="section-title bg-gray-700 text-white px-6 py-3 rounded-t-md">Initial Bill</h3>
                     <div class="p-6 space-y-6">
-                        <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-                            <span class="font-medium text-gray-700">Application fee:</span>
-                            <div class="flex-1 border-b-2 border-gray-400 min-w-[100px]"></div>
-                            <span class="font-medium text-gray-700">has been paid on</span>
-                            <div class="flex-1 border-b-2 border-gray-400 min-w-[100px]"></div>
+                        <!-- Fee Grid Layout -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Application Fee -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Application Fee:</span>
+                                <input type="number" name="application_fee" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                    placeholder="Enter amount">
+                            </div>
+
+                            <!-- Processing Fee -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Processing Fee:</span>
+                                <input type="number" name="processing_fee" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                    placeholder="Enter amount">
+                            </div>
+
+                            <!-- Site Plan Fee -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Site Plan Fee:</span>
+                                <input type="number" name="site_plan_fee" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                    placeholder="Enter amount">
+                            </div>
+
+                            <!-- Payment Date -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Payment Date:</span>
+                                <input type="date" name="payment_date" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                            </div>
                         </div>
-                        <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-                            <span class="font-medium text-gray-700">On Receipt No:</span>
-                            <div class="flex-1 border-b-2 border-gray-400 min-w-[100px]"></div>
-                            <span class="font-medium text-gray-700">of</span>
-                            <div class="flex-1 border-b-2 border-gray-400 min-w-[100px]"></div>
+
+                        <!-- Receipt Section -->
+                        <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 mt-6">
+                            <span class="font-medium text-gray-700">Receipt No:</span>
+                            <input type="text" name="receipt_number" 
+                                class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                placeholder="Enter receipt number">
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+
+                        <!-- Signatures Section -->
+                        {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
                             <div class="space-y-2">
                                 <div class="h-20 border-b-2 border-gray-400"></div>
                                 <p class="text-center font-medium text-gray-700">Revenue Accountant</p>
@@ -473,9 +537,9 @@ input:focus {
                                 <div class="h-20 border-b-2 border-gray-400"></div>
                                 <p class="text-center font-medium text-gray-700">Date</p>
                             </div>
-                        </div>
+                        </div> 
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Form Actions -->
                 <div class="flex justify-end space-x-4">

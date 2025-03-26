@@ -68,13 +68,12 @@ class InstrumentController extends Controller
     private function NewfileNumber($lastInstrument)
     {
         if ($lastInstrument && !empty($lastInstrument->fileNumber)) {
-            $lastFileNumber = (int) str_replace('00', '', $lastInstrument->fileNumber);
+            $lastFileNumber = (int) str_replace('KN', '', $lastInstrument->fileNumber);
             $num = $lastFileNumber + 1;
         } else {
             $num = 1;
         }
-
-        return '00' . $num;
+        return 'KN' . str_pad($num, 4, '0', STR_PAD_LEFT);
     }
 
     private function generateRootTitleRegNo($lastInstrument) 

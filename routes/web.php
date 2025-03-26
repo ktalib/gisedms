@@ -383,6 +383,17 @@ Route::post('/sectionaltitling', [ApplicationMotherController::class, 'store'])-
 Route::get('/sectionaltitling/{id}/edit', [ApplicationMotherController::class, 'edit']);
 Route::post('/sectionaltitling', [ApplicationMotherController::class, 'storeMotherApp'])->name('sectionaltitling.storeMotherApp');
 
+Route::post('sectionaltitling/approve-sub', [ApplicationMotherController::class, 'approveSubApplication'])
+    ->name('sectionaltitling.approveSubApplication');
+
+Route::post('sectionaltitling/decline-sub', [ApplicationMotherController::class, 'declineSubApplication'])
+    ->name('sectionaltitling.declineSubApplication');
+
+Route::post('sectionaltitling/decision-sub', [ApplicationMotherController::class, 'decisionSubApplication'])
+    ->name('sectionaltitling.decisionSubApplication');
+
+Route::post('sectionaltitling/decision-mother', [ApplicationMotherController::class, 'decisionMotherApplication'])
+    ->name('sectionaltitling.decisionMotherApplication');
 
 Route::get('/propertycard', [PropertyCardController::class, 'index'])->name('propertycard.index');
 Route::get('/propertycard/create', [PropertyCardController::class, 'create'])->name('propertycard.create');
@@ -396,4 +407,7 @@ Route::post('/propertycard/navigate', [PropertyCardController::class, 'navigateR
 
 
 Route::get('/legal_search', [LegalSearchController::class, 'index'])->name('legal_search.index');
+Route::get('/legal_search/report', [LegalSearchController::class, 'report'])->name('legal_search.report');
+//Route::post('/legal_search', [LegalSearchController::class, 'store'])->name('legal_search.store');
+Route::get('/legal_search/legal_search_report', [LegalSearchController::class, 'legal_search_report'])->name('legal_search.legal_search_report');
 Route::impersonate();

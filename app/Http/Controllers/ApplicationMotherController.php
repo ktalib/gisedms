@@ -17,6 +17,12 @@ class ApplicationMotherController extends Controller
     public function subApplication()
     {
         return view('sectionaltitling.sub_application');
+    } 
+    
+    
+    public function create()
+    {
+        return view('sectionaltitling.create');
     }
 
     public function Subapplications()
@@ -164,4 +170,118 @@ class ApplicationMotherController extends Controller
                 ->withInput();
         }
     }
+
+    // Method to approve sub-application
+    public function approveSubApplication(Request $request)
+    {
+        $id = $request->input('id');
+        // Fetch the sub-application record to get the unit number (assuming fileno represents the unit number)
+        $subApp = DB::connection('sqlsrv')
+                      ->table('dbo.subapplications')
+                      ->where('id', $id)
+                      ->first();
+        if (!$subApp) {
+            return response()->json(['message' => 'Sub-application not found.'], 404);
+        }
+        DB::connection('sqlsrv')
+            ->table('dbo.subapplications')
+            ->where('id', $id)
+            ->update(['application_status' => 'Approved']);
+
+        return response()->json([
+            'message' => "Approval for Subdivision of Fileno {$subApp->fileno} has been granted."
+        ]);
+    }
+
+    // Method to decline sub-application
+    public function declineSubApplication(Request $request)
+    {
+        $id = $request->input('id');
+        $comments = $request->input('comments');
+
+        $subApp = DB::connection('sqlsrv')
+                      ->table('dbo.subapplications')
+                      ->where('id', $id)
+                      ->first();
+        if (!$subApp) {
+            return response()->json(['message' => 'Sub-application not found.'], 404);
+        }
+        DB::connection('sqlsrv')
+            ->table('dbo.subapplications')
+            ->where('id', $id)
+            ->update([
+                'application_status' => 'Declined',
+                // Assumes there is a column named comments. Create it if needed.
+                'comments' => $comments
+            ]);
+
+        return response()->json(['message' => "Sub-application has been declined."]);
+    }
+    
+    // Combined decision method for sub-applications
+    public function decisionSubApplication(Request $request)
+    {
+        $id = $request->input('id');
+        $decision = $request->input('decision'); // 'approve' or 'decline'
+        $approval_date = $request->input('approval_date'); // e.g., "2025-03-25T09:20"
+        // Convert to SQL-friendly format with seconds
+        $approval_date = date("Y-m-d H:i:s", strtotime(str_replace('T', ' ', $approval_date)));
+        $comments = $request->input('comments'); // only if decline
+
+        $subApp = DB::connection('sqlsrv')->table('dbo.subapplications')->where('id', $id)->first();
+        if (!$subApp) {
+            return response()->json(['message' => 'Sub-application not found.'], 404);
+        }
+        if ($decision == 'approve') {
+            DB::connection('sqlsrv')->table('dbo.subapplications')->where('id', $id)->update([
+                'application_status' => 'Approved!',
+                'approval_date'      => $approval_date
+            ]);
+            return response()->json([
+                'message' => "Approval for Subdivision of Fileno {$subApp->fileno} has been granted."
+            ]);
+             
+        } else {
+            DB::connection('sqlsrv')->table('dbo.subapplications')->where('id', $id)->update([
+                'application_status' => 'Declined',
+                'comments'           => $comments,
+                'approval_date'      => $approval_date
+            ]);
+            return response()->json(['message' => "Sub-application has been declined."]);
+        }
+    }
+
+    // Combined decision method for main applications
+    public function decisionMotherApplication(Request $request)
+    {
+        $id = $request->input('id');
+        $decision = $request->input('decision');
+        $approval_date = $request->input('approval_date');
+        // Convert to "Y-m-d H:i:s" format
+        $approval_date = date("Y-m-d H:i:s", strtotime(str_replace('T', ' ', $approval_date)));
+        $comments = $request->input('comments');
+
+        $app = DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->first();
+        if (!$app) {
+            return response()->json(['message' => 'Application not found.'], 404);
+        }
+        if ($decision == 'approve') {
+            DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update([
+                'application_status' => 'Approved',
+                'approval_date'      => $approval_date
+            ]);
+            return response()->json([
+                'message' => "Approval has been sent for sectional titling of File Number {$app->fileno}."
+            ]);
+        } else {
+            DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update([
+                'application_status' => 'Declined',
+                'comments'           => $comments,
+                'approval_date'      => $approval_date
+            ]);
+            return response()->json(['message' => "Application has been declined."]);
+        }
+    }
 }
+
+

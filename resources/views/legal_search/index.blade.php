@@ -94,10 +94,11 @@
                                     <input type="text" id="search-input" placeholder="Search file number..."
                                         oninput="filterOptions()">
                                 </div>
+                                
                                 <div class="options-container" id="options-container">
-                                    <div class="option" data-value="KN0001"><a href="{{ route('notification.index') }}">KN0001</a></div>
-                                    <div class="option" data-value="KNML 09475"><a href="{{ route('notification.index') }}">KNML 09475</a></div>
-                                    <div class="option" data-value="CON-RES-2018-242"><a href="{{ route('notification.index') }}">CON-RES-2018-242</a></div>
+                                    <div class="option" data-value="KN0001"><a href="{{ route('legal_search.legal_search_report') }}">KN0001</a></div>
+                                    <div class="option" data-value="KNML 09475"><a href="{{ route('legal_search.legal_search_report') }}">KNML 09475</a></div>
+                                    <div class="option" data-value="CON-RES-2018-242"><a href="{{ route('legal_search.legal_search_report') }}">CON-RES-2018-242</a></div>
                                 </div>
                             </div>
                             <button id="smallSearchButton"

@@ -12,9 +12,19 @@ class LegalSearchController extends Controller
     public function index()
     {
         $Main_application = DB::connection('sqlsrv')->table('dbo.mother_applications')->get();
-        return view('sectionaltitling.index', compact('Main_application'));
+        return view('legal_search.index', compact('Main_application'));
+    }
+
+    public function report()
+    {
+        return view('legal_search.report');
+    }
+
+    public function legal_search_report()
+    {
+        return view('legal_search.legal_search_report');
     }
     
-
+   
    
 }

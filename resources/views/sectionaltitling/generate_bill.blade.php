@@ -41,9 +41,10 @@
         <div class="flex justify-between items-center mb-4 relative z-10">
             <img src="{{ asset('assets/logo/logo1.jpg') }}" alt="Kano State Coat of Arms" class="w-16 h-16 object-contain">
             <div class="text-center mt-20">
-            <h1 class="text-lg font-bold">KANO STATE GEOGRAPHIC INFORMATION SYSTEM</h1>
+            <h1 class="text-lg font-bold">KANO STATE GEOGRAPHIC INFORMATION SYSTEM (KANGIS)
+                MINISTRY OF LAND AND PHYSICAL PLANNING</h1>
             <h2 class="text-base font-bold mt-1">KANGIS</h2>
-            <h3 class="text-sm font-semibold mt-1">SECTIONAL TITLE BILL</h3>
+            <h3 class="text-sm font-semibold mt-1">Application for Sectional Titling</h3>
             </div>
             <img src="{{ asset('assets/logo/logo2.jpg') }}" alt="KANGIS Logo" class="w-16 h-16 object-contain">
         </div>
@@ -63,7 +64,7 @@
             </p>
             
             <div class="space-y-0.5 text-sm">
-                <p>Main Form No: <span class="italic">{{ $main_fileno ?? '' }}</span></p>
+                <p> FormID: <span class="italic">STM-2025-000{{ $id ?? '' }}</span></p>
                 <p>FileNo: <span class="italic">{{ $fileno ?? '' }}</span></p>
                 <p>Name of Section Owner: <span class="italic">{{ $applicant_title ?? '' }} {{ $owner_name ?? '' }}</span></p>
                 <p>Plot Size: <span class="italic">{{ $plot_size ?? '' }}</span></p>

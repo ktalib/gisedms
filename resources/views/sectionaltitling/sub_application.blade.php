@@ -83,6 +83,8 @@
             <form id="subApplicationForm" method="POST" action="{{ route('sectionaltitling.storesub') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                     <!-- Main Application Reference -->
+
+                    
                     <div class="form-section">
                         <h2 class="section-title">Main Application Reference</h2>
                         <div class="bg-gray-50 p-4 rounded-md">
@@ -102,6 +104,24 @@
                             </div>
                         </div>
                     </div>
+                    
+                    {{--  --}}
+
+                    <div class="form-section">
+                        <h2 class="section-title">Landuse Type</h2>
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <label class="block text-sm font-medium text-gray-700">Select Landuse Type</label>
+                            <select name="landuse_type" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="" disabled selected>Select Landuse Type</option>
+                                <option value="residential">Residential</option>
+                                <option value="commercial">Commercial</option>
+                                <option value="industrial">Industrial</option>
+    
+                            </select>
+                        </div>
+                    </div>
+
+
                     <div class="form-section">
                         <h2 class="section-title">Applicant Type</h2>
                         <div class="flex gap-4">
@@ -111,7 +131,94 @@
                         </div>
                     </div>
                     <input type="hidden" name="applicant_type" id="applicantType" value="">
-                     
+                        
+                    <div class="form-section">
+                        <h2 class="section-title">ST File Number</h2>
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Prefix Selection -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Prefix Type</label>
+                                    <select id="filePrefix" name="file_prefix" class="w-full p-2 border border-gray-300 rounded-md" oninput="updateFileNumberPreview()">
+                                        <option value="">Select Prefix</option>
+                                        <option value="ST-COM">ST-COM</option>
+                                        <option value="ST-RES">ST-RES</option>
+                                        <option value="ST-IND">ST-IND</option>
+                                    </select>
+                                </div>
+    
+                                <!-- Year Selection (Current Year) -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Year</label>
+                                    <input type="text" id="fileYear" name="file_year" 
+                                        class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
+                                        disabled>
+                                </div>
+    
+                                <!-- Serial Number -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Serial Number</label>
+                                    <input type="text" id="serialNumber" name="serial_number" 
+                                        class="w-full p-2 border border-gray-300 rounded-md" 
+                                        placeholder="Enter serial number (e.g. 01)"
+                                        oninput="updateFileNumberPreview()"
+                                        pattern="[0-9]{2}"
+                                        maxlength="2">
+                                </div>
+                            </div>
+    
+                            <!-- Full File Number Preview -->
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700">Full File Number</label>
+                                <input type="text" id="fileNumberPreview" name="full_file_number" 
+                                    class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
+                                    disabled>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <script>
+                    // Set current year on load
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const currentYear = new Date().getFullYear();
+                        document.getElementById('fileYear').value = currentYear;
+                        updateFileNumberPreview();
+                    });
+    
+                    function updateFileNumberPreview() {
+                        const prefix = document.getElementById('filePrefix').value;
+                        const year = document.getElementById('fileYear').value;
+                        let serial = document.getElementById('serialNumber').value;
+    
+                        // Pad serial number with leading zero if needed
+                        if (serial.length === 1) {
+                            serial = '0' + serial;
+                        }
+    
+                        // Update preview in realtime, even if not all fields are filled
+                        let fullFileNumber = '';
+                        if (prefix) fullFileNumber += prefix;
+                        if (year) fullFileNumber += '-' + year;
+                        if (serial) fullFileNumber += '-' + serial;
+    
+                        document.getElementById('fileNumberPreview').value = fullFileNumber;
+                    }
+    
+                    // Add input validation for serial number
+                    document.getElementById('serialNumber').addEventListener('input', function(e) {
+                        // Remove any non-numeric characters
+                        this.value = this.value.replace(/[^0-9]/g, '');
+                        
+                        // Ensure max length of 2 digits
+                        if (this.value.length > 2) {
+                            this.value = this.value.slice(0, 2);
+                        }
+                        
+                        updateFileNumberPreview();
+                    });
+                    </script>
+    
+             
              <!-- Personal Information -->
              <div class="form-section" id="individualFields" style="display: none;">
                 <h2 class="section-title">Personal Information</h2>
@@ -398,7 +505,7 @@
                                 <input type="text" name="block_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter block number">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Floor No</label>
+                                <label class="block text-sm font-medium text-gray-700">Section No (Floor) </label>
                                 <input type="text" name="floor_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter floor number">
                             </div>
                             <div>
@@ -438,6 +545,66 @@
                         <textarea name="comments" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" placeholder="Enter any comments"></textarea>
                     </div>
                 </div>
+                 <div class="form-section bg-gray-200 shadow-md rounded-md">
+                    <h3 class="section-title bg-gray-700 text-white px-6 py-3 rounded-t-md">Initial Bill</h3>
+                    <div class="p-6 space-y-6">
+                        <!-- Fee Grid Layout -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Application Fee -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Application Fee:</span>
+                                <input type="number" name="application_fee" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                    placeholder="Enter amount">
+                            </div>
+
+                            <!-- Processing Fee -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Processing Fee:</span>
+                                <input type="number" name="processing_fee" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                    placeholder="Enter amount">
+                            </div>
+
+                            <!-- Site Plan Fee -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Site Plan Fee:</span>
+                                <input type="number" name="site_plan_fee" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                    placeholder="Enter amount">
+                            </div>
+
+                            <!-- Payment Date -->
+                            <div class="flex items-center space-x-4">
+                                <span class="font-medium text-gray-700 min-w-[120px]">Payment Date:</span>
+                                <input type="date" name="payment_date" 
+                                    class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Receipt Section -->
+                        <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 mt-6">
+                            <span class="font-medium text-gray-700">Receipt No:</span>
+                            <input type="text" name="receipt_number" 
+                                class="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                placeholder="Enter receipt number">
+                        </div>
+
+                        <!-- Signatures Section -->
+                          {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+                            <div class="space-y-2">
+                                <div class="h-20 border-b-2 border-gray-400"></div>
+                                <p class="text-center font-medium text-gray-700">Revenue Accountant</p>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="h-20 border-b-2 border-gray-400"></div>
+                                <p class="text-center font-medium text-gray-700">Date</p>
+                            </div>
+                        </div>  --}}
+                    </div>
+                </div>  
+
+
                 <!-- Form Actions -->
                 <div class="flex justify-end space-x-4">
                     <button type="reset" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50" onclick="resetSubForm()">

@@ -8,6 +8,7 @@
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-icons@1.13.14/iconfont/material-icons.min.css">
 @section('content')
    <style>
       body {
@@ -78,93 +79,93 @@
                         <td>{{ $subApplication->application_status }}</td>
                         <td>
                            <div class="d-flex flex-column">
-                                <button type="button" class="btn btn-info mb-1" data-bs-toggle="modal"
-                                  data-bs-target="#actionsModal{{ $subApplication->id }}">
-                                  <i class="fa fa-th"></i> Action
-                                </button>
-                                <button type="button" class="btn btn-success mb-1" data-bs-toggle="modal"
-                                data-bs-target="#certificateModal{{ $subApplication->id }}">
-                                <i class="fa fa-certificate"></i>
+                              <div class="d-flex">
+                               <button type="button" class="btn btn-link mb-1 me-1 p-0" data-bs-toggle="modal"
+                                data-bs-target="#actionsModal{{ $subApplication->id }}" @if($subApplication->application_status != 'Approved') disabled @endif>
+                                <i class="material-icons text-danger">apps</i>
+                               </button>
+                               <button type="button" class="btn btn-link mb-1 p-0" data-bs-toggle="modal"
+                                data-bs-target="#certificateModal{{ $subApplication->id }}" @if($subApplication->application_status != 'Approved') disabled @endif>
+                                <i class="material-icons text-warning">verified</i>
+                               </button>
+                               <button type="button" class="btn btn-link mb-1 me-1 p-0 generate-bill"
+                                data-id="{{ $subApplication->id }}"
+                                data-main_fileno="{{ $subApplication->main_fileno }}"
+                                data-fileno="{{ $subApplication->fileno }}"
+                                data-applicant-title="{{ $subApplication->applicant_title }}"
+                                data-owner-name="@if ($subApplication->multiple_owners_names){{ $subApplication->multiple_owners_names }}@elseif ($subApplication->corporate_name){{ $subApplication->corporate_name }}@else{{ $subApplication->applicant_title }} {{ $subApplication->first_name }} {{ $subApplication->surname }} {{ $subApplication->middle_name }}@endif"
+                                data-plot-house-no="{{ $subApplication->plot_house_no }}"
+                                data-plot-street-name="{{ $subApplication->plot_street_name }}"
+                                data-owner-district="{{ $subApplication->owner_district }}"
+                                data-address="{{ $subApplication->address }}"
+                                data-plot_size="{{ $subApplication->plot_size }}"
+                                data-land_use="{{ $subApplication->land_use }}"
+                                data-approval-date="{{ $subApplication->approval_date }}" @if($subApplication->application_status != 'Approved') disabled @endif>
+                                <i class="material-icons">receipt</i>
+                               </button>
+                               <!-- New Approve and Decline Buttons -->
+                               
+                               <button type="button" class="btn btn-icon approve-btn"
+                                data-id="{{ $subApplication->id }}" data-fileno="{{ $subApplication->fileno }}" title="Approve">
+                                <i class="material-icons text-success">check_circle</i>
                               </button>
-                                <!-- Actions Modal -->
-                                <div class="modal fade" id="actionsModal{{ $subApplication->id }}" tabindex="-1"
-                                  aria-labelledby="actionsModalLabel{{ $subApplication->id }}" aria-hidden="true">
-                                  <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                       <div class="modal-header">
-                                         <h5 class="modal-title" id="actionsModalLabel{{ $subApplication->id }}">Actions</h5>
-                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                           aria-label="Close"></button>
-                                       </div>
-                                       <div class="modal-body">
-                                         <div class="container">
-                                           <div class="row row-cols-3 g-3">
-                                             <!-- E-Registry Button -->
-                                             <div class="col">
-                                                <button type="button" class="btn btn-primary w-100"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#eRegistryModal{{ $subApplication->id }}">
-                                                  <i class="fa fa-book"></i> E-Registry
-                                                </button>
-                                             </div>
-
-                                             <!-- View & Print Acceptance Button -->
-                                             <div class="col">
-                                                <button type="button" class="btn btn-primary w-100"
-                                                  data-bs-toggle="modal"
-                                                  data-bs-target="#viewPrintAcceptanceModal{{ $subApplication->id }}">
-                                                 View Acceptance
-                                                </button>
-                                             </div>
-
-                                             <!-- Generate Bill Button -->
-                                             <div class="col">
-                                                <button type="button" class="btn btn-danger w-100 generate-bill"
-                                                  data-id="{{ $subApplication->id }}"
-                                                  data-main_fileno="{{ $subApplication->main_fileno }}"
-                                                  data-fileno="{{ $subApplication->fileno }}"
-                                                  data-applicant-title="{{ $subApplication->applicant_title }}"
-                                                  data-owner-name="@if ($subApplication->multiple_owners_names){{ $subApplication->multiple_owners_names }}@elseif ($subApplication->corporate_name){{ $subApplication->corporate_name }}@else{{ $subApplication->applicant_title }} {{ $subApplication->first_name }} {{ $subApplication->surname }} {{ $subApplication->middle_name }}@endif"
-                                                  data-plot-house-no="{{ $subApplication->plot_house_no }}"
-                                                  data-plot-street-name="{{ $subApplication->plot_street_name }}"
-                                                  data-owner-district="{{ $subApplication->owner_district }}"
-                                                  data-address="{{ $subApplication->address }}"
-                                                  data-plot_size="{{ $subApplication->plot_size }}"
-                                                  data-land_use="{{ $subApplication->land_use }}"
-                                                  data-approval-date="{{ $subApplication->approval_date }}">
-                                                  <i class="fa fa-file-invoice-dollar"></i> Generate Bill
-                                                </button>
-                                             </div>
-                                              <div class="col">
-                                                  <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="modal"
-                                                    data-bs-target="#viewTDPModal{{ $subApplication->id }}">
-                                                    <i class="fa fa-eye"></i> View TDP
-                                                  </button>
-                                                </div>
-                                                <div class="col">
-                                                  <button type="button" class="btn btn-secondary btn-sm w-100" data-bs-toggle="modal"
-                                                    data-bs-target="#printTDPModal{{ $subApplication->id }}">
-                                                    <i class="fa fa-print"></i> Print TDP
-                                                  </button>
-                                                </div>
-                                                <div class="col">
-                                                  <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="modal"
-                                                    data-bs-target="#viewCofOModal{{ $subApplication->id }}">
-                                                    <i class="fa fa-eye"></i> View CofO
-                                                  </button>
-                                                </div>
-                                                <div class="col">
-                                                  <button type="button" class="btn btn-secondary btn-sm w-100" data-bs-toggle="modal"
-                                                    data-bs-target="#printCofOModal{{ $subApplication->id }}">
-                                                    <i class="fa fa-print"></i> Print CofO
-                                                  </button>
-                                                </div>
-                                           </div>
-                                         </div>
-                                       </div>
+                              </div>
+                              <!-- Actions Modal -->
+                              <div class="modal fade" id="actionsModal{{ $subApplication->id }}" tabindex="-1"
+                                aria-labelledby="actionsModalLabel{{ $subApplication->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                     <h5 class="modal-title" id="actionsModalLabel{{ $subApplication->id }}">Actions</h5>
+                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                       aria-label="Close"></button>
                                     </div>
-                                  </div>
+                                    <div class="modal-body">
+                                     <div class="container">
+                                       <div class="row row-cols-3 g-3">
+                                        <!-- E-Registry Button -->
+                                        <div class="col">
+                                          <button type="button" class="btn btn-primary w-100"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#eRegistryModal{{ $subApplication->id }}">
+                                            <i class="material-icons">book</i> E-Registry
+                                          </button>
+                                        </div>
+
+                                        <!-- View & Print Acceptance Button -->
+                                        <div class="col">
+                                          <button type="button" class="btn btn-primary w-100"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#viewPrintAcceptanceModal{{ $subApplication->id }}">
+                                           View Acceptance
+                                          </button>
+                                        </div>
+
+                                        <!-- Generate Bill Button -->
+                                        <div class="col">
+                                          <button type="button" class="btn btn-danger w-100 generate-bill"
+                                            data-id="{{ $subApplication->id }}"
+                                            data-main_fileno="{{ $subApplication->main_fileno }}"
+                                            data-fileno="{{ $subApplication->fileno }}"
+                                            data-applicant-title="{{ $subApplication->applicant_title }}"
+                                            data-owner-name="@if ($subApplication->multiple_owners_names){{ $subApplication->multiple_owners_names }}@elseif ($subApplication->corporate_name){{ $subApplication->corporate_name }}@else{{ $subApplication->applicant_title }} {{ $subApplication->first_name }} {{ $subApplication->surname }} {{ $subApplication->middle_name }}@endif"
+                                            data-plot-house-no="{{ $subApplication->plot_house_no }}"
+                                            data-plot-street-name="{{ $subApplication->plot_street_name }}"
+                                            data-owner-district="{{ $subApplication->owner_district }}"
+                                            data-address="{{ $subApplication->address }}"
+                                            data-plot_size="{{ $subApplication->plot_size }}"
+                                            data-land_use="{{ $subApplication->land_use }}"
+                                            data-approval-date="{{ $subApplication->approval_date }}">
+                                            <i class="material-icons">receipt</i> Generate Bill
+                                          </button>
+                                        </div>
+                                         
+                                       </div>
+                                     </div>
+                                    </div>
+                                 </div>
                                 </div>
+                              </div>
                            </div>
                         </td>
                      </tr>
@@ -367,6 +368,41 @@
    <center>
    </center>
 
+   <!-- Global Decision Modal for Sub-Applications -->
+   <div class="modal fade" id="decisionModalSub" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content">
+            <form id="decisionFormSub">
+               <div class="modal-header">
+                  <h5 class="modal-title">Confirm Decision</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               </div>
+               <div class="modal-body">
+                  <input type="hidden" name="id" id="decisionSubId">
+                  <div class="mb-3">
+                     <label class="form-label">Decision</label><br>
+                     <input type="radio" name="decision" value="approve" id="decApprove" checked>
+                     <label for="decApprove">Approve</label>
+                     <input type="radio" name="decision" value="decline" id="decDecline" class="ms-3">
+                     <label for="decDecline">Decline</label>
+                  </div>
+                  <div class="mb-3" id="declineReasonGroup" style="display:none;">
+                     <label for="declineReasonSub" class="form-label">Reason For Decline</label>
+                     <textarea class="form-control" id="declineReasonSub" name="comments"></textarea>
+                  </div>
+                  <div class="mb-3">
+                     <label for="approvalDateSub" class="form-label">Approval Date</label>
+                     <input type="datetime-local" class="form-control" id="approvalDateSub" name="approval_date" required>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Submit Decision</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
    <script>
       function printIframe(frameId) {
          const iframe = document.getElementById(frameId);
@@ -408,6 +444,97 @@
             alert('Print CofO clicked');
          }
       @endforeach
+   </script>
+
+   <!-- SweetAlert2 -->
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <!-- jQuery already included -->
+   <script>
+      $(document).ready(function() {
+         // ...existing DataTables and other code...
+
+         // Handle Approve button click
+         $('.approve-btn').on('click', function() {
+            const id = $(this).data('id');
+            const fileno = $(this).data('fileno');
+            $('#approveId').val(id);
+            $('#approveFileno').val(fileno);
+            $('#approveModal').modal('show');
+         });
+
+         // Approve form submission via AJAX
+         $('#approveForm').on('submit', function(e) {
+            e.preventDefault();
+            const id = $('#approveId').val();
+            const fileno = $('#approveFileno').val();                        
+            $.ajax({
+               url: "{{ route('sectionaltitling.approveSubApplication') }}",
+               type: 'POST',
+               data: {
+                  id: id,
+                  _token: "{{ csrf_token() }}"
+               },
+               success: function(response) {
+                  $('#approveModal').modal('hide');
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Approved',
+                     text: response.message
+                  }).then(() => {
+                     location.reload();
+                  });
+               },
+               error: function(xhr) {
+                  Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: xhr.responseJSON.message || 'An error occurred.'
+                  });
+               }
+            });
+         });
+
+         // Handle Decline button click
+         $('.decline-btn').on('click', function() {
+            const id = $(this).data('id');
+            $('#declineId').val(id);
+            $('#declineReason').val('');
+            $('#declineModal').modal('show');
+         });
+
+         // Decline form submission via AJAX
+         $('#declineForm').on('submit', function(e) {
+            e.preventDefault();
+            const id = $('#declineId').val();
+            const reason = $('#declineReason').val();
+            $.ajax({
+               url: "{{ route('sectionaltitling.declineSubApplication') }}",
+               type: 'POST',
+               data: {
+                  id: id,
+                  reason: reason,
+                  _token: "{{ csrf_token() }}"
+               },
+               success: function(response) {
+                  $('#declineModal').modal('hide');
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Declined',
+                     text: response.message
+                  }).then(() => {
+                     location.reload();
+                  });
+               },
+               error: function(xhr) {
+                  Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: xhr.responseJSON.message || 'An error occurred.'
+                  });
+               }
+            });
+         });
+      });
    </script>
 
    <script>
@@ -462,6 +589,66 @@
             responsivePriority: 2,
             targets: [1, 2]
          }]
+      });
+   });
+</script>
+<script>
+   $(document).ready(function() {
+      // Toggle decline reason visibility
+      $('#decisionFormSub input[name="decision"]').on('change', function() {
+         if ($(this).val() === 'decline') {
+            $('#declineReasonGroup').show();
+         } else {
+            $('#declineReasonGroup').hide();
+         }
+      });
+      
+      // Open decision modal when either approve or decline button is clicked
+      $('.approve-btn, .decline-btn').on('click', function() {
+         const subId = $(this).data('id');
+         $('#decisionSubId').val(subId);
+         // Reset: default to approve and hide decline field
+         $('#decApprove').prop('checked', true);
+         $('#declineReasonGroup').hide();
+         // Set current datetime as default
+         const now = new Date().toISOString().slice(0,16);
+         $('#approvalDateSub').val(now);
+         $('#decisionModalSub').modal('show');
+      });
+      
+      // Submit decision via AJAX
+      $('#decisionFormSub').on('submit', function(e) {
+         e.preventDefault();
+         const subId = $('#decisionSubId').val();
+         const decision = $('#decisionFormSub input[name="decision"]:checked').val();
+         const approvalDate = $('#approvalDateSub').val();
+         const comments = $('#declineReasonSub').val();
+         $.ajax({
+            url: "{{ route('sectionaltitling.decisionSubApplication') }}",
+            type: "POST",
+            data: {
+               id: subId,
+               decision: decision,
+               approval_date: approvalDate,
+               comments: comments,
+               _token: "{{ csrf_token() }}"
+            },
+            success: function(response) {
+               $('#decisionModalSub').modal('hide');
+               Swal.fire({
+                  icon: 'success',
+                  title: (decision === 'approve' ? 'Approved' : 'Declined'),
+                  text: response.message
+               }).then(() => { location.reload(); });
+            },
+            error: function(xhr) {
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: xhr.responseJSON.message || 'An error occurred.'
+               });
+            }
+         });
       });
    });
 </script>
