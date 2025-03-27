@@ -395,7 +395,7 @@
                      <textarea class="form-control" id="declineReasonSub" name="comments"></textarea>
                   </div>
                   <div class="mb-3">
-                     <label for="approvalDateSub" class="form-label">Approval Date</label>
+                     <label for="approvalDateSub" class="form-label">Approval/Decline Date</label>
                      <input type="datetime-local" class="form-control" id="approvalDateSub" name="approval_date" required>
                   </div>
                </div>

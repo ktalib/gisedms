@@ -65,7 +65,7 @@
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('Recertification')); ?></a></li>
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('SLTR/First Registration')); ?></a></li>
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('Regularization/Conversion')); ?></a></li>
-                        <li class="pc-item"><a href="<?php echo e(route('sectionaltitling.index')); ?>" class="pc-link"><?php echo e(__('Sectional Titling')); ?></a></li>
+                        <li class="pc-item"><a href="<?php echo e(route('sectionaltitling.landuse')); ?>" class="pc-link"><?php echo e(__('Sectional Titling')); ?></a></li>
                     </ul>
                 </li>
                 <li class="pc-item pc-hasmenu">

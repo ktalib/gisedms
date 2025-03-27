@@ -76,63 +76,70 @@
        
  
         .button-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 1000px;
-        }
-        .bttn {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;  /* Ensure items are left-aligned */
-            text-align: left;             /* Ensure text is left-aligned */
-            padding: 12px 16px;           /* Adjust padding */
-            border-radius: 10px;
-            font-weight: 600;
-            color: #4a5568;
-            background-color: white;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-            min-width: 200px;             /* Ensure a minimum width */
-            width: 100%;                  /* Ensure full width */
-            box-shadow: 0 4px 6px rgba(7, 224, 43, 0.137); /* Add shadow */
-        }
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    justify-content: center;
+    width: fit-content;
+    margin: 0 auto;
+}
 
-        .bttn i {
-            margin-right: 12px;           /* Add spacing between icon and text */
-            display: inline-flex;
-            align-items: center;
-            width: 24px;                  /* Fixed width for icons */
-            justify-content: center;      /* Center the icon in its fixed width */
-        }
+.bttn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #4a5568;
+    background-color: white;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+    width: 180px;
+    height: 40px;
+    text-align: left;
+}
 
-        .bttn:hover {
-            transform: translateY(-2px);
-            background-color: #f8f9fa;
-            color: rgb(241, 199, 7);
-            box-shadow: 0 8px 16px -4px rgb(105, 211, 6), 0 8px 16px -4px rgb(211, 0, 0), 0 8px 16px -4px rgb(24, 24, 24), 0 8px 16px -4px rgb(252, 247, 0);
-        }
+.bttn i {
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+}
 
-        .button-grid .bttn {
-            padding: 8px 16px;
-            font-size: 12px;
-            white-space: nowrap;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-start; /* Ensure items are left-aligned */
-        }
+/* Hover effects with icon-specific glows */
+.bttn:hover {
+    transform: translateY(-2px);
+}
 
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(2, auto);
-            gap: 20px;
-            justify-content: center;
-        }
+.bttn:hover[onclick*="finance"] {
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.bttn:hover[onclick*="planning"] {
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+.bttn:hover[onclick*="survey"] {
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+}
+
+.bttn:hover[onclick*="lands"] {
+    box-shadow: 0 4px 8px rgba(156, 39, 176, 0.3);
+}
+
+.bttn:hover[onclick*="generateBettermentBill"] {
+    box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
+}
+
+.bttn:hover[onclick*="generateBill"] {
+    box-shadow: 0 4px 8px rgba(63, 81, 181, 0.3);
+}
    
     </style>
 
@@ -283,7 +290,7 @@
            <!-- MODAL -->
 
         <div class="modal fade" id="actionsModal" tabindex="-1" aria-labelledby="actionsModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width:500px;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
             <div class="modal-content">
                 <div class="modal-header" style="height: 30px;">
                 <h5 class="modal-title" id="actionsModalLabel">Available Actions</h5>
@@ -347,7 +354,7 @@
                         data-plot_size="<?php echo e($application->plot_size); ?>"
                         data-land_use="<?php echo e($application->land_use); ?>"
                         onclick="showDepartmentConfirmation('generateBettermentBill')">
-                        Generate. Bt. Bill
+                        GEN BETTERMENT FEE
                         <i class="material-icons" style="color: #E91E63;">receipt_long</i>
                     </button>
                     <button class="bttn blue-shadow" onclick="showDepartmentConfirmation('generateBill')">
@@ -368,21 +375,35 @@
 <div class="modal fade" id="generateBettermentBillModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
-            <div class="modal-header" style="t">
+            <div class="modal-header">
                 <h5 class="modal-title">Generate Betterment Fee Bill</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>This is a placeholder for the Betterment Fee Bill generation.</p>
-                <!-- Add your content for generating the betterment fee bill here -->
+                <div id="bettermentPdfViewer" style="width:100%; height:600px;"></div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.7/pdfobject.min.js"></script>
+                <script>
+                    PDFObject.embed("<?php echo e(asset('storage/uploads/betterment_bill.pdf')); ?>", "#bettermentPdfViewer");
+                </script>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Print Betterment Bill</button>
+                <button type="button" class="btn btn-primary" onclick="printBettermentBill()">Print Betterment Bill</button>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function printBettermentBill() {
+        const pdfFrame = document.createElement('iframe');
+        pdfFrame.style.display = 'none';
+        pdfFrame.src = "<?php echo e(asset('storage/uploads/betterment_bill.pdf')); ?>";
+        document.body.appendChild(pdfFrame);
+        pdfFrame.contentWindow.focus();
+        pdfFrame.contentWindow.print();
+        document.body.removeChild(pdfFrame);
+    }
+</script>
 
             <!-- View Actions Modal -->
             <div class="modal" id="viewActionsModal" tabindex="-1" aria-labelledby="viewActionsModalLabel" aria-hidden="true">
@@ -550,6 +571,14 @@
                                     <input type="text" class="form-control" required>
                                 </div>
                                 <div class="mb-3">
+                                    <label class="form-label">Decision</label>
+                                    <select class="form-select" required>
+                                        <option value="" disabled selected>Select Decision</option>
+                                        <option value="approve">Approve</option>
+                                        <option value="decline">Decline</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Amount (₦)</label>
                                     <input type="number" min="0" step="0.01" class="form-control" required>
                                 </div>
@@ -561,9 +590,28 @@
                                     <label class="form-label">Approved By</label>
                                     <input type="text" class="form-control" required>
                                 </div>
-                                <button type="button" class="btn btn-secondary">OK</button>
-                                <button type="button" class="btn btn-warning ms-2">Edit</button>
-                                <button type="submit" class="btn btn-primary ms-2" disabled>Submit</button>
+                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                    <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        OK
+                                        <i class="material-icons" style="color: #4CAF50;">check_circle</i>
+                                    </button>
+                                    <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                        Edit
+                                        <i class="material-icons" style="color: #9E9E9E;">edit</i>
+                                    </button>
+                                    <button type="button" class="bttn blue-shadow" onclick="showDepartmentConfirmation('planningRec')" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                        Planning Rec.
+                                        <i class="material-icons" style="color: #2196F3;">assignment</i>
+                                    </button>
+                                    <button type="button" class="bttn yellow-shadow" onclick="showDepartmentConfirmation('architectural')" style="box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);">
+                                        Arch. Design
+                                        <i class="material-icons" style="color: #FFC107;">architecture</i>
+                                    </button>
+                                    <button type="submit" class="bttn green-shadow" disabled style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        Submit
+                                        <i class="material-icons" style="color: #4CAF50;">send</i>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -580,59 +628,13 @@
                         <div class="modal-body">
                             <form id="planningForm">
                                 <div class="mb-3">
-                                    <label class="form-label">Date</label>
-                                    <input type="date" class="form-control" required>
+                                    <label class="form-label">Decision</label>
+                                    <select class="form-select" required>
+                                        <option value="" disabled selected>Select Decision</option>
+                                        <option value="approve">Approve</option>
+                                        <option value="decline">Decline</option>
+                                    </select>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Approved By</label>
-                                    <input type="text" class="form-control" required>
-                                </div>
-                                <!-- 3x3 Grid of Buttons -->
-                                <div class="row g-2">
-                                    <div class="col-4">
-                                        <button type="button" class="btn w-100" style="background-color: #008000; color: white;">
-                                            OK
-                                        </button>
-                                    </div>
-                                    <div class="col-4">
-                                        <button type="button" class="btn w-100" style="background-color: #333333; color: white;">
-                                            Edit
-                                        </button>
-                                    </div>
-                                    <div class="col-4">
-                                        <button type="button" class="btn w-100" style="background-color: #FF0000; color: white;">
-                                            Planning Rec.
-                                        </button>
-                                    </div>
-                                    <div class="col-4">
-                                        <button type="button" class="btn w-100" style="background-color: rgb(230, 215, 15); color: white;"
-                                            onclick="showDepartmentConfirmation('architectural')">
-                                            Arch. Design
-                                        </button>
-                                    </div>
-                                    <div class="col-4">
-                                        <button type="submit" class="btn w-100" style="background-color: #008000; color: white;" disabled>
-                                            Submit
-                                        </button>
-                                    </div>
-                                    
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="knupdaModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">KNUPDA Approval</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="knupdaForm">
                                 <div class="mb-3">
                                     <label class="form-label">Date</label>
                                     <input type="date" class="form-control" required>
@@ -641,15 +643,35 @@
                                     <label class="form-label">Approved By</label>
                                     <input type="text" class="form-control" required>
                                 </div>
-                                <button type="button" class="btn btn-secondary">OK</button>
-                                <button type="button" class="btn btn-warning ms-2">Edit</button>
-                                <button type="submit" class="btn btn-primary ms-2" disabled>Submit</button>
                             </form>
+                        </div>
+                        <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                            <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                OK
+                                <i class="material-icons" style="color: #4CAF50;">check_circle</i>
+                            </button>
+                            <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                Edit
+                                <i class="material-icons" style="color: #9E9E9E;">edit</i>
+                            </button>
+                            <button type="button" class="bttn blue-shadow" onclick="showDepartmentConfirmation('planningRec')" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                Planning Rec.
+                                <i class="material-icons" style="color: #2196F3;">assignment</i>
+                            </button>
+                            <button type="button" class="bttn yellow-shadow" onclick="showDepartmentConfirmation('architectural')" style="box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);">
+                                Arch. Design
+                                <i class="material-icons" style="color: #FFC107;">architecture</i>
+                            </button>
+                            <button type="submit" class="bttn green-shadow" disabled style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                Submit
+                                <i class="material-icons" style="color: #4CAF50;">send</i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
+             
             <div class="modal fade" id="surveyModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -681,9 +703,28 @@
                                     <input type="date" class="form-control" required>
                                 </div>
 
-                                <button type="button" class="btn btn-secondary">OK</button>
-                                <button type="button" class="btn btn-warning ms-2">Edit</button>
-                                <button type="submit" class="btn btn-primary ms-2" disabled>Submit</button>
+                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                    <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        OK
+                                        <i class="material-icons" style="color: #4CAF50;">check_circle</i>
+                                    </button>
+                                    <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                        Edit
+                                        <i class="material-icons" style="color: #9E9E9E;">edit</i>
+                                    </button>
+                                    <button type="button" class="bttn blue-shadow" onclick="showDepartmentConfirmation('planningRec')" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                        Planning Rec.
+                                        <i class="material-icons" style="color: #2196F3;">assignment</i>
+                                    </button>
+                                    <button type="button" class="bttn yellow-shadow" onclick="showDepartmentConfirmation('architectural')" style="box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);">
+                                        Arch. Design
+                                        <i class="material-icons" style="color: #FFC107;">architecture</i>
+                                    </button>
+                                    <button type="submit" class="bttn green-shadow" disabled style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        Submit
+                                        <i class="material-icons" style="color: #4CAF50;">send</i>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -708,9 +749,28 @@
                                     <label class="form-label">Approved By</label>
                                     <input type="text" class="form-control" required>
                                 </div>
-                                <button type="button" class="btn btn-secondary">OK</button>
-                                <button type="button" class="btn btn-warning ms-2">Edit</button>
-                                <button type="submit" class="btn btn-primary ms-2" disabled>Submit</button>
+                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                    <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        OK
+                                        <i class="material-icons" style="color: #4CAF50;">check_circle</i>
+                                    </button>
+                                    <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                        Edit
+                                        <i class="material-icons" style="color: #9E9E9E;">edit</i>
+                                    </button>
+                                    <button type="button" class="bttn blue-shadow" onclick="showDepartmentConfirmation('planningRec')" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                        Planning Rec.
+                                        <i class="material-icons" style="color: #2196F3;">assignment</i>
+                                    </button>
+                                    <button type="button" class="bttn yellow-shadow" onclick="showDepartmentConfirmation('architectural')" style="box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);">
+                                        Arch. Design
+                                        <i class="material-icons" style="color: #FFC107;">architecture</i>
+                                    </button>
+                                    <button type="submit" class="bttn green-shadow" disabled style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        Submit
+                                        <i class="material-icons" style="color: #4CAF50;">send</i>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -756,9 +816,28 @@
                                     </div>
                                 </div>
 
-                                <button type="button" class="btn btn-secondary">OK</button>
-                                <button type="button" class="btn btn-warning ms-2">Edit</button>
-                                <button type="submit" class="btn btn-primary ms-2" disabled>Submit</button>
+                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                    <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        OK
+                                        <i class="material-icons" style="color: #4CAF50;">check_circle</i>
+                                    </button>
+                                    <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                        Edit
+                                        <i class="material-icons" style="color: #9E9E9E;">edit</i>
+                                    </button>
+                                    <button type="button" class="bttn blue-shadow" onclick="showDepartmentConfirmation('planningRec')" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                        Planning Rec.
+                                        <i class="material-icons" style="color: #2196F3;">assignment</i>
+                                    </button>
+                                    <button type="button" class="bttn yellow-shadow" onclick="showDepartmentConfirmation('architectural')" style="box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);">
+                                        Arch. Design
+                                        <i class="material-icons" style="color: #FFC107;">architecture</i>
+                                    </button>
+                                    <button type="submit" class="bttn green-shadow" disabled style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        Submit
+                                        <i class="material-icons" style="color: #4CAF50;">send</i>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -778,9 +857,15 @@
                                 <iframe src="<?php echo e(route('sectionaltitling.generate_bill')); ?>" style="width: 100%; height: 600px;" id="billFrame"></iframe>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="printBill()">Print Bill</button>
+                        <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                            <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                Close
+                                <i class="material-icons" style="color: #9E9E9E;">close</i>
+                            </button>
+                            <button type="button" class="bttn blue-shadow" onclick="printBill()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                Print Bill
+                                <i class="material-icons" style="color: #3F51B5;">print</i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -833,9 +918,28 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-secondary">OK</button>
-                                <button type="button" class="btn btn-warning ms-2">Edit</button>
-                                <button type="submit" class="btn btn-primary ms-2" disabled>Submit</button>
+                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                    <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        OK
+                                        <i class="material-icons" style="color: #4CAF50;">check_circle</i>
+                                    </button>
+                                    <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                        Edit
+                                        <i class="material-icons" style="color: #9E9E9E;">edit</i>
+                                    </button>
+                                    <button type="button" class="bttn blue-shadow" onclick="showDepartmentConfirmation('planningRec')" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                        Planning Rec.
+                                        <i class="material-icons" style="color: #2196F3;">assignment</i>
+                                    </button>
+                                    <button type="button" class="bttn yellow-shadow" onclick="showDepartmentConfirmation('architectural')" style="box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);">
+                                        Arch. Design
+                                        <i class="material-icons" style="color: #FFC107;">architecture</i>
+                                    </button>
+                                    <button type="submit" class="bttn green-shadow" disabled style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                                        Submit
+                                        <i class="material-icons" style="color: #4CAF50;">send</i>
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -1170,29 +1274,43 @@
                         </ol>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
                             <div>
-                                <p>Counter Sign: ___________________________</p>
-                                <p>Director Section Titling</p>
+                                <p>Name:___________________________</p>
+                                <p>Rank: ___________________________</p>
+                                <p>Sign: ___________________________</p>
                                 <p>Date: ___________________________</p>
                             </div>
                             <div>
-                                <p>Rank: ___________________________</p>
-                                <p>Sign: ___________________________</p>
+                         
+
+                                <p>Counter Sign: ___________________________</p>
+                                <p style="white-space: pre-line;">                  <strong>Director Section Titling</strong></p>
                                 <p>Date: ___________________________</p>
                             </div>
                         </div>
                         <div style="margin-top: 20px;">
                             <p><strong>HONOURABLE COMMISSIONER</strong></p>
+                            <hr style="width: 100%; text-align: left; margin-left: 0;">
                             <p>The application is hereby recommended for your kind approval, please.</p>
+                            <br>
                             <p>Date: ______2025.</p>
-                            <p>___________________________</p>
-                            <p>Permanent Secretary</p>
                         </div>
+                            <div style=" justify-content: end;">
+                                <div style="text-align: right;">
+                            <p>___________________________</p>
+                            <p><strong>Permanent Secretary</strong></p>
+                            </div>
+                            </div>
+                            
+                        
                         <div style="margin-top: 20px;">
                             <p><strong>PERMANENT SECRETARY</strong></p>
+                            <hr style="width: 100%; text-align: left; margin-left: 0;">
                             <p>The application is hereby APPROVED/NOT APPROVED.</p>
                             <p>Date: __________________2025.</p>
+                            <div style="text-align: right;">
                             <p>___________________________</p>
-                            <p>HONOURABLE COMMISSIONER</p>
+                            <p> <strong>HONOURABLE COMMISSIONER. </strong></p>
+                            </div>
                         </div>
                     </div>
                 </div>

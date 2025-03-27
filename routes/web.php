@@ -29,6 +29,7 @@ use App\Http\Controllers\ApplicationMotherController;
 use App\Http\Controllers\PropertyCardController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\LegalSearchController;
+use App\Http\Controllers\ResidentialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -362,7 +363,8 @@ Route::post('/instruments/{id}', [InstrumentController::class, 'update'])->name(
 Route::delete('/instruments/{id}', [InstrumentController::class, 'destroy']);
 
 // Application Mother routes
- 
+
+Route::get('/sectionaltitling/landuse', [ApplicationMotherController::class, 'landuse'])->name('sectionaltitling.landuse'); 
 Route::get('/sectionaltitling', [ApplicationMotherController::class, 'index'])->name('sectionaltitling.index');
 Route::get('/sectionaltitling/create', [ApplicationMotherController::class, 'create'])->name('sectionaltitling.create');
 
@@ -410,4 +412,7 @@ Route::get('/legal_search', [LegalSearchController::class, 'index'])->name('lega
 Route::get('/legal_search/report', [LegalSearchController::class, 'report'])->name('legal_search.report');
 //Route::post('/legal_search', [LegalSearchController::class, 'store'])->name('legal_search.store');
 Route::get('/legal_search/legal_search_report', [LegalSearchController::class, 'legal_search_report'])->name('legal_search.legal_search_report');
+//sectionaltitling/residential
+Route::get('sectionaltitling/residential', [ResidentialController::class, 'index'])->name('sectionaltitling.residential.index');
+Route::get('sectionaltitling/residential/create', [ResidentialController::class, 'create'])->name('sectionaltitling.residential.create');
 Route::impersonate();

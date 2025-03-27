@@ -7,36 +7,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
-class ApplicationMotherController extends Controller
+class ResidentialController extends Controller
 {
-
-    public function landuse()
-    {
-        return view('sectionaltitling.landuse');
-    }
-
-
     public function index()
     {
-        $Main_application = DB::connection('sqlsrv')->table('dbo.mother_applications')->get();
-        return view('sectionaltitling.index', compact('Main_application'));
+        $Main_application = DB::connection('sqlsrv')->table('dbo.mother_applications_residentail')->get();
+        return view('sectionaltitling.residential.index', compact('Main_application'));
     }
     public function subApplication()
     {
-        return view('sectionaltitling.sub_application');
+        return view('sectionaltitling.residential.sub_application');
     } 
     
     
     public function create()
     {
-        return view('sectionaltitling.create');
+        return view('sectionaltitling.residential.residential.create');
     }
 
     public function Subapplications()
     {
         $subApplications = DB::connection('sqlsrv')
             ->table('dbo.subapplications AS sub')
-            ->join('dbo.mother_applications AS main', 'sub.main_application_id', '=', 'main.id')
+            ->join('dbo.mother_applications_residentail  AS main', 'sub.main_application_id', '=', 'main.id')
             ->select(
                 'sub.*',
                 'main.fileno as main_fileno',
@@ -50,7 +43,7 @@ class ApplicationMotherController extends Controller
             )
             ->get();
 
-        return view('sectionaltitling.sub_applications', compact('subApplications'));   
+        return view('sectionaltitling.residential.sub_applications', compact('subApplications'));   
     }
 
     public function GenerateBill(Request $request)
@@ -71,26 +64,28 @@ class ApplicationMotherController extends Controller
             'land_use' => $request->query('land_use'),
         ];
         
-        return view('sectionaltitling.generate_bill', $data);
+        return view('sectionaltitling.residential.generate_bill', $data);
     }
 
     public function AcceptLetter()
     {
-        return view('sectionaltitling.AcceptLetter');
+        return view('sectionaltitling.residential.AcceptLetter');
     }
     public function storeMotherApp(Request $request)
     {
         try {
             $request->validate([
                 'applicant_type' => 'required',
-                // Other validation rules...
+                // ...existing validation rules...
             ]);
 
+            // Remove _token from request data explicitly
             $data = $request->all();
+            unset($data['_token']);
 
             // Generate dynamic file number
             $lastApplication = DB::connection('sqlsrv')
-                ->table('dbo.mother_applications')
+                ->table('dbo.ApplicantRegistration')
                 ->orderBy('id', 'desc')
                 ->first();
 
@@ -116,9 +111,10 @@ class ApplicationMotherController extends Controller
                 $data['multiple_owners_passport'] = json_encode($multipleOwnersPassportPaths);
             }
 
-            DB::connection('sqlsrv')->table('dbo.mother_applications')->insert($data);
+            // Insert data into the ApplicantRegistration table
+            DB::connection('sqlsrv')->table('dbo.mother_applications_residentail')->insert($data);
 
-            return redirect()->route('sectionaltitling.index')->with('success', 'Application created successfully.');
+            return redirect()->route('sectionaltitling.residential.index')->with('success', 'Application created successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
@@ -129,7 +125,7 @@ class ApplicationMotherController extends Controller
         try {
             $mainAppId = $request->input('main_application_id');
             $applicationMother = DB::connection('sqlsrv')
-                ->table('dbo.mother_applications')
+                ->table('dbo.mother_applications_residentail ')
                 ->where('id', $mainAppId)
                 ->first();
 
@@ -168,7 +164,7 @@ class ApplicationMotherController extends Controller
             DB::connection('sqlsrv')->table('dbo.sub_applications')->insert($validatedData);
 
             return redirect()
-                ->route('sectionaltitling.sub_applications')
+                ->route('sectionaltitling.residential.sub_applications')
                 ->with('success', 'Sub-application created successfully.');
         } catch (\Exception $e) {
             return redirect()
@@ -268,12 +264,12 @@ class ApplicationMotherController extends Controller
         $approval_date = date("Y-m-d H:i:s", strtotime(str_replace('T', ' ', $approval_date)));
         $comments = $request->input('comments');
 
-        $app = DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->first();
+        $app = DB::connection('sqlsrv')->table('dbo.mother_applications_residentail ')->where('id', $id)->first();
         if (!$app) {
             return response()->json(['message' => 'Application not found.'], 404);
         }
         if ($decision == 'approve') {
-            DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update([
+            DB::connection('sqlsrv')->table('dbo.mother_applications_residentail ')->where('id', $id)->update([
                 'application_status' => 'Approved',
                 'approval_date'      => $approval_date
             ]);
@@ -281,7 +277,7 @@ class ApplicationMotherController extends Controller
                 'message' => "Approval has been sent for sectional titling of File Number {$app->fileno}."
             ]);
         } else {
-            DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update([
+            DB::connection('sqlsrv')->table('dbo.mother_applications_residentail ')->where('id', $id)->update([
                 'application_status' => 'Declined',
                 'comments'           => $comments,
                 'approval_date'      => $approval_date

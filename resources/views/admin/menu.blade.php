@@ -65,7 +65,7 @@
                         <li class="pc-item"><a href="#" class="pc-link">{{ __('Recertification') }}</a></li>
                         <li class="pc-item"><a href="#" class="pc-link">{{ __('SLTR/First Registration') }}</a></li>
                         <li class="pc-item"><a href="#" class="pc-link">{{ __('Regularization/Conversion') }}</a></li>
-                        <li class="pc-item"><a href="{{ route('sectionaltitling.index') }}" class="pc-link">{{ __('Sectional Titling') }}</a></li>
+                        <li class="pc-item"><a href="{{ route('sectionaltitling.landuse') }}" class="pc-link">{{ __('Sectional Titling') }}</a></li>
                     </ul>
                 </li>
                 <li class="pc-item pc-hasmenu">
