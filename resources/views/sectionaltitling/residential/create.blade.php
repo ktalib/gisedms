@@ -109,7 +109,7 @@ input:focus {
                     {{ session('success') }}
                 </div>
             @endif
-            <form method="POST" class="space-y-6" action="{{ route('sectionaltitling.storeMotherApp') }}" enctype="multipart/form-data">
+            <form method="POST" class="space-y-6" action="{{ route('sectionaltitling.residential.store') }}" enctype="multipart/form-data">
                 @csrf
            
                 <div class="form-section">

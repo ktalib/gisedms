@@ -415,4 +415,9 @@ Route::get('/legal_search/legal_search_report', [LegalSearchController::class, '
 //sectionaltitling/residential
 Route::get('sectionaltitling/residential', [ResidentialController::class, 'index'])->name('sectionaltitling.residential.index');
 Route::get('sectionaltitling/residential/create', [ResidentialController::class, 'create'])->name('sectionaltitling.residential.create');
+Route::get('sectionaltitling/residential/sub_application', [ResidentialController::class, 'subApplication'])->name('sectionaltitling.residential.sub_application');
+Route::get('sectionaltitling/residential/sub_applications', [ResidentialController::class, 'subApplication'])->name('sectionaltitling.residential.sub_applications');
+Route::post('sectionaltitling/residential', [ResidentialController::class, 'storeResMotherApp'])->name('sectionaltitling.residential.store');
+
+
 Route::impersonate();

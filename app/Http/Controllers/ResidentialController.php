@@ -11,8 +11,8 @@ class ResidentialController extends Controller
 {
     public function index()
     {
-        $Main_application = DB::connection('sqlsrv')->table('dbo.mother_applications_residentail')->get();
-        return view('sectionaltitling.residential.index', compact('Main_application'));
+        $Res_Main_application = DB::connection('sqlsrv')->table('dbo.mother_applications_residentail')->get();
+        return view('sectionaltitling.residential.index', compact('Res_Main_application'));
     }
     public function subApplication()
     {
@@ -22,7 +22,7 @@ class ResidentialController extends Controller
     
     public function create()
     {
-        return view('sectionaltitling.residential.residential.create');
+        return view('sectionaltitling.residential.create');
     }
 
     public function Subapplications()
@@ -71,12 +71,50 @@ class ResidentialController extends Controller
     {
         return view('sectionaltitling.residential.AcceptLetter');
     }
-    public function storeMotherApp(Request $request)
+    public function storeResMotherApp(Request $request)
     {
         try {
             $request->validate([
-                'applicant_type' => 'required',
-                // ...existing validation rules...
+                'applicant_type'                   => 'required',
+                'applicant_title'                  => 'required',
+                'first_name'                       => 'required|string',
+                'middle_name'                      => 'nullable|string',
+                'surname'                          => 'required|string',
+                'passport'                         => 'nullable|file',
+                'fileno'                           => 'required|string',
+                'corporate_name'                   => 'nullable|string',
+                'rc_number'                        => 'nullable|string',
+                'multiple_owners_names'            => 'nullable|string',
+                'multiple_owners_passport'         => 'nullable',
+                'address'                          => 'required|string',
+                'phone_number'                     => 'required|string',
+                'email'                            => 'required|email',
+                'residential_type'                 => 'required|string',
+                'identification_type'              => 'required|string',
+                'plot_house_no'                    => 'nullable|string',
+                'plot_plot_no'                     => 'nullable|string',
+                'plot_street_name'                 => 'required|string',
+                'plot_district'                    => 'nullable|string',
+                'plot_size'                        => 'required|numeric',
+                'land_use'                         => 'required|string',
+                'owner_house_no'                   => 'nullable|string',
+                'owner_plot_no'                    => 'nullable|string',
+                'owner_street_name'                => 'nullable|string',
+                'owner_district'                   => 'required|string',
+                'additional_comments'              => 'nullable|string',
+                'application_fee'                  => 'required|numeric',
+                'payment_date'                     => 'required|date',
+                'receipt_number'                   => 'required|string',
+                'receipt_date'                     => 'required|date',
+                'revenue_accountant'               => 'nullable|string',
+                'accountant_signature_date'        => 'nullable|date',
+                'scheme_no'                        => 'nullable|string',
+                'application_status'               => 'nullable|string',
+                'approval_date'                    => 'nullable|date',
+                'planning_recommendation_status'   => 'nullable|string',
+                'created_at' => now(),
+                'updated_at' => now(),
+                'comments'                         => 'nullable|string',
             ]);
 
             // Remove _token from request data explicitly
@@ -85,7 +123,7 @@ class ResidentialController extends Controller
 
             // Generate dynamic file number
             $lastApplication = DB::connection('sqlsrv')
-                ->table('dbo.ApplicantRegistration')
+                ->table('dbo.mother_applications_residentail')
                 ->orderBy('id', 'desc')
                 ->first();
 

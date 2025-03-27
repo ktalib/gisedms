@@ -1,11 +1,11 @@
 {{-- filepath: c:\wamp64\www\gisedms\resources\views\instruments\index.blade.php --}}
 @extends('layouts.app')
 @section('page-title')
-    {{ __('APPLICATION FOR SECTIONAL TITLING COMMERCIAL MODULE') }}
+    {{ __('APPLICATION FOR SECTIONAL TITLING RESIDENTIAL MODULE') }}
 @endsection
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
-    <li class="breadcrumb-item" aria-current="page"> {{ __('APPLICATION FOR SECTIONAL TITLING COMMERCIAL MODULE') }}</li>
+    <li class="breadcrumb-item" aria-current="page"> {{ __('APPLICATION FOR SECTIONAL TITLING RESIDENTIAL MODULE') }}</li>
 @endsection
 @push('script-page')
     <script src="{{ asset('assets/js/plugins/ckeditor/classic/ckeditor.js') }}"></script>
@@ -148,11 +148,11 @@
 
 
             <div class="d-flex justify-content-between mb-3">
-                <a href="{{ route('sectionaltitling.create') }}" class="btn btn-primary">
-                    <i class="fa fa-plus"></i> Create Application
+                <a href="{{ route('sectionaltitling.residential.create') }}" class="btn btn-primary">
+                    <i class="fa fa-plus"></i> Create Residential  Application
                 </a>
-                <a href="{{ route('sectionaltitling.sub_applications') }}" class="btn btn-secondary">
-                    <i class="fa fa-list"></i> View Sub Applications
+                <a href="{{ route('sectionaltitling.residential.sub_applications') }}" class="btn btn-secondary">
+                    <i class="fa fa-list"></i> View Sub Residential Applications
                 </a>
             </div>
             <div>
@@ -178,7 +178,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($Main_application as $application)
+                                @foreach ($Res_Main_application as $application)
                                     <tr>
                                         <td>STM-2025-000-{{ $application->id }}</td>
                                         <td>{{ $application->fileno }}</td>
@@ -226,7 +226,7 @@
                                                     
                                                     @if ($application->application_status == 'Approved')
                                                         <li>
-                                                            <a href="{{ route('sectionaltitling.sub_application', [
+                                                            <a href="{{ route('sectionaltitling.residential.sub_application', [
                                                                 'application_id' => $application->id,
                                                                 'owner_name' => $application->corporate_name
                                                                     ? $application->corporate_name
@@ -250,7 +250,7 @@
                                                     @else
                                                         <li class="opacity-50 cursor-not-allowed">
                                                             <a href="#" class="block px-4 py-2 flex items-center">
-                                                                <i class="fas fa-plus-square text-gray-500 mr-2"></i> Create ST Record (Disabled)
+                                                                <i class="fas fa-plus-square text-gray-500 mr-2"></i> Create ST Record 
                                                             </a>
                                                         </li>
                                                     @endif
@@ -268,17 +268,14 @@
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        {{-- <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
-                                                            data-bs-toggle="modal" data-bs-target="#recordModal">
-                                                            <i class="fas fa-file-alt text-blue-500 mr-2"></i> Record Details
-                                                        </button> --}}
+                                                        
                                                     </li>
                                                 </ul>
                                             </div>
                                         </td>
                                         
                                     </tr>
-                                @endforeach
+                                    @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -365,6 +362,7 @@
             </div>
             </div>
         </div>
+      
 
 
 
@@ -404,58 +402,68 @@
 </script>
 
             <!-- View Actions Modal -->
-            <div class="modal" id="viewActionsModal" tabindex="-1" aria-labelledby="viewActionsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal fade" id="viewActionsModal" tabindex="-1" aria-labelledby="viewActionsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width:450px;">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header" style="height: 30px;">
                             <h5 class="modal-title" id="viewActionsModalLabel">View Actions</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col">
-                                        <button type="button" class="btn btn-primary w-100"
-                                            data-bs-toggle="modal" data-bs-target="#viewSurveyPlanModal">
-                                            <i class="fa fa-eye"></i><br>View Survey Plan
-                                        </button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" class="btn btn-success w-100"
-                                            data-bs-toggle="modal" data-bs-target="#viewArchitecturalDesignModal">
-                                            <i class="fa fa-eye"></i><br>View Architectural Design
-                                        </button>
-                                    </div>
+                        <div class="modal-body" style="background-color: #f1f1f1;">
+                            <style>
+                                .button-grid .bttn {
+                                    padding: 6px 12px;
+                                    font-size: 10px;
+                                    white-space: nowrap;
+                                    display: flex;
+                                    flex-direction: row;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    width: 100%;
+                                    height: 40px;
+                                }
+                                .button-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(2, 1fr);
+                                    gap: 10px;
+                                    justify-content: center;
+                                }
+                                .bttn i {
+                                    margin-left: 8px;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                }
+                            </style>
+                            <div>
+                                <div class="button-grid">
+                                    <!-- Row 1 -->
+                                    <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#viewSurveyPlanModal">
+                                        View Survey Plan
+                                        <i class="material-icons" style="color: #4CAF50;">map</i>
+                                    </button>
+                                    <button class="bttn" data-bs-toggle="modal" data-bs-target="#viewArchitecturalDesignModal">
+                                        View Architectural Design
+                                        <i class="material-icons" style="color: #2196F3;">architecture</i>
+                                    </button>
+                                    <button class="bttn pink-shadow" data-bs-toggle="modal" data-bs-target="#viewReceiptModal">
+                                        View Receipt
+                                        <i class="material-icons" style="color: #FF9800;">receipt</i>
+                                    </button>
+                                    <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#viewLandModal">
+                                        View Scanned File
+                                        <i class="material-icons" style="color: #9C27B0;">description</i>
+                                    </button>
+                                    <button class="bttn pink-shadow" data-bs-toggle="modal" data-bs-target="#viewBettermentBillModal">
+                                        Betterment Bill
+                                        <i class="material-icons" style="color: #E91E63;">receipt_long</i>
+                                    </button>
+                                    <button class="bttn blue-shadow" data-bs-toggle="modal" data-bs-target="#viewFinalBillModal">
+                                        Final Bill
+                                        <i class="material-icons" style="color: #3F51B5;">receipt</i>
+                                    </button>
                                 </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        <button type="button" class="btn btn-warning w-100"
-                                            data-bs-toggle="modal" data-bs-target="#viewReceiptModal">
-                                            <i class="fa fa-eye"></i><br>View Receipt
-                                        </button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" class="btn btn-info w-100" 
-                                            data-bs-toggle="modal" data-bs-target="#viewLandModal">
-                                            <i class="fa fa-eye"></i><br>View Scanned File
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col">
-                                        <button type="button" class="btn btn-danger w-100"
-                                            data-bs-toggle="modal" data-bs-target="#viewBettermentBillModal">
-                                            <i class="fa fa-file-invoice"></i><br>Betterment Bill
-                                        </button>
-                                    </div>
-                                    <div class="col">
-                                        <button type="button" class="btn btn-secondary w-100"
-                                            data-bs-toggle="modal" data-bs-target="#viewFinalBillModal">
-                                            <i class="fa fa-file-invoice-dollar"></i><br>Final Bill
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>            
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -563,30 +571,37 @@
                         </div>
                         <div class="modal-body">
                             <form id="financeForm">
-
-                                <div class="mb-3">
-                                    <label class="form-label">Receipt No</label>
-                                    <input type="text" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Decision</label>
-                                    <select class="form-select" required>
-                                        <option value="" disabled selected>Select Decision</option>
-                                        <option value="approve">Approve</option>
-                                        <option value="decline">Decline</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Amount (₦)</label>
-                                    <input type="number" min="0" step="0.01" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Date</label>
-                                    <input type="date" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Approved By</label>
-                                    <input type="text" class="form-control" required>
+                                <div class="row">
+                                    <!-- Group 1 -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Receipt No</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Decision</label>
+                                            <select class="form-select" required>
+                                                <option value="" disabled selected>Select Decision</option>
+                                                <option value="approve">Approve</option>
+                                                <option value="decline">Decline</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Group 2 -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Amount (₦)</label>
+                                            <input type="number" min="0" step="0.01" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Date</label>
+                                            <input type="date" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Approved By</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
                                     <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
@@ -625,21 +640,32 @@
                         </div>
                         <div class="modal-body">
                             <form id="planningForm">
-                                <div class="mb-3">
-                                    <label class="form-label">Decision</label>
-                                    <select class="form-select" required>
-                                        <option value="" disabled selected>Select Decision</option>
-                                        <option value="approve">Approve</option>
-                                        <option value="decline">Decline</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Date</label>
-                                    <input type="date" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Approved By</label>
-                                    <input type="text" class="form-control" required>
+                                <div class="row">
+                                    <!-- Group 1 -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Decision</label>
+                                            <select class="form-select" required>
+                                                <option value="" disabled selected>Select Decision</option>
+                                                <option value="approve">Approve</option>
+                                                <option value="decline">Decline</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Group 2 -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Date</label>
+                                            <input type="date" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <!-- Group 3 -->
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Approved By</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -653,7 +679,7 @@
                                 <i class="material-icons" style="color: #9E9E9E;">edit</i>
                             </button>
                             <button type="button" class="bttn blue-shadow" onclick="showDepartmentConfirmation('planningRec')" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                                Planning Rec.
+                                Planning Recommendation
                                 <i class="material-icons" style="color: #2196F3;">assignment</i>
                             </button>
                             <button type="button" class="bttn yellow-shadow" onclick="showDepartmentConfirmation('architectural')" style="box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);">
@@ -880,41 +906,47 @@
                         <div class="modal-body">
                             <form id="eRegistryForm">
                                 <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">E-Registry ID</label>
-                                            <input type="text" class="form-control" value="26"  disabled>
+                                    <fieldset class="mb-4">
+                                        <legend>Basic Information</legend>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">E-Registry ID</label>
+                                                <input type="text" class="form-control" value="26" disabled>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">FILE NAME</label>
+                                                <input type="text" class="form-control">
+                                            </div>
                                         </div>
+                                    </fieldset>
 
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">FILE NAME</label>
-                                            <input type="text" class="form-control">
+                                    <fieldset class="mb-4">
+                                        <legend>File Details</legend>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Fileno</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">File Location</label>
+                                                <input type="text" class="form-control">
+                                            </div>
                                         </div>
-                                    </div>
+                                    </fieldset>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Fileno</label>
-                                            <input type="text" class="form-control">
+                                    <fieldset class="mb-4">
+                                        <legend>Date Information</legend>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">File Commissioning Date</label>
+                                                <input type="date" class="form-control">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Decommissioning Date</label>
+                                                <input type="date" class="form-control">
+                                            </div>
                                         </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">File Location</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">File Commissioning Date</label>
-                                            <input type="date" class="form-control">
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Decommissioning Date</label>
-                                            <input type="date" class="form-control">
-                                        </div>
-                                    </div>
+                                    </fieldset>
                                 </div>
                                 <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
                                     <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
@@ -944,39 +976,7 @@
                 </div>
             </div>
 
-            <!-- Record Details Modal -->
-            <div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="recordModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="recordModalLabel">INSTRUMENT DETAILS</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="recordDetails">
-                                <div class="record-group">
-                                    <h3>Basic Information</h3>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <p><strong>File No:</strong> FNO-001</p>
-                                            <p><strong>Grantor:</strong> John Doe</p>
-                                        </div>
-                                        <div class="col-6">
-                                            <p><strong>Grantee:</strong> Jane Doe</p>
-                                            <p><strong>Registration Date:</strong> 2023-01-01</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  
             <!-- jQuery and DataTables JS -->
             <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
             <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -1219,22 +1219,40 @@
             </div>
             <div class="modal-body">
                 <form id="planningRecommendationForm">
-                     
-                    <div class="mb-3">
-                        <label class="form-label">Decision</label><br>
-                        <input type="radio" name="decision" value="approve" id="prApprove" checked>
-                        <label for="prApprove">Approve</label>
-                        <input type="radio" name="decision" value="decline" id="prDecline" class="ms-3">
-                        <label for="prDecline">Decline</label>
+                    <!-- Group Decision Inputs -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <fieldset>
+                                <legend class="form-label">Decision</legend>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="decision" value="approve" id="prApprove" checked>
+                                    <label class="form-check-label" for="prApprove">Approve</label>
+                                </div>
+                                <div class="form-check form-check-inline ms-3">
+                                    <input class="form-check-input" type="radio" name="decision" value="decline" id="prDecline">
+                                    <label class="form-check-label" for="prDecline">Decline</label>
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>
-                    <div class="mb-3" id="declineReasonGroup" style="display:none;">
-                        <label for="declineReason" class="form-label">Reason For Decline</label>
-                        <textarea class="form-control" id="declineReason" name="comments"></textarea>
+
+                    <!-- Group Decline Reason -->
+                    <div class="row mb-3" id="declineReasonGroup" style="display:none;">
+                        <div class="col-md-12">
+                            <label for="declineReason" class="form-label">Reason For Decline</label>
+                            <textarea class="form-control" id="declineReason" name="comments"></textarea>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="approvalDate" class="form-label">Approval/Decline Date</label>
-                        <input type="datetime-local" class="form-control" id="approvalDate" name="approval_date" required>
+
+                    <!-- Group Date Input -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="approvalDate" class="form-label">Approval/Decline Date</label>
+                            <input type="datetime-local" class="form-control" id="approvalDate" name="approval_date" required>
+                        </div>
                     </div>
+
+                    <!-- Modal Footer Buttons -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Submit</button>
