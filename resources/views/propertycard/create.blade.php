@@ -116,6 +116,7 @@ Property Records Assistant
                                         <input type="text" id="Previewflenumber" name="Previewflenumber" class="w-full p-2 border border-gray-300 bg-gray-100 font-medium rounded-md" value="{{ isset($result) ? ($result->kangisFileNo ?: 'N/A') : 'N/A' }}" readonly style="color: black;">
                                     </div>
                                 </div>
+                                
                                 <script>
                                     function updateFileNumberColor() {
                                         const prefixEl = document.getElementById('fileNoPrefix');

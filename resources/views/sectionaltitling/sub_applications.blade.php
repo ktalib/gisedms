@@ -50,23 +50,23 @@
 }
 
 .bttn {
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   padding: 6px 12px;
-   border-radius: 8px;
-   font-weight: bold;
-   color: #4a5568;
-   background-color: white;
-   transition: all 0.3s ease;
-   text-transform: capitalize;
-   letter-spacing: 0.5px;
-   font-size: 10px;
-   border: none;
-   cursor: pointer;
-   width: 180px;
-   height: 40px;
-   text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #4a5568;
+    background-color: white;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+    width: 180px;
+    height: 40px;
+    text-align: left;
 }
 
 .bttn i {
@@ -105,6 +105,51 @@
 .bttn:hover[onclick*="generateBill"] {
     box-shadow: 0 4px 8px rgba(63, 81, 181, 0.3);
 }
+   
+      .button-grid .bttn {
+                    padding: 6px 12px;
+                    font-size: 10px;
+                    white-space: nowrap;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    height: 40px;
+                    }
+
+                    .button-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 10px;
+                    justify-content: center;
+                    }    
+                    
+                    .payments .bttn {
+                    padding: 6px 12px;
+                    font-size: 10px;
+                    white-space: nowrap;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    height: 40px;
+                    }
+
+                    .payments-grid {
+                    display: grid;
+                    grid-template-columns: repeat(1, 1fr);
+                    gap: 10px;
+                    justify-content: center;
+                    }
+
+                    .bttn i {
+                    margin-left: 8px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    }
   
    </style>
 
@@ -113,91 +158,193 @@
       <div class="card shadow-sm">
          <div class="card-body">
             <h5 class="card-title">{{ __('Sub-Applications') }}</h5>
-            <table id="subRecordsTable" class="table table-striped dt-responsive nowrap" style="width:100%">
-               <thead>
-                  <tr>
-                     <th style="text-transform: none;">Main Application ID</th>
-                     <th style="text-transform: none;">fileno</th>
-                     <th style="text-transform: none;">Owner Name</th>
-                     <th style="text-transform: none;">Phone Number</th>
-                     <th style="text-transform: none;">Application Status</th>
-                     <th style="text-transform: none;">Actions</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  @foreach ($subApplications as $subApplication)
-                     <tr>
-                        <td>STM-2025-000-{{ $subApplication->main_application_id }}</td>
-                        <td>{{ $subApplication->fileno }}</td>
+        <table id="subRecordsTable" class="table table-striped dt-responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    
+                    <th style="text-transform: none;">Sub Application ID</th>
+                    <th style="text-transform: none;">FileNo</th>
+                    <th style="text-transform: none;">Original Owner</th>
+                    <th style="text-transform: none;">Unit Owner Name</th>
+                    <th style="text-transform: none;">Phone Number</th>
+                    <th style="text-transform: none;">Planning Rec.</th>
+                    <th style="text-transform: none;">Application Status</th>
+                    <th style="text-transform: none;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($subApplications as $subApplication)
+                    <tr>
+                        
+                        <td>STM-2025-0001-0{{ $subApplication->main_application_id }}</td>
+                       <td>{{ $subApplication->fileno }}</td>
                         <td>
-                           @if ($subApplication->multiple_owners_names)
+                            @if ($subApplication->main_applicant_type === 'corporate')
+                                {{ $subApplication->main_corporate_name }}
+                            @elseif ($subApplication->main_applicant_type === 'multiple')
                                 @php
-                                  $ownerNames = $subApplication->multiple_owners_names;
-                                  if (!is_array($ownerNames)) {
-                                      $ownerNames = json_decode("[$ownerNames]");
-                                  }
-                                  $ownerNames = array_map(function($name) {
-                                    return trim($name, '"');
-                                  }, $ownerNames ?? []);
+                                    $mainOwnerNames = $subApplication->main_multiple_owners_names;
+                                    if (is_string($mainOwnerNames)) {
+                                        $mainOwnerNames = json_decode($mainOwnerNames, true);
+                                    }
+                                    if (!is_array($mainOwnerNames)) {
+                                        $mainOwnerNames = [$mainOwnerNames];
+                                    }
+                                    $mainOwnerNames = array_filter($mainOwnerNames);
                                 @endphp
-                              @if (is_array($ownerNames))
-                                 {{ implode(', ', $ownerNames) }}
-                              @else
-                                 {{ $subApplication->multiple_owners_names }}
-                              @endif
-                           @elseif ($subApplication->corporate_name)
-                              {{ $subApplication->corporate_name }}
-                           @else
-                              {{ $subApplication->first_name }} {{ $subApplication->middle_name }} {{ $subApplication->surname }}
-                           @endif
+                                {{ is_array($mainOwnerNames) ? implode(', ', $mainOwnerNames) : $mainOwnerNames }}
+                            @else
+                                {{ $subApplication->main_first_name }} {{ $subApplication->main_middle_name }} {{ $subApplication->main_surname }}
+                            @endif
                         </td>
+                        <td>
+                            @php
+                                $multipleOwners = $subApplication->multiple_owners_names;
+                                $names = [];
+
+                                // Try to decode JSON; if it fails, split on commas.
+                                $decoded = json_decode($multipleOwners, true);
+                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                    $names = $decoded;
+                                } elseif (!empty($multipleOwners)) {
+                                    $names = explode(',', $multipleOwners);
+                                } elseif ($subApplication->corporate_name) {
+                                    $names = [$subApplication->corporate_name];
+                                } else {
+                                    $names = [trim($subApplication->first_name . ' ' . $subApplication->middle_name . ' ' . $subApplication->surname)];
+                                }
+
+                                // Clean up extra quotes/spaces
+                                $formattedNames = array_map(function($name) {
+                                    return preg_replace('/\s+/', ' ', trim($name, "\" \t\n\r\0\x0B"));
+                                }, $names);
+                            @endphp
+
+                            @if (count($formattedNames) > 1)
+                                <span>{{ $formattedNames[0] }}</span>
+                                <i class="fas fa-info-circle text-primary"
+                                   style="cursor: pointer;"
+                                   data-bs-toggle="tooltip"
+                                   title="Click to view all names"
+                                   onclick="showNames('{{ implode(', ', $formattedNames) }}')">
+                                </i>
+                            @else
+                                <span>{{ $formattedNames[0] }}</span>
+                            @endif
+                        </td>
+
+                        <script>
+                            function showNames(names) {
+                                Swal.fire({
+                                    title: 'All Multiple Owner Names',
+                                    html: names.split(',').map(name => `<p>${name.trim().replace(/\s+/g, ' ')}</p>`).join(''),
+                                    icon: 'info',
+                                    confirmButtonText: 'Close'
+                                });
+                            }
+                        </script>
                         <td>{{ $subApplication->phone_number }}</td>
+                        <td>{{ $subApplication->planning_recommendation_status }}</td> 
                         <td>{{ $subApplication->application_status }}</td>
                         <td class="relative">
-                           <div class="relative inline-block">
-                            <!-- Dropdown Toggle Button -->
-                           <button onclick="toggleDropdown(this)" class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400">
-                             <i class="material-icons">more_horiz</i>
-                           </button>
-                            <!-- Dropdown Menu -->
-                            <ul class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
-                             <li>
-                              <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
-                              onclick="showDepartmentConfirmation('planningRec')"
-                              data-id="{{ $subApplication->id }}">
-                              <i class="fas fa-clipboard-check text-blue-500 mr-2"></i> Planning Recommendation
-                          </button>
-                            </li>
-                             <li>
-                               <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center text-sm approve-btn" data-id="{{ $subApplication->id }}" data-fileno="{{ $subApplication->fileno }}">
-                                 <i class="material-icons text-success me-2">check_circle</i> Director's Approval
-                               </button>
-                              </li>
-
-                              <li>
-                               <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center text-sm" data-bs-toggle="modal" data-bs-target="#actionsModal{{ $subApplication->id }}" @if($subApplication->application_status != 'Approved') disabled @endif>
-                                 <i class="material-icons text-danger me-2">apps</i> Actions
-                               </button>
-                              </li>
-
-                              <li>
-                               <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center text-sm generate-bill" data-id="{{ $subApplication->id }}" data-main_fileno="{{ $subApplication->main_fileno }}" data-fileno="{{ $subApplication->fileno }}" data-applicant-title="{{ $subApplication->applicant_title }}" data-owner-name="@if ($subApplication->multiple_owners_names){{ $subApplication->multiple_owners_names }}@elseif ($subApplication->corporate_name){{ $subApplication->corporate_name }}@else{{ $subApplication->applicant_title }} {{ $subApplication->first_name }} {{ $subApplication->surname }} {{ $subApplication->middle_name }}@endif" data-plot-house-no="{{ $subApplication->plot_house_no }}" data-plot-street-name="{{ $subApplication->plot_street_name }}" data-owner-district="{{ $subApplication->owner_district }}" data-address="{{ $subApplication->address }}" data-plot_size="{{ $subApplication->plot_size }}" data-land_use="{{ $subApplication->land_use }}" data-approval-date="{{ $subApplication->approval_date }}" @if($subApplication->application_status != 'Approved') disabled @endif>
-                                 <i class="material-icons me-2">receipt</i> Generate Bill
-                               </button>
-                              </li>
-                             
-                              <li>
-                               <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center text-sm" data-bs-toggle="modal" data-bs-target="#certificateModal{{ $subApplication->id }}" @if($subApplication->application_status != 'Approved') disabled @endif>
-                                 <i class="material-icons text-warning me-2">verified</i> Certificate
-                               </button>
-                              </li>
-                              
-                            </ul>
-                           </div>
+                            <div class="relative inline-block">
+                                <!-- Dropdown Toggle Button -->
+                                <button onclick="toggleDropdown(this)" 
+                                    class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400">
+                                    <i class="material-icons">more_horiz</i>
+                                </button>
+                                <!-- Dropdown Menu -->
+                                <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50 text-sm">
+                                    <li>
+                                        <button type="button" 
+                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                            data-id="{{ $subApplication->id }}" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#actionsModal">
+                                            <i class="material-icons text-green-500 mr-3">payments</i>
+                                            <span>Payments</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" 
+                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                            data-id="{{ $subApplication->id }}" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#OtherApprovals">
+                                            <i class="material-icons text-red-500 mr-3">app_registration</i>
+                                            <span>Other Approvals</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" 
+                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                            onclick="showDepartmentConfirmation('planningRec')" 
+                                            data-id="{{ $subApplication->id }}">
+                                            <i class="material-icons text-blue-500 mr-3">assignment</i>
+                                            <span>Planning Recommendation</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" 
+                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center decision-mother-btn"
+                                            data-id="{{ $subApplication->id }}" 
+                                            data-fileno="{{ $subApplication->fileno }}">
+                                            <i class="material-icons text-green-600 mr-3">check_circle</i>
+                                            <span>Director's Approval</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" 
+                                            class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                            data-id="{{ $subApplication->id }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#certificateModal{{ $subApplication->id }}">
+                                            <i class="material-icons text-amber-500 mr-3">description</i>
+                                            <span>Certificate</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
-                     </tr>
-
-
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+                     <div class="modal fade" id="OtherApprovals" tabindex="-1" aria-labelledby="actionsModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" style="max-width:230px;">
+                        <div class="modal-content">
+                            <div class="modal-header" style="height: 30px;">
+                            <h5 class="modal-title" id="actionsModalLabel">Other Approvals</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                            </div>
+                            <div class="modal-body" style="background-color: #f1f1f1;">
+                      
+                            <div>
+                                <div class="button-grid">
+                                <!-- Row 1 -->
+                            <button class="bttn purple-shadow" onclick="showDepartmentConfirmation('lands')">
+                                    Lands
+                                    <i class="material-icons" style="color: #9C27B0;">landscape</i>
+                                </button>
+                                <button class="bttn pink-shadow" onclick="showDepartmentConfirmation('survey')">
+                                    Survey
+                                    <i class="material-icons" style="color: #FF9800;">map</i>
+                                </button>
+                                
+                                <button class="bttn purple-shadow" onclick="showDepartmentConfirmation('deeds')">
+                                    Deeds
+                                    <i class="material-icons" style="color: #15af2f;">gavel</i>
+                                </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+        
+                    
+        
+                   
                      <!-- Planning Recommendation Modal -->
 <div class="modal fade" id="planningRecommendationModal" tabindex="-1" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered">
@@ -262,6 +409,131 @@
        </div>
    </div>
 </div>
+
+
+<div class="modal fade" id="surveyModal" tabindex="-1" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title">Survey Department Approval</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                   aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+               <form id="surveyForm">
+                   <div class="row g-3">
+                       <!-- First row -->
+                       <div class="col-md-6">
+                           <div class="mb-3">
+                               <label class="form-label">Survey By</label>
+                               <input type="text" class="form-control" required>
+                           </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="mb-3">
+                               <label class="form-label">Date</label>
+                               <input type="date" class="form-control" required>
+                           </div>
+                       </div>
+
+                       <!-- Second row -->
+                       <div class="col-md-6">
+                           <div class="mb-3">
+                               <label class="form-label">Approved By</label>
+                               <input type="text" class="form-control" required>
+                           </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="mb-3">
+                               <label class="form-label">Date</label>
+                               <input type="date" class="form-control" required>
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="modal-footer" style="background-color: #f1f1f1;">
+                       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
+                           <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" 
+                               style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
+                               OK
+                               <i class="material-icons" style="color: #4CAF50; font-size: 16px;">check_circle</i>
+                           </button>
+                           <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')"
+                               style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
+                               Edit
+                               <i class="material-icons" style="color: #9E9E9E; font-size: 16px;">edit</i>
+                           </button>
+                           <button type="submit" class="bttn green-shadow"
+                               style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
+                               Submit
+                               <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                           </button>
+                       </div>
+                   </div>
+               </form>
+           </div>
+       </div>
+   </div>
+</div>
+<!-- Deeds Modal -->
+<div class="modal fade" id="deedsModal" tabindex="-1" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title">Deeds</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+               <form id="deedsForm">
+                   <div class="row mb-3">
+                       <div class="col-md-4">
+                           <label class="form-label">Serial No</label>
+                           <input type="text" class="form-control" value="10" disabled>
+                       </div>
+                       <div class="col-md-4">
+                           <label class="form-label">Page No</label>
+                           <input type="text" class="form-control" value="10" disabled>
+                       </div>
+                       <div class="col-md-4">
+                           <label class="form-label">Volume NO</label>
+                           <input type="text" class="form-control" value="1" disabled>
+                       </div>
+                   </div>
+
+                   <div class="row mb-3">
+                       <div class="col-md-6">
+                           <label class="form-label">Deeds Time</label>
+                           <input type="text" class="form-control" value="12:00 PM" disabled>
+                       </div>
+                       <div class="col-md-6">
+                           <label class="form-label">Deeds Date</label>
+                           <input type="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" disabled>
+                       </div>
+                   </div> 
+                   
+                   <div class="modal-footer" style="background-color: #f1f1f1;">
+                       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; width: 100%;">
+                           <button type="button" class="bttn green-shadow" data-bs-dismiss="modal" aria-label="Close"
+                               style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 150px; height: 40px;">
+                               Close
+                               <i class="material-icons" style="color: #c70707; font-size: 16px;">cancel</i>
+                           </button>
+                            
+                           <button type="submit" class="bttn green-shadow"
+                               style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 150px; height: 40px;">
+                               Submit
+                               <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                           </button>
+                       </div>
+                   </div>
+               </form>
+           </div>
+       </div>
+   </div>
+</div>
+
+
+
 <div class="modal fade" id="printModal" tabindex="-1" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered modal-lg">
        <div class="modal-content">
@@ -473,7 +745,206 @@
                         </div>
                       </div>
 
+                      <div class="modal fade" id="financeModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Initial Bill</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="financeForm">
+                                        <!-- Receipt Details Section -->
+                                        <div class="row mb-4">
+                                            <h6>Receipt Details</h6>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="form-label">Receipt No</label>
+                                                    <input type="text" class="form-control" name="receipt_no" value="REC-2025-001" disabled>
+                                                </div>
+                                                <div>
+                                                    <label class="form-label">Date</label>
+                                                    <input type="date" class="form-control" name="receipt_date" value="<?php echo date('Y-m-d'); ?>" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+        
+                                        <!-- Fees Section -->
+                                        <div class="row mb-4">
+                                            <h6>Fees</h6>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="form-label">Application Fee (₦)</label>
+                                                    <input type="number" min="0" step="0.01" class="form-control" name="application_amount" value="10000" disabled>
+                                                </div>
+                                                <div>
+                                                    <label class="form-label">Processing Fee (₦)</label>
+                                                    <input type="number" min="0" step="0.01" class="form-control" name="processing_amount" value="15000" disabled>
+                                                </div>
+                                                <div>
+                                                    <label class="form-label">Site Plan Fee (₦)</label>
+                                                    <input type="number" min="0" step="0.01" class="form-control" name="site_plan_amount" value="20000" disabled>
+                                                </div>
+                                                <div>
+                                                    <label class="form-label">Total Amount (₦)</label>
+                                                    <input type="number" class="form-control" id="totalAmount" value="45000" readonly disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+        
+                                        <!-- Total Amount (Calculated automatically) -->
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label class="form-label">Total Amount (₦)</label>
+                                                <input type="number" class="form-control" id="totalAmount" value="45000" readonly disabled>
+                                            </div>
+                                        </div>       
+        
+                                        <div class="modal-footer" style="background-color: #f1f1f1;">
+                                            <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; width: 100%;">
+                                                <button type="button" class="bttn green-shadow" data-bs-dismiss="modal" aria-label="Close"
+                                                    style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 150px; height: 40px;">
+                                                    Close
+                                                    <i class="material-icons" style="color: #c70707; font-size: 16px;">cancel</i>
+                                                </button>
+                                                 
+                                                <button type="submit" class="bttn green-shadow"
+                                                    style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 8px 12px; width: 150px; height: 40px;">
+                                                    Submit
+                                                    <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+        
+                                    <script>
+                                    document.getElementById('financeForm').addEventListener('input', function(e) {
+                                        if (e.target.type === 'number') {
+                                            calculateTotal();
+                                        }
+                                    });
+        
+                                    function calculateTotal() {
+                                        const applicationAmount = parseFloat(document.querySelector('[name="application_amount"]').value) || 0;
+                                        const processingAmount = parseFloat(document.querySelector('[name="processing_amount"]').value) || 0;
+                                        const sitePlanAmount = parseFloat(document.querySelector('[name="site_plan_amount"]').value) || 0;
+                                        
+                                        const total = applicationAmount + processingAmount + sitePlanAmount;
+                                        document.getElementById('totalAmount').value = total.toFixed(2);
+                                    }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="actionsModal" tabindex="-1" aria-labelledby="actionsModalLabel" aria-hidden="true">
+                     <div class="modal-dialog modal-dialog-centered" style="max-width:210px;">
+                     <div class="modal-content">
+                         <div class="modal-header" style="height: 30px;">
+                         <h5 class="modal-title" id="actionsModalLabel">Payments</h5>
+                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                         </div>
+                         <div class="modal-body" style="background-color: #f1f1f1;">
                    
+                         <div>
+                             <div class="payments-grid">
+                             <!-- Row 1 -->
+                             <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#financeModal"
+                                 onclick="showDepartmentConfirmation('finance')">
+                                 Initiate Bill
+                                 <i class="material-icons" style="color: #4CAF50;">account_balance</i>
+                            
+                           
+                             <button class="bttn pink-shadow"
+                                 data-id="{{ $subApplication->id }}"
+                                 data-fileno="{{ $subApplication->fileno }}"
+                                 data-applicant_title="{{ $subApplication->applicant_title }}"
+                                 data-owner-name="{{ $subApplication->corporate_name ?? $subApplication->multiple_owners_names ?? ($subApplication->first_name . ' ' . $subApplication->middle_name . ' ' . $subApplication->surname) }}"
+                                 data-plot-house-no="{{ $subApplication->plot_house_no }}"
+                                 data-plot-street-name="{{ $subApplication->plot_street_name }}"
+                                 data-owner-district="{{ $subApplication->owner_district }}"
+                                 data-approval-date="{{ $subApplication->approval_date }}"
+                                 data-address="{{ $subApplication->address }}"
+                                 data-plot_size="{{ $subApplication->plot_size }}"
+                                 data-land_use="{{ $subApplication->land_use }}"
+                                 onclick="showDepartmentConfirmation('generateBettermentBill')">
+                                 GEN BETTERMENT FEE
+                                 <i class="material-icons" style="color: #E91E63;">receipt_long</i>
+                             </button>
+                             <button class="bttn blue-shadow" onclick="showDepartmentConfirmation('generateBill')">
+                                 Generate Final Bill
+                                 <i class="material-icons" style="color: #3F51B5;">receipt</i>
+                             </button>
+                             </div>
+                         </div>
+                         </div>
+                     </div>
+                     </div>
+                 </div>
+         
+<div class="modal fade" id="generateBettermentBillModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Betterment Fee Bill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="bettermentPdfViewer" style="width:100%; height:600px;"></div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.7/pdfobject.min.js"></script>
+                <script>
+                    PDFObject.embed("{{ asset('storage/uploads/betterment_bill.pdf') }}", "#bettermentPdfViewer", {
+                        pdfOpenParams: {
+                            zoom: "80" // Set default zoom to 80%
+                        }
+                    });
+                </script>
+            </div>
+
+            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                    Close
+                    <i class="material-icons" style="color: #9E9E9E;">close</i>
+                </button>
+                <button type="button" class="bttn blue-shadow" onclick="printBettermentBill()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                    Print Betterment Bill
+                    <i class="material-icons" style="color: #3F51B5;">print</i>
+                </button>
+            </div>
+
+             
+        </div>
+    </div>
+</div>
+ 
+
+<div class="modal fade" id="generateBillModal" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-xl">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title">Generate Final  Bill</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+               <div id="billContent">
+                   <iframe src="{{ route('sectionaltitling.generate_bill') }}" style="width: 100%; height: 600px;" id="billFrame"></iframe>
+               </div>
+           </div>
+           <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+               <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                   Close
+                   <i class="material-icons" style="color: #9E9E9E;">close</i>
+               </button>
+               <button type="button" class="bttn blue-shadow" onclick="printBill()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                   Print Bill
+                   <i class="material-icons" style="color: #3F51B5;">print</i>
+               </button>
+           </div>
+       </div>
+   </div>
+</div>
 
                      <!-- View TDP Modal -->
                      <div class="modal fade" id="viewTDPModal{{ $subApplication->id }}" tabindex="-1"
@@ -601,71 +1072,60 @@
                            </div>
                         </div>
                      </div>
+ 
 
-                     <!-- Generate Bill Modal -->
-                     <div class="modal fade" id="generateBillModal" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-xl">
-                           <div class="modal-content">
-                              <div class="modal-header">
-                                 <h5 class="modal-title">Generate Bill</h5>
-                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                 <div id="billContent">
-                                    <iframe src="" style="width: 100%; height: 600px;" id="billFrame"></iframe>
-                                 </div>
-                              </div>
-                              <div class="modal-footer">
-                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                 <button type="button" class="btn btn-primary" onclick="printBill()">Print Bill</button>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  @endforeach
-               </tbody>
-            </table>
          </div>
       </div>
    </div>
    <center>
    </center>
-
-   <!-- Global Decision Modal for Sub-Applications -->
-   <div class="modal fade" id="decisionModalSub" tabindex="-1" aria-hidden="true">
+   <div class="modal fade" id="decisionModalMother" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
-         <div class="modal-content">
-            <form id="decisionFormSub">
-               <div class="modal-header">
-                  <h5 class="modal-title">Confirm Decision</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-               </div>
-               <div class="modal-body">
-                  <input type="hidden" name="id" id="decisionSubId">
-                  <div class="mb-3">
-                     <label for="decision" class="form-label">Decision</label>
-                     <select name="decision" id="decision" class="form-control">
-                        <option value="approve" selected>Approve</option>
-                        <option value="decline">Decline</option>
-                     </select>
+          <div class="modal-content">
+              <form id="decisionFormMother">
+                  <div class="modal-header">
+                      <h5 class="modal-title">Director's Approval</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
-                  <div class="mb-3" id="declineReasonGroup" style="display:none;">
-                     <label for="declineReasonSub" class="form-label">Reason For Decline</label>
-                     <textarea class="form-control" id="declineReasonSub" name="comments"></textarea>
-                  </div>
-                  <div class="mb-3">
-                     <label for="approvalDateSub" class="form-label">Approval/Decline Date</label>
-                     <input type="datetime-local" class="form-control" id="approvalDateSub" name="approval_date" required>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Submit Decision</button>
-               </div>
-            </form>
-         </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="decisionMotherId">
+                    <div class="mb-3">
+                        <label class="form-label">Decision</label><br>
+                        <input type="radio" name="decision" value="approve" id="dmmApprove" checked>
+                        <label for="dmmApprove">Approve</label>
+                        <input type="radio" name="decision" value="decline" id="dmmDecline" class="ms-3">
+                        <label for="dmmDecline">Decline</label>
+                    </div>
+                    <div class="mb-3" id="declineReasonMotherGroup" style="display:none;">
+                        <label for="declineReasonMother" class="form-label">Reason For Decline</label>
+                        <textarea class="form-control" id="declineReasonMother" name="comments"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="approvalDateMother" class="form-label">Approval Date</label>
+                        <input type="datetime-local" class="form-control" id="approvalDateMother" name="approval_date" required>
+                    </div>
+
+                    <div class="modal-footer" style="background-color: #f1f1f1;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; width: 100%;">
+                            <button type="button" class="bttn green-shadow" 
+                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px;" data-bs-dismiss="modal">
+                                Cancel
+                                <i class="material-icons" style="color: #d80000; font-size: 16px;">cancel</i>
+                            </button>
+                            <div></div>
+                            <button type="submit" class="bttn green-shadow"
+                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px;">
+                                Submit
+                                <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                 
+              </form>
+          </div>
       </div>
-   </div>
+  </div>
 
    <script>
       // Ensure the event is attached to the select element for decision changes.
@@ -841,7 +1301,7 @@
          });
       });
    </script>
-@endsection
+
 
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -1012,4 +1472,60 @@ function handleSelectChange(value) {
                         $('#architecturalSubmitBtn').prop('disabled', this.value === 'no');
                     });
         
-        </script>
+
+                    $(document).ready(function() {
+                    // Show/hide for main application modal
+                    $('input[name="decision"]').change(function() {
+                        if ($(this).val() === 'decline') {
+                            $('#declineReasonMotherGroup').show();
+                        } else {
+                            $('#declineReasonMotherGroup').hide();
+                        }
+                    });
+                    // Open decision modal for main application when decision-mother-btn is clicked
+                    $('.decision-mother-btn').on('click', function() {
+                        const id = $(this).data('id');
+                        $('#decisionMotherId').val(id);
+                        $('#dmmApprove').prop('checked', true);
+                        $('#declineReasonMotherGroup').hide();
+                        const now = new Date().toISOString().slice(0,16);
+                        $('#approvalDateMother').val(now);
+                        $('#decisionModalMother').modal('show');
+                    });
+                    // Submit decision for main application via AJAX
+                    $('#decisionFormMother').on('submit', function(e) {
+                        e.preventDefault();
+                        const id = $('#decisionMotherId').val();
+                        const decision = $('input[name="decision"]:checked').val();
+                        const approval_date = $('#approvalDateMother').val();
+                        const comments = $('#declineReasonMother').val();
+                        $.ajax({
+                            url: "{{ route('sectionaltitling.decisionMotherApplication') }}",
+                            type: 'POST',
+                            data: {
+                                id: id,
+                                decision: decision,
+                                approval_date: approval_date,
+                                comments: comments,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                $('#decisionModalMother').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: (decision=='approve' ? 'Approved' : 'Declined'),
+                                    text: response.message
+                                }).then(() => { location.reload(); });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: xhr.responseJSON.message || 'An error occurred.'
+                                });
+                            }
+                        });
+                    });
+                });
+            </script>
+@endsection

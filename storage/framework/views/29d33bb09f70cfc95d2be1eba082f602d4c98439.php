@@ -225,81 +225,127 @@
                             <tbody>
                                 <?php $__currentLoopData = $Main_application; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $application): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
-                                        <td>STM-2025-000-<?php echo e($application->id); ?></td>
+                                        <td>STM-2025-000-0<?php echo e($application->id); ?></td>
                                         <td><?php echo e($application->fileno); ?></td>
                                         <td>
-                                            <?php if($application->multiple_owners_names): ?>
-                                                <?php echo e($application->multiple_owners_names); ?>
+                                            <?php
+                                                $multipleOwners = $application->multiple_owners_names;
+                                                $names = [];
 
-                                            <?php elseif($application->corporate_name): ?>
-                                                <?php echo e($application->corporate_name); ?>
+                                                // Try to decode JSON; if it fails, split on commas.
+                                                $decoded = json_decode($multipleOwners, true);
+                                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                                    $names = $decoded;
+                                                } elseif (!empty($multipleOwners)) {
+                                                    $names = explode(',', $multipleOwners);
+                                                } elseif ($application->corporate_name) {
+                                                    $names = [$application->corporate_name];
+                                                } else {
+                                                    $names = [trim($application->first_name . ' ' . $application->middle_name . ' ' . $application->surname)];
+                                                }
 
+                                                // Clean up extra quotes/spaces
+                                                $formattedNames = array_map(function($name) {
+                                                    return preg_replace('/\s+/', ' ', trim($name, "\" \t\n\r\0\x0B"));
+                                                }, $names);
+                                            ?>
+
+                                            <?php if(count($formattedNames) > 1): ?>
+                                                <span><?php echo e($formattedNames[0]); ?></span>
+                                                <i class="fas fa-info-circle text-primary"
+                                                   style="cursor: pointer;"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Click to view all names"
+                                                   onclick="showNames('<?php echo e(implode(', ', $formattedNames)); ?>')">
+                                                </i>
                                             <?php else: ?>
-                                                <?php echo e($application->first_name); ?> <?php echo e($application->middle_name); ?>
-
-                                                <?php echo e($application->surname); ?>
-
+                                                <span><?php echo e($formattedNames[0]); ?></span>
                                             <?php endif; ?>
-
                                         </td>
+
+                                        <script>
+                                            function showNames(names) {
+                                                Swal.fire({
+                                                    title: 'All Multiple Owner Names',
+                                                    html: names.split(',').map(name => `<p>${name.trim().replace(/\s+/g, ' ')}</p>`).join(''),
+                                                    icon: 'info',
+                                                    confirmButtonText: 'Close'
+                                                });
+                                            }
+                                        </script>
                                         <td><?php echo e(\Carbon\Carbon::parse($application->created_at)->format('Y-m-d')); ?></td>
                                          <td><?php echo e($application->planning_recommendation_status); ?></td>
                                          <td><?php echo e($application->application_status); ?></td>
-                                        <td><?php echo e($application->phone_number); ?></td>
+                                        <td>
+                                            <?php
+                                                $phoneNumbers = explode(',', $application->phone_number);
+                                                $formattedPhoneNumbers = array_map(function($phone) {
+                                                    return preg_replace('/(\d{3})(\d{3})(\d{4})/', '$1-$2-$3', preg_replace('/[^0-9]/', '', $phone));
+                                                }, $phoneNumbers);
+                                            ?>
+                                            <?php if(count($formattedPhoneNumbers) > 1): ?>
+                                                <span><?php echo e($formattedPhoneNumbers[0]); ?></span>
+                                                <i class="fas fa-info-circle text-primary" style="cursor: pointer;" data-bs-toggle="tooltip" title="Click to view all phone numbers" onclick="showPhoneNumbers('<?php echo e(implode(', ', $formattedPhoneNumbers)); ?>')"></i>
+                                            <?php else: ?>
+                                                <span><?php echo e($formattedPhoneNumbers[0]); ?></span>
+                                            <?php endif; ?>
+                                        </td>
+
+                                        <script>
+                                            function showPhoneNumbers(phoneNumbers) {
+                                                Swal.fire({
+                                                    title: 'Phone Numbers',
+                                                    html: phoneNumbers.split(',').map(phone => `<p>${phone.trim()}</p>`).join(''),
+                                                    icon: 'info',
+                                                    confirmButtonText: 'Close'
+                                                });
+                                            }
+                                        </script>
                                         <td class="relative">
                                             <div class="relative inline-block">
                                                 <!-- Dropdown Toggle Button -->
                                                 <button onclick="toggleDropdown(this)" class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400">
-                                                    <i class="fas fa-ellipsis-h text-gray-600"></i> <!-- Three Horizontal Dots Icon -->
+                                                    <i class="fas fa-ellipsis-h text-gray-600"></i>
                                                 </button>
-                                        
+                                            
                                                 <!-- Dropdown Menu -->
                                                 <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
-
-                                                      <!-- New Planning Recommendation Item -->
-                                                      <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center open-actions-modal"
+                                                    <li>
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#actionsModal">
-                                                            <i class="material-icons mr-2" style="color: #4CAF50;">payments</i>
-                                                            Payments
+                                                            <i class="material-icons text-green-500" style="font-size: 18px;">payments</i>
+                                                            <span>Payments</span>
                                                         </button>
-
-                                                        <li>
-                                                            <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center open-OtherApprovals-modal"
-                                                                data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#OtherApprovals">
-                                                                <i class="fas fa-th-large text-red-500 mr-2"></i> 
-                                                                Other Approvals
-                                                            </button>
-                                                        </li>
-
-
                                                     </li>
-
-                                                      <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                                    <li>
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                                                            data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#OtherApprovals">
+                                                            <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
+                                                            <span>Other Approvals</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             onclick="showDepartmentConfirmation('planningRec')"
                                                             data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-clipboard-check text-blue-500 mr-2"></i> Planning Recommendation
+                                                            <i class="fas fa-clipboard-check text-blue-500" style="width: 18px;"></i>
+                                                            <span>Planning Recommendation</span>
                                                         </button>
                                                     </li>
-
                                                     <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center decision-mother-btn"
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2 decision-mother-btn"
                                                             data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-check-circle text-green-500 mr-2"></i> Director's Approval
+                                                            <i class="fas fa-check-circle text-green-500" style="width: 18px;"></i>
+                                                            <span>Director's Approval</span>
                                                         </button>
                                                     </li>
-                                                    
-                                                  
-                                        
-                                                    
                                                     <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-th-large text-red-500 mr-2"></i> E-Registry
+                                                            <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
+                                                            <span>E-Registry</span>
                                                         </button>
                                                     </li>
-
                                                     <?php if($application->application_status == 'Approved'): ?>
                                                         <li>
                                                             <a href="<?php echo e(route('sectionaltitling.sub_application', [
@@ -310,8 +356,9 @@
                                                                         ? $application->multiple_owners_names
                                                                         : $application->first_name . ' ' . $application->middle_name . ' ' . $application->surname),
                                                                 'fileno' => $application->fileno,
-                                                                'passport' => $application->passport,
+                                                                 'passport' => $application->passport,
                                                                 'formID' => $application->id,
+                                                                'NoOfUnits' => $application->NoOfUnits ?? 0,
                                                                 'address' => $application->address,
                                                                 'plot_house_no' => $application->plot_house_no,
                                                                 'plot_plot_no' => $application->plot_plot_no,
@@ -319,21 +366,19 @@
                                                                 'plot_district' => $application->plot_district,
                                                                 'property_location' =>
                                                                     $application->plot_district . ' ' . $application->plot_street_name . ' ' . $application->plot_plot_no,
-                                                            ])); ?>" class="block px-4 py-2 hover:bg-gray-100 flex items-center">
-                                                                <i class="fas fa-plus-square text-green-500 mr-2"></i> Create ST Record
+                                                            ])); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                                                                <i class="fas fa-plus-square text-green-500" style="width: 18px;"></i>
+                                                                <span>Create ST Record</span>
                                                             </a>
                                                         </li>
                                                     <?php else: ?>
                                                         <li class="opacity-50 cursor-not-allowed">
-                                                            <a href="#" class="block px-4 py-2 flex items-center">
-                                                                <i class="fas fa-plus-square text-gray-500 mr-2"></i> Create ST Record (Disabled)
+                                                            <a href="#" class="block w-full text-left px-4 py-2 flex items-center space-x-2">
+                                                                <i class="fas fa-plus-square text-gray-500" style="width: 18px;"></i>
+                                                                <span>Create ST Record (Disabled)</span>
                                                             </a>
                                                         </li>
                                                     <?php endif; ?>
-                                                    
-                                                    <li>
-                                                         
-                                                    </li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -738,7 +783,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Generate Bill</h5>
+                            <h5 class="modal-title">Generate Final  Bill</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">

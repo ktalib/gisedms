@@ -1853,4 +1853,52 @@ if (!function_exists('authPage')) {
 
         return $createdTemplates;
     }
-}
+    
+
+    if (!function_exists('generateSTFileNumber')) {
+        function generateSTFileNumber($prefix, $year = null)
+        {
+            // Validate the prefix to ensure it's one of the allowed values
+            $allowedPrefixes = ['ST-COM', 'ST-RES', 'ST-IND'];
+            if (!in_array($prefix, $allowedPrefixes)) {
+                throw new InvalidArgumentException("Invalid prefix provided.");
+            }
+
+             
+            $year = $year ?? date('Y');
+
+            // Fetch the last serial number for the given prefix and year
+            $lastFile = DB::table('st_files')
+                ->where('prefix', $prefix)
+                ->where('year', $year)
+                ->orderBy('serial_number', 'desc')
+                ->first();
+
+            // Determine the next serial number
+            $nextSerialNumber = $lastFile ? intval($lastFile->serial_number) + 1 : 1;
+
+            // Format the serial number with leading zeros 
+            $formattedSerialNumber = str_pad($nextSerialNumber, 2, '0', STR_PAD_LEFT);
+
+            // Generate the full file number
+            $fullFileNumber = "{$prefix}-{$year}-{$formattedSerialNumber}";
+
+            // Save the new file number to the database
+            DB::table('st_files')->insert([
+                'prefix' => $prefix,
+                'year' => $year,
+                'serial_number' => $nextSerialNumber,
+                'file_number' => $fullFileNumber,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            return $fullFileNumber;
+        }
+    }
+
+
+    }
+
+
+

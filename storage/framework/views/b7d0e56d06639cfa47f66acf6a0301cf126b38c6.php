@@ -101,10 +101,32 @@
                                 <p><strong>Owner Name:</strong> <span id="mainApplicationOwner" class="ml-2"></span></p>
                                 <p><strong>File Number:</strong> <span id="fileNo" class="ml-2"></span></p>
                                 <p><strong>Form ID:</strong> <span id="formId" class="ml-2"></span></p>
-                                <p><strong>Property Location:</strong> <span id="propertyLocation" class="ml-2"></span></p>
+                                <p><strong>Property Location:</strong> <span id="propertyLocation" class="ml-2"></span></p> 
+                                <p><strong>Number of Units:</strong> <span id="mainApplicationNoOfUnits" class="ml-2"></span></p>
+                                <?php
+                                    $mainApplicationId = request()->get('application_id');
+                                    // Fetch the number of units from the mother_applications table
+                                    $motherApplication = DB::connection('sqlsrv')->table('mother_applications')->where('id', $mainApplicationId)->first();
+                                    $totalUnitsInMotherApp = $motherApplication ? $motherApplication->NoOfUnits : 0;
+
+                                    // Count the number of sub-applications linked to the main application
+                                    $totalSubApplications = DB::connection('sqlsrv')->table('subapplications')->where('main_application_id', $mainApplicationId)->count();
+
+                                    // Calculate the remaining units
+                                    $remainingUnits = $totalUnitsInMotherApp - $totalSubApplications;
+                                ?>
+                                 
+                                <p>
+                                    <strong>Remaining Units:</strong>
+                                    <span class="ml-2 font-semibold text-green-500">
+                                        <?php echo e($remainingUnits); ?>
+
+                                    </span>
+                                </p>
                             </div>
                         </div>
-                    </div>
+                      
+                     </div>
                     
                     
 
@@ -155,6 +177,10 @@
                                         class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
                                         disabled>
                                 </div>
+                                 <!-- Hidden input for Year -->
+                                 <input type="hidden" id="fileYearHidden" name="file_year" value="">
+                                  <!-- Hidden input for Serial Number -->
+                                  <input type="hidden" id="serialNumberHidden" name="serial_number" value="<?php echo e($nextSerialNumber); ?>">
     
                                 <!-- Serial Number -->
                                 <div>
@@ -163,9 +189,10 @@
                                         class="w-full p-2 border border-gray-300 rounded-md" 
                                         placeholder="Enter serial number (e.g. 01)"
                                         oninput="updateFileNumberPreview()"
-                                        pattern="[0-9]{2}"
-                                        maxlength="2">
+                                       
+                                         value="<?php echo e($nextSerialNumber); ?>" disabled>
                                 </div>
+                                
                             </div>
     
                             <!-- Full File Number Preview -->
@@ -174,6 +201,7 @@
                                 <input type="text" id="fileNumberPreview" name="full_file_number" 
                                     class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
                                     disabled>
+                                    <input type="hidden" id="hiddenFileNumber" name="fileno">
                             </div>
                         </div>
                     </div>
@@ -183,6 +211,7 @@
                     document.addEventListener('DOMContentLoaded', function() {
                         const currentYear = new Date().getFullYear();
                         document.getElementById('fileYear').value = currentYear;
+                        document.getElementById('fileYearHidden').value = currentYear; // Set hidden input value
                         updateFileNumberPreview();
                     });
     
@@ -203,6 +232,7 @@
                         if (serial) fullFileNumber += '-' + serial;
     
                         document.getElementById('fileNumberPreview').value = fullFileNumber;
+                        document.getElementById('hiddenFileNumber').value = fullFileNumber;
                     }
     
                     // Add input validation for serial number
@@ -629,6 +659,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if(params.application_id) {
         document.getElementById('mainApplicationId').value = 'STM-2025-000-' + params.application_id;
     } 
+
+    if(params.NoOfUnits) {
+        document.getElementById('mainApplicationNoOfUnits').textContent = params.NoOfUnits;
+    }  
     
     if(params.application_id) {
         document.getElementById('mainApplicationId1').value = params.application_id;
