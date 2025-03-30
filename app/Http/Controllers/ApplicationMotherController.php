@@ -124,14 +124,27 @@ class ApplicationMotherController extends Controller
             'processing_fee' => 'nullable|numeric',
             'site_plan_fee' => 'nullable|numeric',
             'payment_date' => 'nullable',
-            'receipt_number' => 'nullable'
+            'receipt_number' => 'nullable',
+            'address_house_no' => 'nullable|string|max:50',
+            'address_plot_no' => 'nullable|string|max:50',
+            'address_street_name' => 'nullable|string|max:100',
+            'address_district' => 'nullable|string|max:100',
+            'address_lga' => 'nullable|string|max:100',
+            'address_state' => 'nullable|string|max:50',
+            'property_house_no' => 'nullable|string|max:50',
+            'property_plot_no' => 'nullable|string|max:50',
+            'property_street_name' => 'nullable|string|max:100',
+            'property_district' => 'nullable|string|max:100',
+            'property_lga' => 'nullable|string|max:100',
+            'property_state' => 'nullable|string|max:50',
+            'residential_type' => 'nullable|string|max:50',
+            'house_number' => 'nullable|string|max:50',
+            'floor_number' => 'nullable|string|max:20',
+            'ownership_type' => 'nullable|string|max:50',
+            'ownership_type_others_text' => 'nullable|string|max:255'
         ]);
 
-
         $data = $request->except('_token', 'fileNoPrefix', 'fileNumber');
-       // $data['fileno'] = $request->input('fileNoPrefix') . '/' . $request->input('fileNumber');
-
- 
 
         if ($request->hasFile('passport')) {
             $data['passport'] = $request->file('passport')->store('passports', 'public');
@@ -146,7 +159,6 @@ class ApplicationMotherController extends Controller
             $data['multiple_owners_passport'] = json_encode($filePaths);
         }
 
-        // Ensure all array values are JSON-encoded before insertion
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $data[$key] = json_encode($value);

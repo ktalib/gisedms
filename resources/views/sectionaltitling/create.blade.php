@@ -445,7 +445,9 @@ Main Application') }}
 
                     <!-- Contact Information -->
                     <div class="form-section flex-1 space-y-4">
+                        @if(request()->query('landuse') !== 'Residential')
                         <h3 class="section-title">Contact Information</h3>
+                  
                         <div>
                             <label class="block text-sm font-medium text-gray-700">
                                 2.Contact Address <span style="color:red">*</span>
@@ -454,6 +456,11 @@ Main Application') }}
                                 class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="Enter address" >
                         </div>
+                        @endif
+
+                        @if(request()->query('landuse') === 'Residential')
+                        @include('sectionaltitling.partials.contact_address')
+                    @endif
                         <div>
                             <label class="block text-sm font-medium text-gray-700">
                                 3. Phone Number(s) <span style="color:red">*</span>
@@ -518,111 +525,105 @@ Main Application') }}
                             </div>
                         </div>
                     </div>
-                    <div class="form-section">
-                        <h2 class="section-title">No Of Units</h2>
-                        <div>
-
-
-                            <input type="text" id="ownerPlotNo" name="NoOfUnits"
-                                class="w-full p-2 border border-gray-300 rounded-md" placeholder="No Of Units"
-                                oninput="updateOwnerFullAddress()">
+                    @if(request()->query('landuse') !== 'Residential')
+                        <div class="form-section">
+                            <h2 class="section-title">No Of Units</h2>
+                            <div>
+                                <input type="text" name="NoOfUnits"
+                                    class="w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="No Of Units">
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Plot Address -->
-                    <div class="form-section">
-                        <h2 class="section-title">Plot Address</h2>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">House No</label>
-                                    <input type="text" id="plotHouseNo" name="plot_house_no"
-                                        class="w-full p-2 border border-gray-300 rounded-md"
-                                        placeholder="Enter house number" oninput="updatePlotFullAddress()">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Plot No</label>
-                                    <input type="text" id="plotPlotNo" name="plot_plot_no"
-                                        class="w-full p-2 border border-gray-300 rounded-md"
-                                        placeholder="Enter plot number" oninput="updatePlotFullAddress()">
-                                </div>
-
-
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Street Name</label>
-                                    <input type="text" id="plotStreetName" name="plot_street_name"
-                                        class="w-full p-2 border border-gray-300 rounded-md"
-                                        placeholder="Enter street name" oninput="updatePlotFullAddress()">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">District</label>
-                                    <input type="text" id="plotDistrict" name="plot_district"
-                                        class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter district"
-                                        oninput="updatePlotFullAddress()">
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label class="block text-sm font-medium text-gray-700">Full Address</label>
-                                    <input type="text" id="plotFullAddress" name="plot_full_address"
-                                        class="w-full p-2 border border-gray-300 rounded-md" disabled>
+                        <!-- Plot Address -->
+                        <div class="form-section">
+                            <h2 class="section-title">Plot Address</h2>
+                            <div class="bg-gray-50 p-4 rounded-md">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">House No</label>
+                                        <input type="text" id="plotHouseNo" name="plot_house_no"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter house number" oninput="updatePlotFullAddress()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Plot No</label>
+                                        <input type="text" id="plotPlotNo" name="plot_plot_no"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter plot number" oninput="updatePlotFullAddress()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Street Name</label>
+                                        <input type="text" id="plotStreetName" name="plot_street_name"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter street name" oninput="updatePlotFullAddress()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">District</label>
+                                        <input type="text" id="plotDistrict" name="plot_district"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter district" oninput="updatePlotFullAddress()">
+                                    </div>
+                                    <div class="md:col-span-4">
+                                        <label class="block text-sm font-medium text-gray-700">Full Address</label>
+                                        <input type="text" id="plotFullAddress" name="plot_full_address"
+                                            class="w-full p-2 border border-gray-300 rounded-md" disabled>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Owner Address -->
-                    <div class="form-section">
-                        <h2 class="section-title">Owner Address</h2>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">House No</label>
-                                    <input type="text" id="ownerHouseNo" name="owner_house_no"
-                                        class="w-full p-2 border border-gray-300 rounded-md"
-                                        placeholder="Enter house number" oninput="updateOwnerFullAddress()">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Plot No</label>
-                                    <input type="text" id="ownerPlotNo" name="owner_plot_no"
-                                        class="w-full p-2 border border-gray-300 rounded-md"
-                                        placeholder="Enter plot number" oninput="updateOwnerFullAddress()">
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Street Name</label>
-                                    <input type="text" id="ownerStreetName" name="owner_street_name"
-                                        class="w-full p-2 border border-gray-300 rounded-md"
-                                        placeholder="Enter street name" oninput="updateOwnerFullAddress()">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">District</label>
-                                    <input type="text" id="ownerDistrict" name="owner_district"
-                                        class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter district"
-                                        oninput="updateOwnerFullAddress()">
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label class="block text-sm font-medium text-gray-700">Full Address</label>
-                                    <input type="text" id="ownerFullAddress" name="owner_full_address"
-                                        class="w-full p-2 border border-gray-300 rounded-md" disabled>
+                        <!-- Owner Address -->
+                        <div class="form-section">
+                            <h2 class="section-title">Owner Address</h2>
+                            <div class="bg-gray-50 p-4 rounded-md">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">House No</label>
+                                        <input type="text" id="ownerHouseNo" name="owner_house_no"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter house number" oninput="updateOwnerFullAddress()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Plot No</label>
+                                        <input type="text" id="ownerPlotNo" name="owner_plot_no"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter plot number" oninput="updateOwnerFullAddress()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Street Name</label>
+                                        <input type="text" id="ownerStreetName" name="owner_street_name"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter street name" oninput="updateOwnerFullAddress()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">District</label>
+                                        <input type="text" id="ownerDistrict" name="owner_district"
+                                            class="w-full p-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter district" oninput="updateOwnerFullAddress()">
+                                    </div>
+                                    <div class="md:col-span-4">
+                                        <label class="block text-sm font-medium text-gray-700">Full Address</label>
+                                        <input type="text" id="ownerFullAddress" name="owner_full_address"
+                                            class="w-full p-2 border border-gray-300 rounded-md" disabled>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-            
+                    @endif
+<br>
+
                         @if(request()->query('landuse') === 'Residential')
                             @include('sectionaltitling.partials.residential')
                         @endif
-
-                    <!-- Additional Information -->
-                    <div class="form-section">
-                        <h2 class="section-title">Additional Information</h2>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">11. Write any Comment that will assist
-                                in Processing the Application:</label>
-                            <textarea name="comments"
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
-                                placeholder="Enter comment"></textarea>
-                        </div>
-                    </div>
+ <hr>
+ <div class="form-section">
+    <h2 class="section-title">Additional Information</h2>
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Comments</label>
+        <textarea name="comments" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" placeholder="Enter any comments"></textarea>
+    </div>
+</div>
 
                   
                     <div class="form-section bg-gray-200 shadow-md rounded-md">
@@ -681,7 +682,7 @@ Main Application') }}
                             </div>
                         </div>
                     </div>
-    
+                 
                     <script>
                     // Calculate total amount when any fee input changes
                     document.querySelectorAll('input[type="number"]').forEach(input => {
@@ -803,7 +804,16 @@ Main Application') }}
             });
         });
 
- 
+        // For Residential Type 
+        document.querySelectorAll('input[name="residentialType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const othersInput = document.getElementById('residentialOthersInput');
+                othersInput.disabled = !document.getElementById('residentialOthers').checked;
+                if (othersInput.disabled) {
+                    othersInput.value = '';
+                }
+            });
+        });
     }
 
     // Initialize the handlers when the document loads
