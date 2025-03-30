@@ -23,9 +23,6 @@ class ApplicationMotherController extends Controller
 
     public function subApplication()
     {
-        
-        
-
         // Fetch the last serial number from the subapplications table
         $lastSerialNumber = DB::connection('sqlsrv')->table('dbo.StFileNo')->max('serial_number');
 
@@ -34,7 +31,7 @@ class ApplicationMotherController extends Controller
 
         // Format the next serial number with leading zeros if necessary
         $nextSerialNumber = sprintf('%02d', $nextSerialNumber);
-        return view('sectionaltitling.sub_application' , compact('nextSerialNumber'));
+        return view('sectionaltitling.sub_application', compact('nextSerialNumber'));
     }
 
     public function create()
@@ -56,7 +53,6 @@ class ApplicationMotherController extends Controller
                 'main.multiple_owners_names as main_multiple_owners_names'
             ])
             ->get();
-       
 
         return view('sectionaltitling.sub_applications', compact('subApplications'));
     }
@@ -75,9 +71,6 @@ class ApplicationMotherController extends Controller
     {
         return view('sectionaltitling.AcceptLetter');
     }
-
-
-
 
     public function storeMotherApp(Request $request)
     {
@@ -172,8 +165,6 @@ class ApplicationMotherController extends Controller
 
     public function storeSub(Request $request)
     {
-    
-
         $validatedData = $request->validate([
             'main_application_id' => 'required|integer',
             'applicant_type' => 'required|in:individual,corporate,multiple',
@@ -201,7 +192,7 @@ class ApplicationMotherController extends Controller
             'application_status' => 'required|string|in:pending',
             'comments' => 'nullable|string',
             'approval_date' => 'nullable|date',
-            'planning_recommendation_status' =>  'required|string|in:pending',
+            'planning_recommendation_status' => 'required|string|in:pending',
         ]);
 
         // Insert into StFileNo table
@@ -211,8 +202,6 @@ class ApplicationMotherController extends Controller
             'year' => $request->input('year'),
             'fileno' => $request->input('fileno'),
         ]);
-   
-
 
         if ($request->hasFile('passport')) {
             $validatedData['passport'] = $request->file('passport')->store('sub_applications/passports', 'public');
@@ -275,5 +264,186 @@ class ApplicationMotherController extends Controller
                 ? "Approval has been sent for sectional titling of File Number {$app->fileno}."
                 : "Application has been declined."
         ]);
+    }
+
+    public function planningRecommendation(Request $request)
+    {
+        $id = $request->input('id');
+        $decision = $request->input('decision');
+        $approval_date = date("Y-m-d H:i:s", strtotime(str_replace('T', ' ', $request->input('approval_date'))));
+        $comments = $request->input('comments');
+        $fileno = $request->input('fileno');
+        $owner_name = $request->input('owner_name');
+        $plot_location = $request->input('plot_location');
+        $land_use = $request->input('land_use');
+        $plot_size = $request->input('plot_size');
+
+        $app = DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->first();
+
+        if (!$app) {
+            return response()->json(['message' => 'Application not found.'], 404);
+        }
+
+        $updateData = [
+            'planning_recommendation_status' => $decision == 'approve' ? 'Approved' : 'Declined', 
+            'planning_approval_date' => $approval_date,
+            'planning_officer' => Auth::user()->name, // Store the name of the planning officer
+        ];
+        
+        if ($decision == 'decline') {
+            $updateData['planning_comments'] = $comments;
+        }
+
+        DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update($updateData);
+
+        // Store the planning recommendation for printing
+        $recommendationData = [
+            'application_id' => $id,
+            'fileno' => $fileno,
+            'owner_name' => $owner_name,
+            'plot_location' => $plot_location,
+            'land_use' => $land_use,
+            'plot_size' => $plot_size,
+            'recommendation' => $decision == 'approve' ? 'Approved' : 'Declined',
+            'comments' => $comments,
+            'approved_by' => Auth::user()->name,
+            'approval_date' => $approval_date,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        // Check if the planning_recommendations table exists, if not we can just skip this part
+        try {
+            DB::connection('sqlsrv')->table('dbo.planning_recommendations')->insert($recommendationData);
+        } catch (\Exception $e) {
+            // Table might not exist, continue without error
+        }
+
+        return response()->json([
+            'message' => $decision == 'approve'
+                ? "Planning recommendation has been approved for File Number {$app->fileno}."
+                : "Planning recommendation has been declined.",
+            'data' => $recommendationData
+        ]);
+    }
+
+    public function departmentApproval(Request $request)
+    {
+        $id = $request->input('id');
+        $department = $request->input('department');
+        $action = $request->input('action');
+        $comments = $request->input('comments');
+        $approval_date = date("Y-m-d H:i:s", strtotime(str_replace('T', ' ', $request->input('approval_date'))));
+
+        $app = DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->first();
+
+        if (!$app) {
+            return response()->json(['message' => 'Application not found.'], 404);
+        }
+
+        $updateField = '';
+        $message = '';
+
+        switch ($department) {
+            case 'finance':
+                $updateField = 'finance_status';
+                $message = "Finance approval has been updated";
+                break;
+            case 'survey':
+                $updateField = 'survey_status';
+                $message = "Survey approval has been updated";
+                break;
+            case 'lands':
+                $updateField = 'lands_status';
+                $message = "Lands approval has been updated";
+                break;
+            case 'deeds':
+                $updateField = 'deeds_status';
+                $message = "Deeds approval has been updated";
+                break;
+            default:
+                return response()->json(['message' => 'Invalid department specified.'], 400);
+        }
+
+        $updateData = [
+            $updateField => $action == 'approve' ? 'Approved' : 'Declined',
+            "{$department}_approval_date" => $approval_date
+        ];
+
+        if ($action == 'decline') {
+            $updateData["{$department}_comments"] = $comments;
+        }
+
+        DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update($updateData);
+
+        return response()->json([
+            'message' => $message . " for File Number {$app->fileno}."
+        ]);
+    }
+
+    public function getBillingData($id)
+    {
+        try {
+            $application = DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->first();
+            
+            if (!$application) {
+                \Log::error("getBillingData: Application with ID {$id} not found");
+                return response()->json(['error' => 'Application not found'], 404);
+            }
+            
+            \Log::info("getBillingData: Successfully retrieved data for application ID {$id}");
+            return response()->json([
+                'application_fee' => $application->application_fee,
+                'processing_fee' => $application->processing_fee,
+                'site_plan_fee' => $application->site_plan_fee,
+                'payment_date' => $application->payment_date,
+                'receipt_number' => $application->receipt_number
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("getBillingData: Error retrieving data for application ID {$id}: " . $e->getMessage());
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
+    }
+    
+    public function saveBillingData(Request $request)
+    {
+        try {
+            $request->validate([
+                'application_id' => 'required|integer',
+                'application_fee' => 'nullable|numeric',
+                'processing_fee' => 'nullable|numeric',
+                'site_plan_fee' => 'nullable|numeric',
+                'payment_date' => 'nullable|date',
+                'receipt_number' => 'nullable|string',
+            ]);
+            
+            $id = $request->input('application_id');
+            \Log::info("saveBillingData: Attempting to save billing data for application ID {$id}");
+            
+            $app = DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->first();
+            
+            if (!$app) {
+                \Log::error("saveBillingData: Application with ID {$id} not found");
+                return response()->json(['error' => 'Application not found'], 404);
+            }
+            
+            $updateData = [
+                'application_fee' => $request->input('application_fee'),
+                'processing_fee' => $request->input('processing_fee'),
+                'site_plan_fee' => $request->input('site_plan_fee'),
+                'payment_date' => $request->input('payment_date'),
+                'receipt_number' => $request->input('receipt_number'),
+            ];
+            
+            DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update($updateData);
+            \Log::info("saveBillingData: Successfully saved billing data for application ID {$id}");
+            
+            return response()->json([
+                'message' => "Billing information has been updated for File Number {$app->fileno}."
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("saveBillingData: Error saving data: " . $e->getMessage());
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
     }
 }

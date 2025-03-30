@@ -7,3 +7,12 @@ routes.php
 routes.scanned.php
 schedule-*
 services.json
+sessions
+.php
+*.php
+*.php~
+*.php~
+*.php~  
+view
+*.php
+*.php~

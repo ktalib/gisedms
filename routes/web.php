@@ -397,6 +397,16 @@ Route::post('sectionaltitling/decision-sub', [ApplicationMotherController::class
 Route::post('sectionaltitling/decision-mother', [ApplicationMotherController::class, 'decisionMotherApplication'])
     ->name('sectionaltitling.decisionMotherApplication');
 
+// Sectional Titling routes
+Route::post('/sectional-titling/planning-recommendation', [App\Http\Controllers\ApplicationMotherController::class, 'planningRecommendation'])->name('sectionaltitling.planningRecommendation');
+Route::post('/sectional-titling/department-approval', [App\Http\Controllers\ApplicationMotherController::class, 'departmentApproval'])->name('sectionaltitling.departmentApproval');
+
+Route::get('sectionaltitling/getFinancialData', [App\Http\Controllers\ApplicationMotherController::class, 'getFinancialData'])->name('sectionaltitling.getFinancialData');
+
+// Add these routes in the appropriate section of your web.php file
+Route::get('sectionaltitling/get-billing-data/{id}', [App\Http\Controllers\ApplicationMotherController::class, 'getBillingData'])->name('sectionaltitling.getBillingData');
+Route::post('sectionaltitling/save-billing-data', [App\Http\Controllers\ApplicationMotherController::class, 'saveBillingData'])->name('sectionaltitling.saveBillingData');
+
 Route::get('/propertycard', [PropertyCardController::class, 'index'])->name('propertycard.index');
 Route::get('/propertycard/create', [PropertyCardController::class, 'create'])->name('propertycard.create');
 Route::get('/propertycard/capture', [PropertyCardController::class, 'capture'])->name('propertycard.capture');

@@ -205,7 +205,6 @@
 
 
 
-
                     <div class="card-body">
                         <h5 class="card-title">Sectional Titling Applications</h5>
                         <table id="recordsTable" class="table table-striped dt-responsive nowrap" style="width:100%">
@@ -312,7 +311,7 @@
                                                 <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
                                                     <li>
                                                         <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#actionsModal">
+                                                            data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#actionsModal" onclick="setSelectedApplicationId(<?php echo e($application->id); ?>)">
                                                             <i class="material-icons text-green-500" style="font-size: 18px;">payments</i>
                                                             <span>Payments</span>
                                                         </button>
@@ -407,23 +406,12 @@
                     <div class="payments-grid">
                     <!-- Row 1 -->
                     <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#financeModal"
-                        onclick="showDepartmentConfirmation('finance')">
-                        Initiate Bill
+                        onclick="loadBillingData(selectedApplicationId)" id="initialBillButton">
+                        Initial Bill
                         <i class="material-icons" style="color: #4CAF50;">account_balance</i>
-                   
+                    </button>
                   
-                    <button class="bttn pink-shadow"
-                        data-id="<?php echo e($application->id); ?>"
-                        data-fileno="<?php echo e($application->fileno); ?>"
-                        data-applicant_title="<?php echo e($application->applicant_title); ?>"
-                        data-owner-name="<?php echo e($application->corporate_name ?? $application->multiple_owners_names ?? ($application->first_name . ' ' . $application->middle_name . ' ' . $application->surname)); ?>"
-                        data-plot-house-no="<?php echo e($application->plot_house_no); ?>"
-                        data-plot-street-name="<?php echo e($application->plot_street_name); ?>"
-                        data-owner-district="<?php echo e($application->owner_district); ?>"
-                        data-approval-date="<?php echo e($application->approval_date); ?>"
-                        data-address="<?php echo e($application->address); ?>"
-                        data-plot_size="<?php echo e($application->plot_size); ?>"
-                        data-land_use="<?php echo e($application->land_use); ?>"
+                    <button class="bttn pink-shadow" id="bettermentFeeButton"
                         onclick="showDepartmentConfirmation('generateBettermentBill')">
                         GEN BETTERMENT FEE
                         <i class="material-icons" style="color: #E91E63;">receipt_long</i>
@@ -614,7 +602,7 @@
     </div>
 </div>
 
-            <!-- Department Approval Modals -->
+            <!-- Initial Bill Approval Modals -->
             <div class="modal fade" id="financeModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -625,17 +613,19 @@
                         </div>
                         <div class="modal-body">
                             <form id="financeForm">
+                                <input type="hidden" id="application_id" name="application_id">
+                                <?php echo csrf_field(); ?>
                                 <!-- Receipt Details Section -->
                                 <div class="row mb-4">
                                     <h6>Receipt Details</h6>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="form-label">Receipt No</label>
-                                            <input type="text" class="form-control" name="receipt_no" value="REC-2025-001" disabled>
+                                            <input type="text" class="form-control" name="receipt_number" id="receipt_number">
                                         </div>
                                         <div>
                                             <label class="form-label">Date</label>
-                                            <input type="date" class="form-control" name="receipt_date" value="<?php echo date('Y-m-d'); ?>" disabled>
+                                            <input type="date" class="form-control" name="payment_date" id="payment_date">
                                         </div>
                                     </div>
                                 </div>
@@ -646,19 +636,19 @@
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="form-label">Application Fee (₦)</label>
-                                            <input type="number" min="0" step="0.01" class="form-control" name="application_amount" value="10000" disabled>
+                                            <input type="number" min="0" step="0.01" class="form-control" name="application_fee" id="application_fee">
                                         </div>
                                         <div>
                                             <label class="form-label">Processing Fee (₦)</label>
-                                            <input type="number" min="0" step="0.01" class="form-control" name="processing_amount" value="15000" disabled>
+                                            <input type="number" min="0" step="0.01" class="form-control" name="processing_fee" id="processing_fee">
                                         </div>
                                         <div>
                                             <label class="form-label">Site Plan Fee (₦)</label>
-                                            <input type="number" min="0" step="0.01" class="form-control" name="site_plan_amount" value="20000" disabled>
+                                            <input type="number" min="0" step="0.01" class="form-control" name="site_plan_fee" id="site_plan_fee">
                                         </div>
                                         <div>
                                             <label class="form-label">Total Amount (₦)</label>
-                                            <input type="number" class="form-control" id="totalAmount" value="45000" readonly disabled>
+                                            <input type="number" class="form-control" id="totalAmount" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -667,7 +657,7 @@
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Total Amount (₦)</label>
-                                        <input type="number" class="form-control" id="totalAmount" value="45000" readonly disabled>
+                                        <input type="number" class="form-control" id="totalAmountDisplay" readonly>
                                     </div>
                                 </div>       
 
@@ -680,7 +670,7 @@
                                         </button>
                                          
                                         <button type="submit" class="bttn green-shadow"
-                                            style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 8px 12px; width: 150px; height: 40px;">
+                                            style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 8px; padding: 8px 12px; width: 150px; height: 40px;">
                                             Submit
                                             <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
                                         </button>
@@ -688,7 +678,8 @@
                                 </div>
                             </form>
 
-                            <script>
+                     <script>
+                            // Calculate total on input change
                             document.getElementById('financeForm').addEventListener('input', function(e) {
                                 if (e.target.type === 'number') {
                                     calculateTotal();
@@ -696,14 +687,112 @@
                             });
 
                             function calculateTotal() {
-                                const applicationAmount = parseFloat(document.querySelector('[name="application_amount"]').value) || 0;
-                                const processingAmount = parseFloat(document.querySelector('[name="processing_amount"]').value) || 0;
-                                const sitePlanAmount = parseFloat(document.querySelector('[name="site_plan_amount"]').value) || 0;
+                                const applicationAmount = parseFloat(document.getElementById('application_fee').value) || 0;
+                                const processingAmount = parseFloat(document.getElementById('processing_fee').value) || 0;
+                                const sitePlanAmount = parseFloat(document.getElementById('site_plan_fee').value) || 0;
                                 
                                 const total = applicationAmount + processingAmount + sitePlanAmount;
                                 document.getElementById('totalAmount').value = total.toFixed(2);
+                                document.getElementById('totalAmountDisplay').value = total.toFixed(2);
                             }
-                            </script>
+
+                            // Load billing data function
+                            function loadBillingData(applicationId) {
+                                console.log('Loading billing data for application ID:', applicationId);
+                                document.getElementById('application_id').value = applicationId;
+                                
+                                // Show loading state
+                                const inputs = document.querySelectorAll('#financeForm input:not([type="hidden"]):not([name="_token"])');
+                                inputs.forEach(input => {
+                                    input.value = 'Loading...';
+                                    if (input.type === 'number') input.value = '';
+                                });
+                                
+                                // Use relative URL with the route name
+                                fetch(`<?php echo e(url('/')); ?>/sectionaltitling/get-billing-data/${applicationId}`)
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error(`HTTP error! Status: ${response.status}`);
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        console.log('Received billing data:', data);
+                                        // Populate form fields with the retrieved data
+                                        document.getElementById('receipt_number').value = data.receipt_number || '';
+                                        document.getElementById('payment_date').value = data.payment_date ? new Date(data.payment_date).toISOString().split('T')[0] : '';
+                                        document.getElementById('application_fee').value = data.application_fee || '';
+                                        document.getElementById('processing_fee').value = data.processing_fee || '';
+                                        document.getElementById('site_plan_fee').value = data.site_plan_fee || '';
+                                        calculateTotal();
+                                    })
+                                    .catch(error => {
+                                        console.error('Error fetching billing data:', error);
+                                        // Clear loading state
+                                        inputs.forEach(input => {
+                                            input.value = '';
+                                        });
+                                        
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: `Failed to load billing data. Error: ${error.message}`
+                                        });
+                                    });
+                            }
+
+                            // Function to show department confirmation - required by other parts of the code
+                            function showDepartmentConfirmation(department) {
+                                if (department === 'planningRec') {
+                                    $('#planningRecommendationModal').modal('show');
+                                    return;
+                                }
+                                $(`#${department}Modal`).modal('show'); // Ensure the modal ID matches
+                            }
+
+                            // Handle form submission
+                            document.getElementById('financeForm').addEventListener('submit', function(e) {
+                                e.preventDefault();
+                                
+                                const formData = new FormData(this);
+                                console.log('Submitting billing data for app ID:', formData.get('application_id'));
+                                
+                                // Use relative URL
+                                fetch('<?php echo e(url('/')); ?>/sectionaltitling/save-billing-data', {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                                    }
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! Status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log('Billing data saved successfully:', data);
+                                    $('#financeModal').modal('hide');
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: data.message
+                                    }).then(() => {
+                                        // Reload page to show updated data
+                                        window.location.reload();
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error saving billing data:', error);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: `Failed to save billing data. Error: ${error.message}`
+                                    });
+                                });
+                            });
+                    </script>
                         </div>
                     </div>
                 </div>
@@ -1361,6 +1450,78 @@
                                     });
                                 });
                             });
+</script>
+
+<script>
+    // Global variable to store the selected application ID
+    var selectedApplicationId = null;
+
+    // Function to set the selected application ID
+    function setSelectedApplicationId(id) {
+        console.log('Setting selected application ID to:', id);
+        selectedApplicationId = id;
+        
+        // You can also update any other attributes that need the application ID
+        const bettermentFeeButton = document.getElementById('bettermentFeeButton');
+        if (bettermentFeeButton) {
+            bettermentFeeButton.setAttribute('data-id', id);
+        }
+    }
+
+    // Make sure the loadBillingData function uses the correct ID
+    function loadBillingData(applicationId) {
+        console.log('Loading billing data for application ID:', applicationId);
+        if (!applicationId) {
+            console.error('No application ID provided!');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No application ID selected. Please try again.'
+            });
+            return;
+        }
+        
+        document.getElementById('application_id').value = applicationId;
+        
+        // Show loading state
+        const inputs = document.querySelectorAll('#financeForm input:not([type="hidden"]):not([name="_token"])');
+        inputs.forEach(input => {
+            input.value = 'Loading...';
+            if (input.type === 'number') input.value = '';
+        });
+        
+        // Use relative URL with the route name
+        fetch(`<?php echo e(url('/')); ?>/sectionaltitling/get-billing-data/${applicationId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received billing data:', data);
+                // Populate form fields with the retrieved data
+                document.getElementById('receipt_number').value = data.receipt_number || '';
+                document.getElementById('payment_date').value = data.payment_date ? new Date(data.payment_date).toISOString().split('T')[0] : '';
+                document.getElementById('application_fee').value = data.application_fee || '';
+                document.getElementById('processing_fee').value = data.processing_fee || '';
+                document.getElementById('site_plan_fee').value = data.site_plan_fee || '';
+                calculateTotal();
+            })
+            .catch(error => {
+                console.error('Error fetching billing data:', error);
+                // Clear loading state
+                inputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: `Failed to load billing data. Error: ${error.message}`
+                });
+            });
+    }
 </script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\wamp64\www\gisedms\resources\views/sectionaltitling/index.blade.php ENDPATH**/ ?>
