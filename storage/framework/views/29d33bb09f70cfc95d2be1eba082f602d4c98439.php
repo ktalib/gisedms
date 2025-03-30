@@ -193,7 +193,7 @@
 
 
             <div class="d-flex justify-content-between mb-3">
-                <a href="<?php echo e(route('sectionaltitling.create')); ?>" class="btn btn-primary">
+                <a href="<?php echo e(route('sectionaltitling.landuse')); ?>" class="btn btn-primary">
                     <i class="fa fa-plus"></i> Create Application
                 </a>
                 <a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>" class="btn btn-secondary">
@@ -359,6 +359,7 @@
                                                                  'passport' => $application->passport,
                                                                 'formID' => $application->id,
                                                                 'NoOfUnits' => $application->NoOfUnits ?? 0,
+                                                                'land_use' => $application->land_use,
                                                                 'address' => $application->address,
                                                                 'plot_house_no' => $application->plot_house_no,
                                                                 'plot_plot_no' => $application->plot_plot_no,

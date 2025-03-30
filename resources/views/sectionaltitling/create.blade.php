@@ -2,7 +2,19 @@
 
 @extends('layouts.app')
 @section('page-title')
-    {{ __('Main Application Form (Mother)') }}
+
+@if(request()->query('landuse') === 'Residential')
+{{__('Application for Sectional Titling Residential 
+Main Application') }}
+
+@elseif(request()->query('landuse') === 'Commercial')
+{{__('Application for Sectional Titling Commercial Main Application') }}
+
+@endif
+
+  
+    
+    
 @endsection
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
@@ -99,7 +111,7 @@
         letter-spacing: 0.05em;
     }
 </style>
-
+  
 @section('content')
     <div class="container py-4">
         <div class="card shadow-sm">
@@ -117,21 +129,14 @@
                 <form method="POST" class="space-y-6" action="{{ route('sectionaltitling.storeMotherApp') }}"
                     enctype="multipart/form-data">
                     @csrf
-                    <div class="form-section">
-                        <h2 class="section-title">Landuse Type</h2>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <label class="block text-sm font-medium text-gray-700">Select Landuse Type</label>
-                            <select name="land_use"
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="" disabled selected>Select Landuse Type</option>
-                                <option value="residential">Residential</option>
-                                <option value="commercial">Commercial</option>
-                                <option value="industrial">Industrial</option>
-
-                            </select>
-                        </div>
-                    </div>
-
+               
+                    @php
+                    $landuse = request()->query('landuse', ''); // Get the landuse value, default empty string
+                    @endphp
+                    
+                    {{-- Store landuse value in hidden input for JavaScript access --}}
+                    <input type="text" id="landuse" value="{{ $landuse }}">
+                 
                     <div class="grid grid-cols-3 gap-2 mb-6">
                         <div>
                             <label for="fileNoPrefix" class="block text-sm font-medium text-gray-700 mb-1">File No
@@ -602,6 +607,10 @@
                             </div>
                         </div>
                     </div>
+            
+                        @if(request()->query('landuse') === 'Residential')
+                            @include('sectionaltitling.partials.residential')
+                        @endif
 
                     <!-- Additional Information -->
                     <div class="form-section">
@@ -609,20 +618,13 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">11. Write any Comment that will assist
                                 in Processing the Application:</label>
-                            <textarea name="additional_comments"
+                            <textarea name="comments"
                                 class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
                                 placeholder="Enter comment"></textarea>
                         </div>
                     </div>
 
-                      <!-- Additional Information -->
-                      <div class="form-section">
-                        <h2 class="section-title">Additional Information</h2>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Comments</label>
-                            <textarea name="comments" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" placeholder="Enter any comments"></textarea>
-                        </div>
-                    </div>
+                  
                     <div class="form-section bg-gray-200 shadow-md rounded-md">
                         <h3 class="section-title bg-gray-700 text-white px-6 py-3 rounded-t-md">Initial Bill</h3>
                         <div class="p-6 space-y-6">
@@ -801,16 +803,7 @@
             });
         });
 
-        // For Residential Type 
-        document.querySelectorAll('input[name="residentialType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const othersInput = document.getElementById('residentialOthersInput');
-                othersInput.disabled = !document.getElementById('residentialOthers').checked;
-                if (othersInput.disabled) {
-                    othersInput.value = '';
-                }
-            });
-        });
+ 
     }
 
     // Initialize the handlers when the document loads

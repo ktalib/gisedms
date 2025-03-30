@@ -163,7 +163,7 @@
                 <tr>
                     
                     <th style="text-transform: none;">Sub Application ID</th>
-                    <th style="text-transform: none;">FileNo</th>
+                    <th style="text-transform: none;">ST FileNo</th>
                     <th style="text-transform: none;">Original Owner</th>
                     <th style="text-transform: none;">Unit Owner Name</th>
                     <th style="text-transform: none;">Phone Number</th>

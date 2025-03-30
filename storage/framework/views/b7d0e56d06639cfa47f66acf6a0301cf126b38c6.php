@@ -161,14 +161,26 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <!-- Prefix Selection -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Prefix Type</label>
-                                    <select id="filePrefix" name="file_prefix" class="w-full p-2 border border-gray-300 rounded-md" oninput="updateFileNumberPreview()">
-                                        <option value="">Select Prefix</option>
-                                        <option value="ST-COM">ST-COM</option>
-                                        <option value="ST-RES">ST-RES</option>
-                                        <option value="ST-IND">ST-IND</option>
-                                    </select>
+                                    <!-- Auto-set prefix based on the land use -->
+                                    <input type="text" id="landUse" value="<?php echo e(request()->get('land_use')); ?>">
+                                    <input type="text" id="filePrefix" name="file_prefix">
                                 </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Get the landUse value (should be set via URL parameters)
+                                        const landUse = document.getElementById('landUse').value.toLowerCase().trim();
+                                        let prefix = '';
+                                        if (landUse === 'commercial') {
+                                            prefix = 'ST-COM';
+                                        } else if (landUse === 'residential') {
+                                            prefix = 'ST-RES';
+                                        } else if (landUse === 'industrial') {
+                                            prefix = 'ST-IND';
+                                        }
+                                        document.getElementById('filePrefix').value = prefix;
+                                        updateFileNumberPreview();
+                                    });
+                                </script>
     
                                 <!-- Year Selection (Current Year) -->
                                 <div>
@@ -179,6 +191,7 @@
                                 </div>
                                  <!-- Hidden input for Year -->
                                  <input type="hidden" id="fileYearHidden" name="file_year" value="">
+                                
                                   <!-- Hidden input for Serial Number -->
                                   <input type="hidden" id="serialNumberHidden" name="serial_number" value="<?php echo e($nextSerialNumber); ?>">
     
@@ -623,21 +636,7 @@
                     </div>
                 </div>
 
-                <script>
-                // Calculate total amount when any fee input changes
-                document.querySelectorAll('input[type="number"]').forEach(input => {
-                    input.addEventListener('input', calculateTotal);
-                });
-
-                function calculateTotal() {
-                    const applicationFee = parseFloat(document.querySelector('input[name="application_fee"]').value) || 0;
-                    const processingFee = parseFloat(document.querySelector('input[name="processing_fee"]').value) || 0;
-                    const sitePlanFee = parseFloat(document.querySelector('input[name="site_plan_fee"]').value) || 0;
-                    
-                    const total = applicationFee + processingFee + sitePlanFee;
-                    document.getElementById('totalAmount').textContent = `₦${total.toFixed(2)}`;
-                }
-                </script>
+             
 
 
                 <!-- Form Actions -->
@@ -677,6 +676,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('mainApplicationNoOfUnits').textContent = params.NoOfUnits;
     }  
     
+    if(params.land_use) {
+        document.getElementById('landUse').value = params.land_use;
+    }
     if(params.application_id) {
         document.getElementById('mainApplicationId1').value = params.application_id;
     }
@@ -725,9 +727,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ownershipInput.value = "Individual Owner";
     }
 });
-</script>
-<?php $__env->stopSection(); ?>
- <script>
+ 
       // Photo upload preview functionality
     function previewPhoto(event) {
         const file = event.target.files[0];
@@ -942,5 +942,21 @@ function updateOwnerFullAddress() {
     function setApplicantType(type) {
         document.getElementById('applicantType').value = type;
     }
-</script>
+
+
+         document.querySelectorAll('input[type="number"]').forEach(input => {
+                    input.addEventListener('input', calculateTotal);
+                });
+
+                function calculateTotal() {
+                    const applicationFee = parseFloat(document.querySelector('input[name="application_fee"]').value) || 0;
+                    const processingFee = parseFloat(document.querySelector('input[name="processing_fee"]').value) || 0;
+                    const sitePlanFee = parseFloat(document.querySelector('input[name="site_plan_fee"]').value) || 0;
+                    
+                    const total = applicationFee + processingFee + sitePlanFee;
+                    document.getElementById('totalAmount').textContent = `₦${total.toFixed(2)}`;
+                }
+    </script>
+
+<?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\wamp64\www\gisedms\resources\views/sectionaltitling/sub_application.blade.php ENDPATH**/ ?>

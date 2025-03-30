@@ -2,8 +2,21 @@
 
 
 <?php $__env->startSection('page-title'); ?>
-    <?php echo e(__('Main Application Form (Mother)')); ?>
 
+<?php if(request()->query('landuse') === 'Residential'): ?>
+<?php echo e(__('Application for Sectional Titling Residential 
+Main Application')); ?>
+
+
+<?php elseif(request()->query('landuse') === 'Commercial'): ?>
+<?php echo e(__('Application for Sectional Titling Commercial Main Application')); ?>
+
+
+<?php endif; ?>
+
+  
+    
+    
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('breadcrumb'); ?>
     <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
@@ -100,7 +113,7 @@
         letter-spacing: 0.05em;
     }
 </style>
-
+  
 <?php $__env->startSection('content'); ?>
     <div class="container py-4">
         <div class="card shadow-sm">
@@ -120,21 +133,16 @@
                 <form method="POST" class="space-y-6" action="<?php echo e(route('sectionaltitling.storeMotherApp')); ?>"
                     enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
-                    <div class="form-section">
-                        <h2 class="section-title">Landuse Type</h2>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <label class="block text-sm font-medium text-gray-700">Select Landuse Type</label>
-                            <select name="land_use"
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="" disabled selected>Select Landuse Type</option>
-                                <option value="residential">Residential</option>
-                                <option value="commercial">Commercial</option>
-                                <option value="industrial">Industrial</option>
-
-                            </select>
-                        </div>
-                    </div>
-
+               
+                    <?php
+                    $landuse = request()->query('landuse', ''); // Get the landuse value, default empty string
+                    ?>
+                    
+                    
+                    <input type="text" id="landuse" value="<?php echo e($landuse); ?>">
+                
+                    
+                    <input type="text" id="landuse" value="<?php echo e($landuse); ?>">
                     <div class="grid grid-cols-3 gap-2 mb-6">
                         <div>
                             <label for="fileNoPrefix" class="block text-sm font-medium text-gray-700 mb-1">File No
@@ -605,6 +613,10 @@
                             </div>
                         </div>
                     </div>
+            
+                        <?php if(request()->query('landuse') === 'Residential'): ?>
+                            <?php echo $__env->make('sectionaltitling.partials.residential', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                        <?php endif; ?>
 
                     <!-- Additional Information -->
                     <div class="form-section">
@@ -612,20 +624,13 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">11. Write any Comment that will assist
                                 in Processing the Application:</label>
-                            <textarea name="additional_comments"
+                            <textarea name="comments"
                                 class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
                                 placeholder="Enter comment"></textarea>
                         </div>
                     </div>
 
-                      <!-- Additional Information -->
-                      <div class="form-section">
-                        <h2 class="section-title">Additional Information</h2>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Comments</label>
-                            <textarea name="comments" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" placeholder="Enter any comments"></textarea>
-                        </div>
-                    </div>
+                  
                     <div class="form-section bg-gray-200 shadow-md rounded-md">
                         <h3 class="section-title bg-gray-700 text-white px-6 py-3 rounded-t-md">Initial Bill</h3>
                         <div class="p-6 space-y-6">
