@@ -363,9 +363,11 @@ Route::post('/instruments/{id}', [InstrumentController::class, 'update'])->name(
 Route::delete('/instruments/{id}', [InstrumentController::class, 'destroy']);
 
 // Application Mother routes
+Route::get('/sectionaltitling', [ApplicationMotherController::class, 'index'])->name('sectionaltitling.index');
+
 
 Route::get('/sectionaltitling/landuse', [ApplicationMotherController::class, 'landuse'])->name('sectionaltitling.landuse'); 
-Route::get('/sectionaltitling', [ApplicationMotherController::class, 'index'])->name('sectionaltitling.index');
+
 Route::get('/sectionaltitling/create', [ApplicationMotherController::class, 'create'])->name('sectionaltitling.create');
 
 Route::get('/sectionaltitling/sub_application', [ApplicationMotherController::class, 'subApplication'])->name('sectionaltitling.sub_application');
