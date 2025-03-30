@@ -127,22 +127,7 @@
                         </div>
                       
                      </div>
-                    
-                    
-
-                    <div class="form-section">
-                        <h2 class="section-title">Landuse Type</h2>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <label class="block text-sm font-medium text-gray-700">Select Landuse Type</label>
-                            <select name="landuse_type" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="" disabled selected>Select Landuse Type</option>
-                                <option value="residential">Residential</option>
-                                <option value="commercial">Commercial</option>
-                                <option value="industrial">Industrial</option>
-    
-                            </select>
-                        </div>
-                    </div>
+                 
 
 
                     <div class="form-section">
@@ -155,8 +140,8 @@
                     </div>
                     <input type="hidden" name="applicant_type" id="applicantType" value="">
                         
-                    <div class="form-section">
-                        <h2 class="section-title">ST File Number</h2>
+                    <div class="form-section" style="display: none;">
+                    
                         <div class="bg-gray-50 p-4 rounded-md">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <!-- Prefix Selection -->
@@ -165,23 +150,7 @@
                                     <input type="text" id="landUse" value="<?php echo e(request()->get('land_use')); ?>">
                                     <input type="text" id="filePrefix" name="file_prefix">
                                 </div>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function() {
-                                        // Get the landUse value (should be set via URL parameters)
-                                        const landUse = document.getElementById('landUse').value.toLowerCase().trim();
-                                        let prefix = '';
-                                        if (landUse === 'commercial') {
-                                            prefix = 'ST-COM';
-                                        } else if (landUse === 'residential') {
-                                            prefix = 'ST-RES';
-                                        } else if (landUse === 'industrial') {
-                                            prefix = 'ST-IND';
-                                        }
-                                        document.getElementById('filePrefix').value = prefix;
-                                        updateFileNumberPreview();
-                                    });
-                                </script>
-    
+                                
                                 <!-- Year Selection (Current Year) -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Year</label>
@@ -220,6 +189,21 @@
                     </div>
     
                     <script>
+                         document.addEventListener('DOMContentLoaded', function() {
+                                        // Get the landUse value (should be set via URL parameters)
+                                        const landUse = document.getElementById('landUse').value.toLowerCase().trim();
+                                        let prefix = '';
+                                        if (landUse === 'commercial') {
+                                            prefix = 'ST-COM';
+                                        } else if (landUse === 'residential') {
+                                            prefix = 'ST-RES';
+                                        } else if (landUse === 'industrial') {
+                                            prefix = 'ST-IND';
+                                        }
+                                        document.getElementById('filePrefix').value = prefix;
+                                        updateFileNumberPreview();
+                                    });
+                                    
                     // Set current year on load
                     document.addEventListener('DOMContentLoaded', function() {
                         const currentYear = new Date().getFullYear();
