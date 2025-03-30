@@ -618,8 +618,86 @@
                         </div>
                     </div>
 
-                    <!-- GROUP 5: OFFICIAL USE ONLY -->
-                    
+                      <!-- Additional Information -->
+                      <div class="form-section">
+                        <h2 class="section-title">Additional Information</h2>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Comments</label>
+                            <textarea name="comments" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" placeholder="Enter any comments"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-section bg-gray-200 shadow-md rounded-md">
+                        <h3 class="section-title bg-gray-700 text-white px-6 py-3 rounded-t-md">Initial Bill</h3>
+                        <div class="p-6 space-y-6">
+                            <!-- Fee Grid Layout -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Application Fee -->
+                                <div class="flex items-center">
+                                    <label class="w-32 text-sm font-medium text-gray-700">Application Fee:</label>
+                                    <input type="number" name="application_fee" 
+                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                        placeholder="Enter amount">
+                                </div>
+    
+                                <!-- Processing Fee -->
+                                <div class="flex items-center">
+                                    <label class="w-32 text-sm font-medium text-gray-700">Processing Fee:</label>
+                                    <input type="number" name="processing_fee" 
+                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                        placeholder="Enter amount">
+                                </div>
+                             
+                                <!-- Site Plan Fee -->
+                                <div class="flex items-center">
+                                    <label class="w-32 text-sm font-medium text-gray-700">Site Plan Fee:</label>
+                                    <input type="number" name="site_plan_fee" 
+                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                        placeholder="Enter amount">
+                                </div>
+    
+                                <!-- Payment Date -->
+                                <div class="flex items-center">
+                                    <label class="w-32 text-sm font-medium text-gray-700">Payment Date:</label>
+                                    <input type="date" name="payment_date" 
+                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
+                            
+                            <!-- Receipt Section -->
+                            <div class="border-t pt-6">
+                                <div class="flex items-center">
+                                    <label class="w-32 text-sm font-medium text-gray-700">Receipt No:</label>
+                                    <input type="text" name="receipt_number" 
+                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+                                        placeholder="Enter receipt number">
+                                </div>
+                            </div>
+    
+                            <!-- Optional: Totals Section -->
+                            <div class="border-t pt-6 mt-6">
+                                <div class="flex justify-end items-center space-x-4">
+                                    <span class="text-sm font-medium text-green-700">Total Amount:</span>
+                                    <span class="text-lg font-bold text-green-700" id="totalAmount">₦0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <script>
+                    // Calculate total amount when any fee input changes
+                    document.querySelectorAll('input[type="number"]').forEach(input => {
+                        input.addEventListener('input', calculateTotal);
+                    });
+    
+                    function calculateTotal() {
+                        const applicationFee = parseFloat(document.querySelector('input[name="application_fee"]').value) || 0;
+                        const processingFee = parseFloat(document.querySelector('input[name="processing_fee"]').value) || 0;
+                        const sitePlanFee = parseFloat(document.querySelector('input[name="site_plan_fee"]').value) || 0;
+                        
+                        const total = applicationFee + processingFee + sitePlanFee;
+                        document.getElementById('totalAmount').textContent = `₦${total.toFixed(2)}`;
+                    }
+                    </script>
 
                     <!-- Form Actions -->
                     <div class="flex justify-end space-x-4">

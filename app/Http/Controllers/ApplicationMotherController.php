@@ -123,7 +123,8 @@ class ApplicationMotherController extends Controller
             'application_fee' => 'nullable|numeric',
             'processing_fee' => 'nullable|numeric',
             'site_plan_fee' => 'nullable|numeric',
-            'payment_date' => 'nullable|date'
+            'payment_date' => 'nullable',
+            'receipt_number' => 'nullable'
         ]);
 
 

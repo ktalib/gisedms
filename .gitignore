@@ -2,6 +2,6 @@
 /.idea
 /.vscode
 /.env
-/bootstrap/cache
-storage/framework/views/
-storage/framework/sessions/
+/bootstrap/cache/
+/storage/framework/views/
+/storage/framework/sessions/
