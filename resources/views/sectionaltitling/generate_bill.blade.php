@@ -41,9 +41,9 @@
         <div class="flex justify-between items-center mb-4 relative z-10">
             <img src="{{ asset('assets/logo/logo1.jpg') }}" alt="Kano State Coat of Arms" class="w-16 h-16 object-contain">
             <div class="text-center mt-20">
-            <h1 class="text-lg font-bold">KANO STATE GEOGRAPHIC INFORMATION SYSTEM (KANGIS)
+            <h1 class="text-lg font-bold">KANO STATE
                 MINISTRY OF LAND AND PHYSICAL PLANNING</h1>
-            <h2 class="text-base font-bold mt-1">KANGIS</h2>
+           
             <h3 class="text-sm font-semibold mt-1">Application for Sectional Titling</h3>
             </div>
             <img src="{{ asset('assets/logo/logo2.jpg') }}" alt="KANGIS Logo" class="w-16 h-16 object-contain">
@@ -51,7 +51,7 @@
 
         <!-- Date -->
         <div class="text-right mb-4">
-            <p>{{ request()->get('approval_date') }}</p>
+            <p>{{ $approval_date ?? now()->format('Y-m-d') }}</p>
         </div>
 
         <!-- Content -->
@@ -71,7 +71,7 @@
                 <p>Landuse: <span class="italic">{{ $land_use ?? '' }}</span></p>
                 <p>Location: <span class="italic">Plot {{ $plot_house_no ?? '' }}, Street {{ $plot_street_name ?? '' }}, {{ $owner_district ?? '' }}</span></p>
                 <p>Approval Date: <span class="italic">{{ $approval_date ?? now()->format('Y-m-d') }}</span></p>
-                <p>is at <span class="italic">[insert total]</span>, see breakdown of cost below.</p>
+                <p>is at <span class="italic">₦{{ number_format($total ?? 0, 2) }} ({{ $total_words ?? '' }})</span>, see breakdown of cost below.</p>
             </div>
             
             <!-- Fee Table -->
@@ -102,17 +102,27 @@
                             </td>
                             <td class="p-1.5 border-r border-black align-top">
                                 <p>&nbsp;</p>
-                                <p>N 20,000.00K</p>
+                                <p>{{ strtolower($land_use ?? '') == 'residential' ? 'N 20,000.00K' : '—' }}</p>
                                 <p>&nbsp;</p>
-                                <p>N 50,000.00K</p>
-                                <p>N 70,000.00K</p>
-                                <p>N 50,000.00</p>
-                                <p>N 30,525.00K</p>
+                                @if(strtolower($land_use ?? '') == 'residential')
+                                    @if(isset($NoOfUnits) && $NoOfUnits > 1)
+                                        <p>N 50,000.00K</p>
+                                        <p>—</p>
+                                    @else
+                                        <p>—</p>
+                                        <p>N 70,000.00K</p>
+                                    @endif
+                                @else
+                                    <p>—</p>
+                                    <p>—</p>
+                                @endif
+                                <p>{{ strtolower($land_use ?? '') == 'residential' ? 'N 50,000.00' : '—' }}</p>
+                                <p>{{ strtolower($land_use ?? '') == 'residential' ? 'N 30,525.00K' : '—' }}</p>
                                 <p>&nbsp;</p>
-                                <p>N 50,000.00K</p>
-                                <p>N 100,000.00K</p>
-                                <p>N 100,000.00K</p>
-                                <p>N 30,525.00K</p>
+                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 50,000.00K' : '—' }}</p>
+                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 100,000.00K' : '—' }}</p>
+                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 100,000.00K' : '—' }}</p>
+                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 30,525.00K' : '—' }}</p>
                             </td>
                             <td class="p-1.5 align-top">
                                 <p>&nbsp;</p>
@@ -128,12 +138,12 @@
                         </tr>
                         <tr class="border-t border-black">
                             <td class="p-1.5 border-r border-black">One year Ground Rent</td>
-                            <td class="p-1.5 border-r border-black">N ________________</td>
+                            <td class="p-1.5 border-r border-black">N {{ number_format($ground_rent ?? 0, 2) }}</td>
                             <td class="p-1.5">N________________</td>
                         </tr>
                         <tr class="border-t border-black">
                             <td colspan="3" class="p-1.5">
-                                <p>TOTAL&nbsp;&nbsp;&nbsp;N _________________________________________</p>
+                                <p>TOTAL&nbsp;&nbsp;&nbsp;₦ {{ number_format($total ?? 0, 2) }} ({{ $total_words ?? '' }})</p>
                             </td>
                         </tr>
                     </tbody>

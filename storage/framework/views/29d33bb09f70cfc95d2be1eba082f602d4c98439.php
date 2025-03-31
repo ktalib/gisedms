@@ -540,10 +540,6 @@
 
             
 
-           
-  
-
-           
 
 <!-- Deeds Modal -->
 <div class="modal fade" id="deedsModal" tabindex="-1" aria-hidden="true">
@@ -603,200 +599,8 @@
 </div>
 
             <!-- Initial Bill Approval Modals -->
-            <div class="modal fade" id="financeModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Initial Bill</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="financeForm">
-                                <input type="hidden" id="application_id" name="application_id">
-                                <?php echo csrf_field(); ?>
-                                <!-- Receipt Details Section -->
-                                <div class="row mb-4">
-                                    <h6>Receipt Details</h6>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="form-label">Receipt No</label>
-                                            <input type="text" class="form-control" name="receipt_number" id="receipt_number">
-                                        </div>
-                                        <div>
-                                            <label class="form-label">Date</label>
-                                            <input type="date" class="form-control" name="payment_date" id="payment_date">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Fees Section -->
-                                <div class="row mb-4">
-                                    <h6>Fees</h6>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="form-label">Application Fee (₦)</label>
-                                            <input type="number" min="0" step="0.01" class="form-control" name="application_fee" id="application_fee">
-                                        </div>
-                                        <div>
-                                            <label class="form-label">Processing Fee (₦)</label>
-                                            <input type="number" min="0" step="0.01" class="form-control" name="processing_fee" id="processing_fee">
-                                        </div>
-                                        <div>
-                                            <label class="form-label">Site Plan Fee (₦)</label>
-                                            <input type="number" min="0" step="0.01" class="form-control" name="site_plan_fee" id="site_plan_fee">
-                                        </div>
-                                        <div>
-                                            <label class="form-label">Total Amount (₦)</label>
-                                            <input type="number" class="form-control" id="totalAmount" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Total Amount (Calculated automatically) -->
-                                <div class="row">
-                                    <div class="col-md-12 mb-3">
-                                        <label class="form-label">Total Amount (₦)</label>
-                                        <input type="number" class="form-control" id="totalAmountDisplay" readonly>
-                                    </div>
-                                </div>       
-
-                                <div class="modal-footer" style="background-color: #f1f1f1;">
-                                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; width: 100%;">
-                                        <button type="button" class="bttn green-shadow" data-bs-dismiss="modal" aria-label="Close"
-                                            style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 150px; height: 40px;">
-                                            Close
-                                            <i class="material-icons" style="color: #c70707; font-size: 16px;">cancel</i>
-                                        </button>
-                                         
-                                        <button type="submit" class="bttn green-shadow"
-                                            style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 8px; padding: 8px 12px; width: 150px; height: 40px;">
-                                            Submit
-                                            <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-
-                     <script>
-                            // Calculate total on input change
-                            document.getElementById('financeForm').addEventListener('input', function(e) {
-                                if (e.target.type === 'number') {
-                                    calculateTotal();
-                                }
-                            });
-
-                            function calculateTotal() {
-                                const applicationAmount = parseFloat(document.getElementById('application_fee').value) || 0;
-                                const processingAmount = parseFloat(document.getElementById('processing_fee').value) || 0;
-                                const sitePlanAmount = parseFloat(document.getElementById('site_plan_fee').value) || 0;
-                                
-                                const total = applicationAmount + processingAmount + sitePlanAmount;
-                                document.getElementById('totalAmount').value = total.toFixed(2);
-                                document.getElementById('totalAmountDisplay').value = total.toFixed(2);
-                            }
-
-                            // Load billing data function
-                            function loadBillingData(applicationId) {
-                                console.log('Loading billing data for application ID:', applicationId);
-                                document.getElementById('application_id').value = applicationId;
-                                
-                                // Show loading state
-                                const inputs = document.querySelectorAll('#financeForm input:not([type="hidden"]):not([name="_token"])');
-                                inputs.forEach(input => {
-                                    input.value = 'Loading...';
-                                    if (input.type === 'number') input.value = '';
-                                });
-                                
-                                // Use relative URL with the route name
-                                fetch(`<?php echo e(url('/')); ?>/sectionaltitling/get-billing-data/${applicationId}`)
-                                    .then(response => {
-                                        if (!response.ok) {
-                                            throw new Error(`HTTP error! Status: ${response.status}`);
-                                        }
-                                        return response.json();
-                                    })
-                                    .then(data => {
-                                        console.log('Received billing data:', data);
-                                        // Populate form fields with the retrieved data
-                                        document.getElementById('receipt_number').value = data.receipt_number || '';
-                                        document.getElementById('payment_date').value = data.payment_date ? new Date(data.payment_date).toISOString().split('T')[0] : '';
-                                        document.getElementById('application_fee').value = data.application_fee || '';
-                                        document.getElementById('processing_fee').value = data.processing_fee || '';
-                                        document.getElementById('site_plan_fee').value = data.site_plan_fee || '';
-                                        calculateTotal();
-                                    })
-                                    .catch(error => {
-                                        console.error('Error fetching billing data:', error);
-                                        // Clear loading state
-                                        inputs.forEach(input => {
-                                            input.value = '';
-                                        });
-                                        
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: `Failed to load billing data. Error: ${error.message}`
-                                        });
-                                    });
-                            }
-
-                            // Function to show department confirmation - required by other parts of the code
-                            function showDepartmentConfirmation(department) {
-                                if (department === 'planningRec') {
-                                    $('#planningRecommendationModal').modal('show');
-                                    return;
-                                }
-                                $(`#${department}Modal`).modal('show'); // Ensure the modal ID matches
-                            }
-
-                            // Handle form submission
-                            document.getElementById('financeForm').addEventListener('submit', function(e) {
-                                e.preventDefault();
-                                
-                                const formData = new FormData(this);
-                                console.log('Submitting billing data for app ID:', formData.get('application_id'));
-                                
-                                // Use relative URL
-                                fetch('<?php echo e(url('/')); ?>/sectionaltitling/save-billing-data', {
-                                    method: 'POST',
-                                    body: formData,
-                                    headers: {
-                                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
-                                    }
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(`HTTP error! Status: ${response.status}`);
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    console.log('Billing data saved successfully:', data);
-                                    $('#financeModal').modal('hide');
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Success',
-                                        text: data.message
-                                    }).then(() => {
-                                        // Reload page to show updated data
-                                        window.location.reload();
-                                    });
-                                })
-                                .catch(error => {
-                                    console.error('Error saving billing data:', error);
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: `Failed to save billing data. Error: ${error.message}`
-                                    });
-                                });
-                            });
-                    </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
+       <?php echo $__env->make('sectionaltitling.partials.initailbill', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <!-- Planning Recommendation Modal -->
 
 
              
@@ -825,7 +629,35 @@
                                         </div>
                                     </div>
 
-                                    <!-- Second row -->
+                                    <!-- Second row - Drawn By -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Drawn By</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Date</label>
+                                            <input type="date" class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <!-- Third row - Checked By -->
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Checked By</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Date</label>
+                                            <input type="date" class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <!-- Fourth row - Approved By -->
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">Approved By</label>
@@ -838,6 +670,12 @@
                                             <input type="date" class="form-control" required>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewSurveyPlanModal">
+                                        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">map</i> View Survey Plan
+                                    </button>
                                 </div>
 
                                 <div class="modal-footer" style="background-color: #f1f1f1;">
@@ -913,7 +751,7 @@
                                         </div>
 
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">FILE NAME</label>
+                                            <label class="form-label">File Name</label>
                                             <input type="text" class="form-control">
                                         </div>
                                     </div>
@@ -964,198 +802,63 @@
             </div>
             
  
-            <!-- jQuery and DataTables JS -->
-            <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-            <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-            <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-            <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-            <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-            <!-- Bootstrap JS -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-            <!-- SweetAlert2 -->
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-                function printBill() {
-                    const iframe = document.getElementById('billFrame');
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
-                }
-
-                $(document).ready(function() {
-                    $('#recordsTable').DataTable({
-                        responsive: true,
-                        pageLength: 30,
-                        lengthMenu: [5, 10, 30, 50, 100],
-                        columnDefs: [{
-                                responsivePriority: 1,
-                                targets: [0, 3, 4]
-                            },
-                            {
-                                responsivePriority: 2,
-                                targets: [1, 2]
-                            }
-                        ]
-                    });
-
-                
-                    $('.generate-bill').on('click', function() {
-                        const applicationId = $(this).data('id');
-                        const fileno = $(this).data('fileno');
-                        const applicantTitle = $(this).data('applicant_title');
-                        const ownerName = $(this).data('owner-name');
-                        const plotHouseNo = $(this).data('plot-house-no');
-                        const plotStreetName = $(this).data('plot-street-name');
-                        const ownerDistrict = $(this).data('owner-district');
-                        const address = $(this).data('address');
-                        const approvalDate = $(this).data('approval-date');
-                        const plotSize = $(this).data('plot_size');
-                        const landUse = $(this).data('land_use');
-
-                        const url = `<?php echo e(route('sectionaltitling.generate_bill')); ?>?id=${applicationId}&fileno=${fileno}&applicant_title=${applicantTitle}&owner_name=${ownerName}&address=${address}&plot_house_no=${plotHouseNo}&plot_street_name=${plotStreetName}&owner_district=${ownerDistrict}&approval_date=${approvalDate}&plot_size=${plotSize}&land_use=${landUse}`;
-                        $('#billFrame').attr('src', url);
-                        $('#generateBillModal').modal('show');
-                    });
-
-                    // Add this inside the existing document.ready function
-                    $('input[name="submit_design"]').change(function() {
-                        $('#architecturalSubmitBtn').prop('disabled', this.value === 'no');
-                    });
-
-                });
-
-                function showDepartmentConfirmation(department) {
-                    if (department === 'planningRec') {
-                        $('#planningRecommendationModal').modal('show');
-                        return;
-                    }
-                    $(`#${department}Modal`).modal('show'); // Ensure the modal ID matches
-                }
-
-                
+       
 
 
-                function toggleDropdown(button) {
-    let menu = button.nextElementSibling;
-    document.querySelectorAll(".action-menu").forEach(m => {
-        if (m !== menu) m.classList.add("hidden");
-    });
-    menu.classList.toggle("hidden");
 
-    // Close dropdown when clicking outside
-    document.addEventListener("click", function (event) {
-        if (!button.contains(event.target) && !menu.contains(event.target)) {
-            menu.classList.add("hidden");
-        }
-    });
-}
 
-            </script>
+    </div>    
+ </div>
+ </div>
+ </div>
 
-            <!-- Global Decision Modal for Main Applications -->
-            <div class="modal fade" id="decisionModalMother" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <form id="decisionFormMother">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Director's Approval</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="id" id="decisionMotherId">
-                                <div class="mb-3">
-                                    <label class="form-label">Decision</label><br>
-                                    <input type="radio" name="decision" value="approve" id="dmmApprove" checked>
-                                    <label for="dmmApprove">Approve</label>
-                                    <input type="radio" name="decision" value="decline" id="dmmDecline" class="ms-3">
-                                    <label for="dmmDecline">Decline</label>
-                                </div>
-                                <div class="mb-3" id="declineReasonMotherGroup" style="display:none;">
-                                    <label for="declineReasonMother" class="form-label">Reason For Decline</label>
-                                    <textarea class="form-control" id="declineReasonMother" name="comments"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="approvalDateMother" class="form-label">Approval Date</label>
-                                    <input type="datetime-local" class="form-control" id="approvalDateMother" name="approval_date" required>
-                                </div>
-                            </div>
-                            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between; padding: 0 20px;">
-                                <button type="button" class="bttn green-shadow" 
-                                    style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" data-bs-dismiss="modal">
-                                    Cancel
-                                    <i class="material-icons" style="color: #d80000; font-size: 16px;">cancel</i>
-                                </button>
-                                <button type="submit" class="bttn green-shadow"
-                                    style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                    Submit
-                                    <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                                </button>
-                            </div>
-                        </form>
+ <div class="modal fade" id="decisionModalMother" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="decisionFormMother">
+                <div class="modal-header">
+                    <h5 class="modal-title">Director's Approval</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="decisionMotherId">
+                    <div class="mb-3">
+                        <label class="form-label">Decision</label><br>
+                        <input type="radio" name="decision" value="approve" id="dmmApprove" checked>
+                        <label for="dmmApprove">Approve</label>
+                        <input type="radio" name="decision" value="decline" id="dmmDecline" class="ms-3">
+                        <label for="dmmDecline">Decline</label>
+                    </div>
+                    <div class="mb-3" id="declineReasonMotherGroup" style="display:none;">
+                        <label for="declineReasonMother" class="form-label">Reason For Decline</label>
+                        <textarea class="form-control" id="declineReasonMother" name="comments"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="approvalDateMother" class="form-label">Approval Date</label>
+                        <input type="datetime-local" class="form-control" id="approvalDateMother" name="approval_date" required>
                     </div>
                 </div>
-            </div>
-
-            <script>
-                $(document).ready(function() {
-                    // Show/hide for main application modal
-                    $('input[name="decision"]').change(function() {
-                        if ($(this).val() === 'decline') {
-                            $('#declineReasonMotherGroup').show();
-                        } else {
-                            $('#declineReasonMotherGroup').hide();
-                        }
-                    });
-                    // Open decision modal for main application when decision-mother-btn is clicked
-                    $('.decision-mother-btn').on('click', function() {
-                        const id = $(this).data('id');
-                        $('#decisionMotherId').val(id);
-                        $('#dmmApprove').prop('checked', true);
-                        $('#declineReasonMotherGroup').hide();
-                        const now = new Date().toISOString().slice(0,16);
-                        $('#approvalDateMother').val(now);
-                        $('#decisionModalMother').modal('show');
-                    });
-                    // Submit decision for main application via AJAX
-                    $('#decisionFormMother').on('submit', function(e) {
-                        e.preventDefault();
-                        const id = $('#decisionMotherId').val();
-                        const decision = $('input[name="decision"]:checked').val();
-                        const approval_date = $('#approvalDateMother').val();
-                        const comments = $('#declineReasonMother').val();
-                        $.ajax({
-                            url: "<?php echo e(route('sectionaltitling.decisionMotherApplication')); ?>",
-                            type: 'POST',
-                            data: {
-                                id: id,
-                                decision: decision,
-                                approval_date: approval_date,
-                                comments: comments,
-                                _token: "<?php echo e(csrf_token()); ?>"
-                            },
-                            success: function(response) {
-                                $('#decisionModalMother').modal('hide');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: (decision=='approve' ? 'Approved' : 'Declined'),
-                                    text: response.message
-                                }).then(() => { location.reload(); });
-                            },
-                            error: function(xhr) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: xhr.responseJSON.message || 'An error occurred.'
-                                });
-                            }
-                        });
-                    });
-                });
-            </script>
-
-    </div>        </div>
+                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between; padding: 0 20px;">
+                    <button type="button" class="bttn green-shadow" 
+                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" data-bs-dismiss="modal">
+                        Cancel
+                        <i class="material-icons" style="color: #d80000; font-size: 16px;">cancel</i>
+                    </button>
+                    <button type="submit" class="bttn green-shadow"
+                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
+                        Submit
+                        <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                    </button>
+                    <button type="button" class="bttn blue-shadow" onclick="$('#decisionModalMother').modal('hide'); $('#generateBillModal').modal('show')"
+                        style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
+                        Final Bill
+                        <i class="material-icons" style="color: #3F51B5; font-size: 16px;">receipt</i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-
+</div>
 <!-- Planning Recommendation Modal -->
 <div class="modal fade" id="planningRecommendationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -1373,7 +1076,155 @@
     </div>
 </div>
 
-<script>
+      <!-- jQuery and DataTables JS -->
+      <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+      <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+      <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+      <!-- Bootstrap JS -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <!-- SweetAlert2 -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script>
+          function printBill() {
+              const iframe = document.getElementById('billFrame');
+              iframe.contentWindow.focus();
+              iframe.contentWindow.print();
+          }
+
+          $(document).ready(function() {
+              $('#recordsTable').DataTable({
+                  responsive: true,
+                  pageLength: 30,
+                  lengthMenu: [5, 10, 30, 50, 100],
+                  columnDefs: [{
+                          responsivePriority: 1,
+                          targets: [0, 3, 4]
+                      },
+                      {
+                          responsivePriority: 2,
+                          targets: [1, 2]
+                      }
+                  ]
+              });
+
+          
+              $('.generate-bill').on('click', function() {
+                  const applicationId = $(this).data('id');
+                  const fileno = $(this).data('fileno');
+                  const applicantTitle = $(this).data('applicant_title');
+                  const ownerName = $(this).data('owner-name');
+                  const plotHouseNo = $(this).data('plot-house-no');
+                  const plotStreetName = $(this).data('plot-street-name');
+                  const ownerDistrict = $(this).data('owner-district');
+                  const address = $(this).data('address');
+                  const approvalDate = $(this).data('approval-date');
+                  const plotSize = $(this).data('plot_size');
+                  const landUse = $(this).data('land_use');
+
+                  // Use the route with ID parameter
+                  const url = "<?php echo e(route('sectionaltitling.generate_bill', '')); ?>/" + applicationId;
+                  $('#billFrame').attr('src', url);
+                  $('#generateBillModal').modal('show');
+              });
+
+              // Add this inside the existing document.ready function
+              $('input[name="submit_design"]').change(function() {
+                  $('#architecturalSubmitBtn').prop('disabled', this.value === 'no');
+              });
+
+          });
+
+          function showDepartmentConfirmation(department) {
+              if (department === 'planningRec') {
+                  $('#planningRecommendationModal').modal('show');
+                  return;
+              }
+              if (department === 'generateBill') {
+                  // Get the selected application ID for the bill
+                  const url = "<?php echo e(route('sectionaltitling.generate_bill', '')); ?>/" + selectedApplicationId;
+                  $('#billFrame').attr('src', url);
+                  $('#generateBillModal').modal('show');
+                  return;
+              }
+              $(`#${department}Modal`).modal('show'); // Ensure the modal ID matches
+          }
+
+          
+
+
+          function toggleDropdown(button) {
+let menu = button.nextElementSibling;
+document.querySelectorAll(".action-menu").forEach(m => {
+  if (m !== menu) m.classList.add("hidden");
+});
+menu.classList.toggle("hidden");
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function (event) {
+  if (!button.contains(event.target) && !menu.contains(event.target)) {
+      menu.classList.add("hidden");
+  }
+});
+}
+
+   
+          $(document).ready(function() {
+              // Show/hide for main application modal
+              $('input[name="decision"]').change(function() {
+                  if ($(this).val() === 'decline') {
+                      $('#declineReasonMotherGroup').show();
+                  } else {
+                      $('#declineReasonMotherGroup').hide();
+                  }
+              });
+              // Open decision modal for main application when decision-mother-btn is clicked
+              $('.decision-mother-btn').on('click', function() {
+                  const id = $(this).data('id');
+                  $('#decisionMotherId').val(id);
+                  $('#dmmApprove').prop('checked', true);
+                  $('#declineReasonMotherGroup').hide();
+                  const now = new Date().toISOString().slice(0,16);
+                  $('#approvalDateMother').val(now);
+                  $('#decisionModalMother').modal('show');
+              });
+              // Submit decision for main application via AJAX
+              $('#decisionFormMother').on('submit', function(e) {
+                  e.preventDefault();
+                  const id = $('#decisionMotherId').val();
+                  const decision = $('input[name="decision"]:checked').val();
+                  const approval_date = $('#approvalDateMother').val();
+                  const comments = $('#declineReasonMother').val();
+                  $.ajax({
+                      url: "<?php echo e(route('sectionaltitling.decisionMotherApplication')); ?>",
+                      type: 'POST',
+                      data: {
+                          id: id,
+                          decision: decision,
+                          approval_date: approval_date,
+                          comments: comments,
+                          _token: "<?php echo e(csrf_token()); ?>"
+                      },
+                      success: function(response) {
+                          $('#decisionModalMother').modal('hide');
+                          Swal.fire({
+                              icon: 'success',
+                              title: (decision=='approve' ? 'Approved' : 'Declined'),
+                              text: response.message
+                          }).then(() => { location.reload(); });
+                      },
+                      error: function(xhr) {
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: xhr.responseJSON.message || 'An error occurred.'
+                          });
+                      }
+                  });
+              });
+          });
+    
     function handleSelectChange(value) {
         if(value === 'architectural') {
             $('#architecturalModal').modal('show');

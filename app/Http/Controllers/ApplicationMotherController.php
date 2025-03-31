@@ -57,14 +57,108 @@ class ApplicationMotherController extends Controller
         return view('sectionaltitling.sub_applications', compact('subApplications'));
     }
 
-    public function GenerateBill(Request $request)
+    public function GenerateBill(Request $request, $id = null)
     {
+        // Use either route parameter or query parameter for ID
+        $id = $id ?? $request->get('id');
+        
+        // Fetch application data from database if ID is provided
+        if ($id) {
+            $application = DB::connection('sqlsrv')
+                ->table('dbo.mother_applications')
+                ->where('id', $id)
+                ->first();
+                
+            if ($application) {
+                // Process owner name based on application type
+                $ownerName = '';
+                if ($application->applicant_type == 'corporate' && $application->corporate_name) {
+                    $ownerName = $application->corporate_name;
+                } elseif ($application->applicant_type == 'multiple' && $application->multiple_owners_names) {
+                    // Try to decode JSON; if it fails, use as a string
+                    $multipleOwners = json_decode($application->multiple_owners_names, true);
+                    $ownerName = is_array($multipleOwners) ? implode(', ', $multipleOwners) : $application->multiple_owners_names;
+                } else {
+                    $ownerName = trim($application->first_name . ' ' . $application->middle_name . ' ' . $application->surname);
+                }
+                
+                // Calculate fees based on land use
+                $processingFee = 0;
+                $surveyFee = 0;
+                $assignmentFee = 0;
+                $billBalance = 30525.00; // Default bill balance
+                $groundRent = 0;
+                
+                if (strtolower($application->land_use) == 'residential') {
+                    $processingFee = 20000.00;
+                    $surveyFee = isset($application->NoOfUnits) && $application->NoOfUnits > 1 ? 50000.00 : 70000.00; // Block of flats or apartment
+                    $assignmentFee = 50000.00;
+                } else { // Commercial or others
+                    $processingFee = 50000.00;
+                    $surveyFee = 100000.00;
+                    $assignmentFee = 100000.00;
+                }
+                
+                // Calculate total
+                $total = $processingFee + $surveyFee + $assignmentFee + $billBalance + $groundRent;
+                
+                // Format date
+                $approvalDate = $request->get('approval_date') ?? 
+                    (isset($application->approval_date) ? date('Y-m-d', strtotime($application->approval_date)) : date('Y-m-d'));
+                
+                // Convert plot size to more readable format if needed
+                $plotSize = $application->plot_size;
+                if (is_numeric($plotSize) && $plotSize > 0) {
+                    // Format plot size (example: convert to square meters notation if needed)
+                    $plotSize = number_format($plotSize, 2) . ' sqm';
+                }
+                
+                // Prepare data for the view
+                $data = [
+                    'id' => $application->id,
+                    'fileno' => $application->fileno,
+                    'applicant_title' => $application->applicant_title,
+                    'owner_name' => $ownerName,
+                    'plot_size' => $plotSize,
+                    'land_use' => $application->land_use,
+                    'plot_house_no' => $application->plot_house_no,
+                    'plot_plot_no' => $application->plot_plot_no,
+                    'plot_street_name' => $application->plot_street_name,
+                    'owner_district' => $application->plot_district,
+                    'address' => $application->address,
+                    'approval_date' => $approvalDate,
+                    'processing_fee' => $processingFee,
+                    'survey_fee' => $surveyFee,
+                    'assignment_fee' => $assignmentFee,
+                    'bill_balance' => $billBalance,
+                    'ground_rent' => $groundRent,
+                    'total' => $total,
+                    'total_words' => $this->numberToWords($total),
+                    'application_type' => $application->applicant_type,
+                ];
+                
+                return view('sectionaltitling.generate_bill', $data);
+            }
+        }
+        
+        // Fallback to request data if no database record found
         $data = $request->only([
-            'id', 'main_fileno', 'fileno', 'applicant_title', 'owner_name', 'plot_house_no',
+            'id', 'fileno', 'applicant_title', 'owner_name', 'plot_house_no',
             'plot_street_name', 'address', 'owner_district', 'approval_date', 'plot_size', 'land_use'
         ]);
-
+        
         return view('sectionaltitling.generate_bill', $data);
+    }
+
+    /**
+     * Convert a number to words
+     * @param float $number The number to convert
+     * @return string The number in words
+     */
+    private function numberToWords($number) 
+    {
+        $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
+        return strtoupper($formatter->format($number) . ' NAIRA ONLY');
     }
 
     public function AcceptLetter()
@@ -261,7 +355,7 @@ class ApplicationMotherController extends Controller
 
         return response()->json([
             'message' => $decision == 'approve'
-                ? "Approval has been sent for sectional titling of File Number {$app->fileno}."
+                ? "Approval has been sent to fragmentation of File Number {$app->fileno}."
                 : "Application has been declined."
         ]);
     }

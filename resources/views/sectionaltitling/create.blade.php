@@ -13,8 +13,7 @@ Main Application') }}
 @endif
 
   
-    
-    
+  
 @endsection
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
@@ -135,12 +134,12 @@ Main Application') }}
                     @endphp
                     
                     {{-- Store landuse value in hidden input for JavaScript access --}}
-                    <input type="text" id="landuse" value="{{ $landuse }}">
+                    <input type="hidden" id="landuse" value="{{ $landuse }}">
                  
                     <div class="grid grid-cols-3 gap-2 mb-6">
                         <div>
                             <label for="fileNoPrefix" class="block text-sm font-medium text-gray-700 mb-1">File No
-                                Prefix</label>
+                                Prefix <span style="color:red">*</span></label>
                             <select id="fileNoPrefix" name="fileNoPrefix"
                                 class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 style="color: black;" onchange="updateFullFileNumber()">
@@ -158,7 +157,7 @@ Main Application') }}
                             </select>
                         </div>
                         <div>
-                            <label for="fileNumber" class="block text-sm font-medium text-gray-700 mb-1">Number</label>
+                            <label for="fileNumber" class="block text-sm font-medium text-gray-700 mb-1">Number <span style="color:red">*</span></label>
                             <input type="text" id="fileNumber" name="fileNumber"
                                 class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 value="" placeholder="Enter file number"
@@ -180,7 +179,7 @@ Main Application') }}
                   
 
                     <div class="form-section">
-                        <h2 class="section-title">Applicant Type</h2>
+                        <h2 class="section-title">Applicant Type <span style="color:red">*</span></h2>
                         <div class="flex gap-4">
                             <button type="button"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700"
@@ -443,56 +442,19 @@ Main Application') }}
             </script>
 
 
-                    <!-- Contact Information -->
-                    <div class="form-section flex-1 space-y-4">
-                        @if(request()->query('landuse') !== 'Residential')
-                        <h3 class="section-title">Contact Information</h3>
+                    
                   
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">
-                                2.Contact Address <span style="color:red">*</span>
-                            </label>
-                            <input type="text" name="address"
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Enter address" >
-                        </div>
-                        @endif
-
-                        @if(request()->query('landuse') === 'Residential')
+                      
+                       
                         @include('sectionaltitling.partials.contact_address')
-                    @endif
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">
-                                3. Phone Number(s) <span style="color:red">*</span>
-                            </label>
-                            <div class="grid grid-cols-3 gap-4">
-                                <input type="text" name="phone_number[]"
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Enter phone number 1 " >
-                                <input type="text" name="phone_number[]"
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Enter phone number 2  (Optional)">
-                                <input type="text" name="phone_number[]"
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Enter phone number 3  (Optional)">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">
-                                4. Email Address <span style="color:red">*</span>
-                            </label>
-                            <input type="text" name="email"
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Enter email address" >
-                        </div>
-                    </div>
-
+                 
+                 
                     <!-- Identification -->
                     <div class="form-section">
                         <h2 class="section-title">Identification</h2>
                         <div>
-                            <h3 class="text-sm font-medium mb-4">5. Tick means of Identification (Attached)</h3>
-                            <div class="grid grid-cols-2 gap-4">
+                            <h3 class="text-sm font-medium mb-4">5. Tick means of Identification (Attached) <span style="color:red">*</span></h3>
+                            <div class="grid grid-cols-4 gap-4">
                                 <label class="flex items-center space-x-3">
                                     <input type="radio" name="identification_type" value="national_id"
                                         class="radio-custom">
@@ -513,21 +475,32 @@ Main Application') }}
                                         class="radio-custom">
                                     <span class="text-sm">D. International Passport</span>
                                 </label>
-                                <div class="col-span-2 flex items-center space-x-3">
+                                <div class="col-span-4 flex items-center space-x-3">
                                     <input type="radio" name="identification_type" value="others" class="radio-custom"
                                         id="identificationOthers"
                                         onchange="toggleOtherInput('identificationOthers', 'identificationOthersInput')">
                                     <span class="text-sm">E. Others (Specify)</span>
                                     <input type="text" id="identificationOthersInput" name="identification_others"
-                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex-1"
-                                        disabled placeholder="Specify other identification">
+                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex-1 hidden"
+                                        placeholder="Specify other identification">
+                                    <script>
+                                        document.getElementById('identificationOthers').addEventListener('change', function() {
+                                            const othersInput = document.getElementById('identificationOthersInput');
+                                            if (this.checked) {
+                                                othersInput.classList.remove('hidden');
+                                            } else {
+                                                othersInput.classList.add('hidden');
+                                                othersInput.value = '';
+                                            }
+                                        });
+                                    </script>
                                 </div>
                             </div>
                         </div>
                     </div>
                     @if(request()->query('landuse') !== 'Residential')
                         <div class="form-section">
-                            <h2 class="section-title">No Of Units</h2>
+                            <h2 class="section-title">No Of Blocks <span style="color:red">*</span></h2>
                             <div>
                                 <input type="text" name="NoOfUnits"
                                     class="w-full p-2 border border-gray-300 rounded-md"
@@ -535,83 +508,76 @@ Main Application') }}
                             </div>
                         </div>
 
-                        <!-- Plot Address -->
-                        <div class="form-section">
-                            <h2 class="section-title">Plot Address</h2>
-                            <div class="bg-gray-50 p-4 rounded-md">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">House No</label>
-                                        <input type="text" id="plotHouseNo" name="plot_house_no"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter house number" oninput="updatePlotFullAddress()">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Plot No</label>
-                                        <input type="text" id="plotPlotNo" name="plot_plot_no"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter plot number" oninput="updatePlotFullAddress()">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Street Name</label>
-                                        <input type="text" id="plotStreetName" name="plot_street_name"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter street name" oninput="updatePlotFullAddress()">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">District</label>
-                                        <input type="text" id="plotDistrict" name="plot_district"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter district" oninput="updatePlotFullAddress()">
-                                    </div>
-                                    <div class="md:col-span-4">
-                                        <label class="block text-sm font-medium text-gray-700">Full Address</label>
-                                        <input type="text" id="plotFullAddress" name="plot_full_address"
-                                            class="w-full p-2 border border-gray-300 rounded-md" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                   
 
-                        <!-- Owner Address -->
-                        <div class="form-section">
-                            <h2 class="section-title">Owner Address</h2>
-                            <div class="bg-gray-50 p-4 rounded-md">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">House No</label>
-                                        <input type="text" id="ownerHouseNo" name="owner_house_no"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter house number" oninput="updateOwnerFullAddress()">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Plot No</label>
-                                        <input type="text" id="ownerPlotNo" name="owner_plot_no"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter plot number" oninput="updateOwnerFullAddress()">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Street Name</label>
-                                        <input type="text" id="ownerStreetName" name="owner_street_name"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter street name" oninput="updateOwnerFullAddress()">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">District</label>
-                                        <input type="text" id="ownerDistrict" name="owner_district"
-                                            class="w-full p-2 border border-gray-300 rounded-md"
-                                            placeholder="Enter district" oninput="updateOwnerFullAddress()">
-                                    </div>
-                                    <div class="md:col-span-4">
-                                        <label class="block text-sm font-medium text-gray-700">Full Address</label>
-                                        <input type="text" id="ownerFullAddress" name="owner_full_address"
-                                            class="w-full p-2 border border-gray-300 rounded-md" disabled>
-                                    </div>
-                                </div>
+                    @endif
+                  <br>
+                    <!-- Types of commercial-->
+                    @if(request()->query('landuse') === 'Commercial')
+                    <div class="form-section">
+                        <h2 class="section-title">Types of Commercial <span style="color:red">*</span></h2>
+                         
+                        <div class="bg-gray-50 p-4 rounded-md  grid grid-cols-4 gap-4">
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="commercial_type" value="Shopping Mall" class="radio-custom commercial-type-radio" required>
+                                <span class="text-sm">Shopping Mall</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="commercial_type" value="Plaza" class="radio-custom commercial-type-radio" required>
+                                <span class="text-sm">Plaza</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="commercial_type" value="Block of Offices" class="radio-custom commercial-type-radio" required>
+                                <span class="text-sm">Block of Offices</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="commercial_type" value="Offices" class="radio-custom commercial-type-radio" required>
+                                <span class="text-sm">Offices</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="commercial_type" value="Shops" class="radio-custom commercial-type-radio" required>
+                                <span class="text-sm">Shops</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="radio" name="commercial_type" value="Others" class="radio-custom" id="commercialTypeOthers" required>
+                                <span class="text-sm">Others</span>
+                            </label>
+                            <div class="col-span-2" id="commercialTypeOthersContainer" style="display: none;">
+                                <input type="text" id="commercialTypeOthersInput" name="commercial_type_others" 
+                                       class="w-full p-2 border border-gray-300 rounded-md" 
+                                       placeholder="Specify other type">
                             </div>
                         </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Get all commercial type radio buttons
+                            const commercialRadios = document.querySelectorAll('input[name="commercial_type"]');
+                            const othersInput = document.getElementById('commercialTypeOthersContainer');
+                            
+                            // Add change event listener to each radio button
+                            commercialRadios.forEach(radio => {
+                                radio.addEventListener('change', function() {
+                                    // Check if the "Others" option is selected
+                                    if (this.id === 'commercialTypeOthers' && this.checked) {
+                                        // Show the others input field
+                                        othersInput.style.display = 'block';
+                                        document.getElementById('commercialTypeOthersInput').required = true;
+                                    } else {
+                                        // Hide the others input field and clear its value
+                                        othersInput.style.display = 'none';
+                                        document.getElementById('commercialTypeOthersInput').value = '';
+                                        document.getElementById('commercialTypeOthersInput').required = false;
+                                    }
+                                });
+                            });
+                        });
+                    </script>
                     @endif
-<br>
+
+                  
+                    <br>
 
                         @if(request()->query('landuse') === 'Residential')
                             @include('sectionaltitling.partials.residential')
@@ -633,7 +599,7 @@ Main Application') }}
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Application Fee -->
                                 <div class="flex items-center">
-                                    <label class="w-32 text-sm font-medium text-gray-700">Application Fee:</label>
+                                    <label class="w-32 text-sm font-medium text-gray-700">Application Fee: <span style="color:red">*</span></label>
                                     <input type="number" name="application_fee" 
                                         class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                                         placeholder="Enter amount">
@@ -641,7 +607,7 @@ Main Application') }}
     
                                 <!-- Processing Fee -->
                                 <div class="flex items-center">
-                                    <label class="w-32 text-sm font-medium text-gray-700">Processing Fee:</label>
+                                    <label class="w-32 text-sm font-medium text-gray-700">Processing Fee: <span style="color:red">*</span></label>
                                     <input type="number" name="processing_fee" 
                                         class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                                         placeholder="Enter amount">
@@ -649,7 +615,7 @@ Main Application') }}
                              
                                 <!-- Site Plan Fee -->
                                 <div class="flex items-center">
-                                    <label class="w-32 text-sm font-medium text-gray-700">Site Plan Fee:</label>
+                                    <label class="w-32 text-sm font-medium text-gray-700">Site Plan Fee: <span style="color:red">*</span></label>
                                     <input type="number" name="site_plan_fee" 
                                         class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                                         placeholder="Enter amount">
@@ -657,21 +623,20 @@ Main Application') }}
     
                                 <!-- Payment Date -->
                                 <div class="flex items-center">
-                                    <label class="w-32 text-sm font-medium text-gray-700">Payment Date:</label>
+                                    <label class="w-32 text-sm font-medium text-gray-700">Payment Date: <span style="color:red">*</span></label>
                                     <input type="date" name="payment_date" 
                                         class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
-                                </div>
-                            </div>
-                            
-                            <!-- Receipt Section -->
-                            <div class="border-t pt-6">
+                                </div> 
+                                
                                 <div class="flex items-center">
-                                    <label class="w-32 text-sm font-medium text-gray-700">Receipt No:</label>
+                                    <label class="w-32 text-sm font-medium text-gray-700">Receipt No: <span style="color:red">*</span></label>
                                     <input type="text" name="receipt_number" 
                                         class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                                         placeholder="Enter receipt number">
                                 </div>
                             </div>
+                            
+                          
     
                             <!-- Optional: Totals Section -->
                             <div class="border-t pt-6 mt-6">

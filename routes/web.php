@@ -372,7 +372,7 @@ Route::get('/sectionaltitling/create', [ApplicationMotherController::class, 'cre
 
 Route::get('/sectionaltitling/sub_application', [ApplicationMotherController::class, 'subApplication'])->name('sectionaltitling.sub_application');
 
- Route:: get('/sectionaltitling/generate_bill', [ApplicationMotherController::class, 'GenerateBill'])->name('sectionaltitling.generate_bill');
+Route:: get('/sectionaltitling/generate_bill/{id?}', [ApplicationMotherController::class, 'GenerateBill'])->name('sectionaltitling.generate_bill');
  
 Route::get('/sectionaltitling/AcceptLetter', [ApplicationMotherController::class, 'AcceptLetter'])
     ->name('sectionaltitling.AcceptLetter');
