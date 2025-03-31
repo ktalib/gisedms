@@ -20,18 +20,44 @@ class ApplicationMotherController extends Controller
 
         return view('sectionaltitling.index', compact('Main_application'));
     }
-
+    
     public function subApplication()
     {
-        // Fetch the last serial number from the subapplications table
-        $lastSerialNumber = DB::connection('sqlsrv')->table('dbo.StFileNo')->max('serial_number');
+        // Get the land use type from the request
+        $landUse = request()->get('land_use');
+        $prefix = '';
 
-        // Determine the next serial number
-        $nextSerialNumber = ($lastSerialNumber !== null) ? intval($lastSerialNumber) + 1 : 1;
+        // Determine the prefix based on land use
+        if (strtolower($landUse) === 'commercial') {
+            $prefix = 'ST-COM';
+        } elseif (strtolower($landUse) === 'residential') {
+            $prefix = 'ST-RES';
+        } elseif (strtolower($landUse) === 'industrial') {
+            $prefix = 'ST-IND';
+        }
 
-        // Format the next serial number with leading zeros if necessary
-        $nextSerialNumber = sprintf('%02d', $nextSerialNumber);
-        return view('sectionaltitling.sub_application', compact('nextSerialNumber'));
+        // Get the current year
+        $currentYear = date('Y');
+
+        // Find the last serial number for this specific prefix and year
+        $lastRecord = DB::connection('sqlsrv')
+            ->table('dbo.StFileNo')
+            ->where('file_prefix', $prefix)
+            ->where('year', $currentYear)
+            ->orderBy('serial_number', 'desc')
+            ->first();
+
+        // Determine the next serial number for this prefix-year combination
+        $nextSerialNumber = 1; // Default to 1 if no previous records
+
+        if ($lastRecord) {
+            $nextSerialNumber = intval($lastRecord->serial_number) + 1;
+        }
+
+        // Format the serial number with leading zeros (e.g., 01, 02, etc.)
+        $formattedSerialNumber = sprintf('%02d', $nextSerialNumber);
+
+        return view('sectionaltitling.sub_application', compact('nextSerialNumber', 'prefix', 'currentYear', 'formattedSerialNumber'));
     }
 
     public function create()
@@ -537,6 +563,51 @@ class ApplicationMotherController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error("saveBillingData: Error saving data: " . $e->getMessage());
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Save E-Registry information for an application
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function saveERegistry(Request $request)
+    {
+        try {
+            $request->validate([
+                'application_id' => 'required|integer',
+                'file_location' => 'nullable|string',
+                'commission_date' => 'nullable|date',
+                'decommission_date' => 'nullable|date',
+            ]);
+            
+            $id = $request->input('application_id');
+            \Log::info("saveERegistry: Attempting to save E-Registry data for application ID {$id}");
+            
+            $app = DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->first();
+            
+            if (!$app) {
+                \Log::error("saveERegistry: Application with ID {$id} not found");
+                return response()->json(['error' => 'Application not found'], 404);
+            }
+            
+            $updateData = [
+                'file_location' => $request->input('file_location'),
+                'file_commission_date' => $request->input('commission_date'),
+                'file_decommission_date' => $request->input('decommission_date'),
+                'updated_at' => now(),
+            ];
+            
+            DB::connection('sqlsrv')->table('dbo.mother_applications')->where('id', $id)->update($updateData);
+            \Log::info("saveERegistry: Successfully saved E-Registry data for application ID {$id}");
+            
+            return response()->json([
+                'message' => "E-Registry information has been updated for File Number {$app->fileno}."
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("saveERegistry: Error saving data: " . $e->getMessage());
             return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
         }
     }

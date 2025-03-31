@@ -142,110 +142,69 @@
                         
                     <div class="form-section" style="display: none;">
                     
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <!-- Prefix Selection -->
-                                <div>
-                                    <!-- Auto-set prefix based on the land use -->
-                                    <input type="text" id="landUse" value="<?php echo e(request()->get('land_use')); ?>">
-                                    <input type="text" id="filePrefix" name="file_prefix">
-                                </div>
-                                
-                                <!-- Year Selection (Current Year) -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Year</label>
-                                    <input type="text" id="fileYear" name="file_year" 
-                                        class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
-                                        disabled>
-                                </div>
-                                 <!-- Hidden input for Year -->
-                                 <input type="hidden" id="fileYearHidden" name="file_year" value="">
-                                
-                                  <!-- Hidden input for Serial Number -->
-                                  <input type="hidden" id="serialNumberHidden" name="serial_number" value="<?php echo e($nextSerialNumber); ?>">
-    
-                                <!-- Serial Number -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Serial Number</label>
-                                    <input type="text" id="serialNumber" name="serial_number" 
-                                        class="w-full p-2 border border-gray-300 rounded-md" 
-                                        placeholder="Enter serial number (e.g. 01)"
-                                        oninput="updateFileNumberPreview()"
-                                       
-                                         value="<?php echo e($nextSerialNumber); ?>" disabled>
-                                </div>
-                                
-                            </div>
-    
-                            <!-- Full File Number Preview -->
-                            <div class="mt-4">
-                                <label class="block text-sm font-medium text-gray-700">Full File Number</label>
-                                <input type="text" id="fileNumberPreview" name="full_file_number" 
-                                    class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
-                                    disabled>
-                                    <input type="hidden" id="hiddenFileNumber" name="fileno">
-                            </div>
-                        </div>
+                     <!-- Replace the existing file prefix, year, and serial number section with this code -->
+<div class="bg-gray-50 p-4 rounded-md">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Prefix Selection -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700">File Prefix</label>
+            <input type="text" id="filePrefix" name="file_prefix" 
+                class="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+                value="<?php echo e($prefix); ?>" readonly>
+            <!-- Hidden input for land use -->
+            <input type="hidden" id="landUse" value="<?php echo e(request()->get('land_use')); ?>">
+        </div>
+        
+        <!-- Year Selection (Current Year) -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Year</label>
+            <input type="text" id="fileYear" 
+                class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
+                value="<?php echo e($currentYear); ?>" readonly>
+            <!-- Hidden input for Year -->
+            <input type="hidden" id="fileYearHidden" name="file_year" value="<?php echo e($currentYear); ?>">
+        </div>
+        
+        <!-- Serial Number -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Serial Number</label>
+            <input type="text" id="serialNumber" 
+            class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
+            value="<?php echo e($formattedSerialNumber); ?>" readonly>
+        
+            <!-- Hidden input for Serial Number -->
+            <input type="text" id="serialNumberHidden" name="serial_number" value="<?php echo e($formattedSerialNumber); ?>">
+        </div>
+    </div>
+
+    <!-- Full File Number Preview -->
+    <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700">Full File Number</label>
+        <input type="text" id="fileNumberPreview" 
+        class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
+        value="<?php echo e($prefix); ?>-<?php echo e($currentYear); ?>-<?php echo e($formattedSerialNumber); ?>" readonly>
+    <input type="hidden" id="hiddenFileNumber" name="fileno" 
+        value="<?php echo e($prefix); ?>-<?php echo e($currentYear); ?>-<?php echo e($formattedSerialNumber); ?>">
+    </div>
+</div>
+
+<script>
+    // No need for the DOM-loaded script for prefix since it's now set server-side
+    // We can keep a simplified version of the script just to ensure the full number is properly formatted
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set the file number preview initially
+        const prefix = document.getElementById('filePrefix').value;
+        const year = document.getElementById('fileYear').value;
+        const serial = document.getElementById('serialNumber').value;
+        
+        const fullFileNumber = `${prefix}-${year}-${serial}`;
+        document.getElementById('fileNumberPreview').value = fullFileNumber;
+        document.getElementById('hiddenFileNumber').value = fullFileNumber;
+    });
+</script>
                     </div>
     
-                    <script>
-                         document.addEventListener('DOMContentLoaded', function() {
-                                        // Get the landUse value (should be set via URL parameters)
-                                        const landUse = document.getElementById('landUse').value.toLowerCase().trim();
-                                        let prefix = '';
-                                        if (landUse === 'commercial') {
-                                            prefix = 'ST-COM';
-                                        } else if (landUse === 'residential') {
-                                            prefix = 'ST-RES';
-                                        } else if (landUse === 'industrial') {
-                                            prefix = 'ST-IND';
-                                        }
-                                        document.getElementById('filePrefix').value = prefix;
-                                        updateFileNumberPreview();
-                                    });
-                                    
-                    // Set current year on load
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const currentYear = new Date().getFullYear();
-                        document.getElementById('fileYear').value = currentYear;
-                        document.getElementById('fileYearHidden').value = currentYear; // Set hidden input value
-                        updateFileNumberPreview();
-                    });
-    
-                    function updateFileNumberPreview() {
-                        const prefix = document.getElementById('filePrefix').value;
-                        const year = document.getElementById('fileYear').value;
-                        let serial = document.getElementById('serialNumber').value;
-    
-                        // Pad serial number with leading zero if needed
-                        if (serial.length === 1) {
-                            serial = '0' + serial;
-                        }
-    
-                        // Update preview in realtime, even if not all fields are filled
-                        let fullFileNumber = '';
-                        if (prefix) fullFileNumber += prefix;
-                        if (year) fullFileNumber += '-' + year;
-                        if (serial) fullFileNumber += '-' + serial;
-    
-                        document.getElementById('fileNumberPreview').value = fullFileNumber;
-                        document.getElementById('hiddenFileNumber').value = fullFileNumber;
-                    }
-    
-                    // Add input validation for serial number
-                    document.getElementById('serialNumber').addEventListener('input', function(e) {
-                        // Remove any non-numeric characters
-                        this.value = this.value.replace(/[^0-9]/g, '');
-                        
-                        // Ensure max length of 2 digits
-                        if (this.value.length > 2) {
-                            this.value = this.value.slice(0, 2);
-                        }
-                        
-                        updateFileNumberPreview();
-                    });
-                    </script>
-    
+                 
              
              <!-- Personal Information -->
              <div class="form-section" id="individualFields" style="display: none;">
@@ -475,22 +434,7 @@
             </script>
 
                 <!-- Contact Information -->
-                <div class="form-section flex-1 space-y-4">
-                    <h2 class="section-title">Contact Information</h2>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Address</label>
-                        <input type="text" name="address" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required placeholder="Enter address">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
-                        <input type="text" name="phone_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required placeholder="Enter phone number">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Email Address</label>
-                        <input type="email" name="email" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required placeholder="Enter email address">
-                    </div>
-                </div>
-
+                <?php echo $__env->make('sectionaltitling.partials.contact_address', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 <!-- Identification -->
                 <div class="form-section">
                     <h2 class="section-title">Identification</h2>
@@ -544,7 +488,7 @@
                         <div>
                            
                         </div>
-                        <div>
+                        <div style="display: none;">
                             <label class="block text-sm font-medium text-gray-700">Ownership Details</label>
                             <p class="text-xs text-gray-500 mb-2">Type of ownership based on application type</p>
                             <input type="text" name="ownership" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-2" readonly>
@@ -591,14 +535,13 @@
                                     class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
                                     placeholder="Enter amount">
                             </div>
-
-                            <!-- Payment Date -->
+                            
                             <div class="flex items-center">
                                 <label class="w-32 text-sm font-medium text-gray-700">Payment Date:</label>
                                 <input type="date" name="payment_date" 
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
                             </div>
-                        </div>
+
                         
                         <!-- Receipt Section -->
                         <div class="border-t pt-6">
@@ -611,7 +554,7 @@
                         </div>
 
                         <!-- Optional: Totals Section -->
-                        <div class="border-t pt-6 mt-6">
+                        <div class="border-t pt-6 mt-4">
                             <div class="flex justify-end items-center space-x-4">
                                 <span class="text-sm font-medium text-green-700">Total Amount:</span>
                                 <span class="text-lg font-bold text-green-700" id="totalAmount">₦0.00</span>

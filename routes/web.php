@@ -30,6 +30,7 @@ use App\Http\Controllers\PropertyCardController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\LegalSearchController;
 use App\Http\Controllers\ResidentialController;
+use App\Http\Controllers\eRegistryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -409,6 +410,9 @@ Route::get('sectionaltitling/getFinancialData', [App\Http\Controllers\Applicatio
 Route::get('sectionaltitling/get-billing-data/{id}', [App\Http\Controllers\ApplicationMotherController::class, 'getBillingData'])->name('sectionaltitling.getBillingData');
 Route::post('sectionaltitling/save-billing-data', [App\Http\Controllers\ApplicationMotherController::class, 'saveBillingData'])->name('sectionaltitling.saveBillingData');
 
+// Add this route in the appropriate section
+Route::post('/sectionaltitling/save-eregistry', [eRegistryController::class, 'saveERegistry'])->name('sectionaltitling.saveERegistry');
+
 Route::get('/propertycard', [PropertyCardController::class, 'index'])->name('propertycard.index');
 Route::get('/propertycard/create', [PropertyCardController::class, 'create'])->name('propertycard.create');
 Route::get('/propertycard/capture', [PropertyCardController::class, 'capture'])->name('propertycard.capture');
@@ -431,5 +435,17 @@ Route::get('sectionaltitling/residential/sub_application', [ResidentialControlle
 Route::get('sectionaltitling/residential/sub_applications', [ResidentialController::class, 'subApplication'])->name('sectionaltitling.residential.sub_applications');
 Route::post('sectionaltitling/residential', [ResidentialController::class, 'storeResMotherApp'])->name('sectionaltitling.residential.store');
 
+
+Route::group(
+    [
+        'middleware' => [
+            'auth',
+            'XSS',
+        ],
+    ],
+    function () {
+        Route::get('record/details/{id}', [RecordController::class, 'show'])->name('record.details');
+    }
+);
 
 Route::impersonate();

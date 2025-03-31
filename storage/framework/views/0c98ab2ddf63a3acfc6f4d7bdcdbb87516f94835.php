@@ -161,22 +161,21 @@
         <table id="subRecordsTable" class="table table-striped dt-responsive nowrap" style="width:100%">
             <thead>
                 <tr>
-                    
-                    <th style="text-transform: none;">Sub Application ID</th>
-                    <th style="text-transform: none;">FileNo</th>
-                    <th style="text-transform: none;">Original Owner</th>
-                    <th style="text-transform: none;">Unit Owner Name</th>
-                    <th style="text-transform: none;">Phone Number</th>
-                    <th style="text-transform: none;">Planning Rec.</th>
-                    <th style="text-transform: none;">Application Status</th>
-                    <th style="text-transform: none;">Actions</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">main Application ID</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">ST FileNo</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">Original Owner</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">Unit Owner Name</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">Phone Number</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">Planning Rec.</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">Application Status</th>
+                    <th style="text-transform: none; background-color: #005f16; color: white;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php $__currentLoopData = $subApplications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subApplication): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr>
                         
-                        <td>STM-2025-0001-0<?php echo e($subApplication->main_application_id); ?></td>
+                        <td>STM-2025-0001-<?php echo e($subApplication->main_application_id); ?></td>
                        <td><?php echo e($subApplication->fileno); ?></td>
                         <td>
                             <?php if($subApplication->main_applicant_type === 'corporate'): ?>
@@ -1097,7 +1096,9 @@
                         <input type="radio" name="decision" value="approve" id="dmmApprove" checked>
                         <label for="dmmApprove">Approve</label>
                         <input type="radio" name="decision" value="decline" id="dmmDecline" class="ms-3">
-                        <label for="dmmDecline">Decline</label>
+                        <label for="dmmDecline">Decline</label> 
+                        <input type="radio" name="decision" value="Pedding" id="dmmDecline" class="ms-3">
+                        <label for="dmmDecline">Pedding</label>
                     </div>
                     <div class="mb-3" id="declineReasonMotherGroup" style="display:none;">
                         <label for="declineReasonMother" class="form-label">Reason For Decline</label>

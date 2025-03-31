@@ -32,7 +32,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-icons@1.13.14/iconfont/material-icons.min.css">
-    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     
     <style>
         body {
@@ -184,7 +186,10 @@
                     align-items: center;
                     justify-content: center;
                     }
-    </style>
+                    th {
+                        font-size: bold;
+                    }
+       </style>
 
     <div class="container mx-auto mt-4 p-4">
 
@@ -192,9 +197,46 @@
 
 
             <div class="d-flex justify-content-between mb-3">
-                <a href="{{ route('sectionaltitling.landuse') }}" class="btn btn-primary">
-                    <i class="fa fa-plus"></i> Create Application
-                </a>
+                
+                <div class="d-flex">
+                    <a href="#" class="btn btn-success me-2" id="createAppBtn">
+                        <i class="fa fa-plus"></i> Create Application
+                    </a>
+
+                    <div class="dropdown d-none ms-2" id="selectLanduseDropdown">
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-plus"></i>Select Landuse Type
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{{ route('sectionaltitling.create') }}?landuse=Residential">
+                                    <i class="fas fa-home me-2" style="color: blue;"></i> Residential
+                                </a>
+                                <a class="dropdown-item" href="{{ route('sectionaltitling.create') }}?landuse=Commercial">
+                                    <i class="fas fa-building me-2" style="color: green;"></i> Commercial
+                                </a>
+                                <a class="dropdown-item" href="{{ route('sectionaltitling.create') }}?landuse=Industrial">
+                                    <i class="fas fa-industry me-2" style="color: orange;"></i> Industrial
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const createAppBtn = document.getElementById('createAppBtn');
+                        const selectLanduseDropdown = document.getElementById('selectLanduseDropdown');
+                        
+                        createAppBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            selectLanduseDropdown.classList.remove('d-none');
+                            selectLanduseDropdown.classList.add('d-inline-block');
+                        });
+                    });
+                </script>
+
+
                 <a href="{{ route('sectionaltitling.sub_applications') }}" class="btn btn-secondary">
                     <i class="fa fa-list"></i> View Sub Applications
                 </a>
@@ -207,17 +249,17 @@
                     <div class="card-body">
                         <h5 class="card-title">Sectional Titling Applications</h5>
                         <table id="recordsTable" class="table table-striped dt-responsive nowrap" style="width:100%">
-                            <thead>
+                            <thead >
                                 <tr>
-                                    <th style="text-transform: none;">Application ID</th>
-                                    <th style="text-transform: none;">File No</th>
-                                    <th style="text-transform: none;">Original Owner Name</th>
-                                    <th style="text-transform: none;">Date</th>
-                                    <th style="text-transform: none;">Planning Rec.</th>
-                                    <th style="text-transform: none;">Application Status</th>
-                                    
-                                    <th style="text-transform: none;">Phone</th>
-                                    <th style="text-transform: none;">Actions</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Application ID</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">File No</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Owner</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Date</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Planning Rec.</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Application Status</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Landuse</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Phone</th>
+                                    <th style="text-transform: none; color: #005f16; text-align: center;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -274,6 +316,7 @@
                                         <td>{{ \Carbon\Carbon::parse($application->created_at)->format('Y-m-d') }}</td>
                                          <td>{{ $application->planning_recommendation_status }}</td>
                                          <td>{{ $application->application_status }}</td>
+                                        <td>{{ $application->land_use }}</td>
                                         <td>
                                             @php
                                                 $phoneNumbers = explode(',', $application->phone_number);
@@ -342,6 +385,14 @@
                                                             data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="{{ $application->id }}">
                                                             <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
                                                             <span>E-Registry</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                                                            data-id="{{ $application->id }}" data-bs-toggle="modal" data-bs-target="#viewRecordDetailModal"
+                                                            onclick="loadRecordDetails({{ $application->id }})">
+                                                            <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
+                                                            <span>View Record Details</span>
                                                         </button>
                                                     </li>
                                                     @if ($application->application_status == 'Approved')
@@ -517,10 +568,11 @@
                     <div>
                         <div class="button-grid">
                         <!-- Row 1 -->
-                    <button class="bttn purple-shadow" onclick="showDepartmentConfirmation('lands')">
+                        <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#landsModal">
                             Lands
                             <i class="material-icons" style="color: #9C27B0;">landscape</i>
                         </button>
+
                         <button class="bttn pink-shadow" onclick="showDepartmentConfirmation('survey')">
                             Survey
                             <i class="material-icons" style="color: #FF9800;">map</i>
@@ -539,6 +591,48 @@
 
             
 
+                        <!-- Lands Modal -->
+                        <div class="modal fade" id="landsModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Lands Department</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="landsForm">
+                                            <div class="mb-3">
+                                                <label for="landsFileNo" class="form-label">File No</label>
+                                                <input type="text" class="form-control" id="landsFileNo" name="landsFileNo" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="landsFileName" class="form-label">File Name</label>
+                                                <input type="text" class="form-control" id="landsFileName" name="landsFileName" required>
+                                            </div>
+                                            <div class="modal-footer" style="background-color: #f1f1f1;">
+                                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
+                                                    <button type="button" class="bttn green-shadow" 
+                                                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" onclick="showDepartmentConfirmation('ok')">
+                                                        OK
+                                                        <i class="material-icons" style="color: #4CAF50; font-size: 16px;">check_circle</i>
+                                                    </button>
+                                                    <button type="button" class="bttn gray-shadow" 
+                                                        style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" onclick="openFile()">
+                                                        Open File
+                                                        <i class="material-icons" style="color: #2196F3; font-size: 16px;">folder_open</i>
+                                                    </button>
+                                                    <button type="submit" class="bttn green-shadow"
+                                                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
+                                                        Submit
+                                                        <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 <!-- Deeds Modal -->
 <div class="modal fade" id="deedsModal" tabindex="-1" aria-hidden="true">
@@ -599,7 +693,7 @@
 
             <!-- Initial Bill Approval Modals -->
        @include('sectionaltitling.partials.initailbill')
-            <!-- Planning Recommendation Modal -->
+         
 
 
              
@@ -675,6 +769,7 @@
                                     <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewSurveyPlanModal">
                                         <i class="material-icons" style="font-size: 16px; vertical-align: middle;">map</i> View Survey Plan
                                     </button>
+
                                 </div>
 
                                 <div class="modal-footer" style="background-color: #f1f1f1;">
@@ -704,6 +799,47 @@
  
 
          
+                                    <!-- View Survey Plan Modal -->
+                                    <div class="modal fade" id="viewSurveyPlanModal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Survey Plan</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Dummy image for demonstration -->
+                                                    <div class="text-center">
+                                                        <img src="https://via.placeholder.com/800x600?text=Survey+Plan+Example" alt="Survey Plan" class="img-fluid">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                                    <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                                        Close
+                                                        <i class="material-icons" style="color: #9E9E9E;">close</i>
+                                                    </button>
+                                                    <button type="button" class="bttn blue-shadow" onclick="printSurveyPlan()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                                        Print Survey Plan
+                                                        <i class="material-icons" style="color: #3F51B5;">print</i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        function printSurveyPlan() {
+                                            // Create a new window with just the image content
+                                            const printWindow = window.open('', '_blank');
+                                            printWindow.document.write('<html><head><title>Survey Plan</title></head><body>');
+                                            printWindow.document.write('<img src="https://via.placeholder.com/800x600?text=Survey+Plan+Example" style="width: 100%;">');
+                                            printWindow.document.write('</body></html>');
+                                            printWindow.document.close();
+                                            printWindow.focus();
+                                            printWindow.print();
+                                            printWindow.close();
+                                        }
+                                    </script>
 
             <!-- Generate Bill Modal -->
             <div class="modal fade" id="generateBillModal" aria-hidden="true">
@@ -733,77 +869,8 @@
             </div>
 
             <!-- Add E-Registry Modal -->
-            <div class="modal fade" id="eRegistryModal" tabindex="-1" aria-labelledby="eRegistryModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">E-Registry</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="eRegistryForm">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">E-Registry ID</label>
-                                            <input type="text" class="form-control" value="26"  disabled>
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">File Name</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">File Number</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">File Location</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">File Commissioning Date</label>
-                                            <input type="date" class="form-control">
-                                        </div>
-
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Decommissioning Date</label>
-                                            <input type="date" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between; padding-top: 20px; padding-right: 20px; padding-left: 20px;">
-                                    <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); transform: translateY(-5px);">
-                                        OK
-                                        <i class="material-icons" style="color: #4CAF50;">check_circle</i>
-                                    </button>
-                                    <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); margin-right: 10px; transform: translateY(-5px);">
-                                        Edit
-                                        <i class="material-icons" style="color: #9E9E9E;">edit</i>
-                                    </button>
-                                    <button type="submit" class="bttn green-shadow"
-                                    style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px; transform: translateY(-5px);">
-                                    Submit
-                                    <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                                </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
- 
-       
-
-
+        @include('sectionaltitling.partials.eRegistry')
+            <!-- Add Architectural Modal -->
 
 
     </div>    
@@ -827,6 +894,10 @@
                         <label for="dmmApprove">Approve</label>
                         <input type="radio" name="decision" value="decline" id="dmmDecline" class="ms-3">
                         <label for="dmmDecline">Decline</label>
+
+
+                        <input type="radio" name="decision" value="Pedding" id="dmmDecline" class="ms-3">
+                        <label for="dmmDecline">Pedding</label>
                     </div>
                     <div class="mb-3" id="declineReasonMotherGroup" style="display:none;">
                         <label for="declineReasonMother" class="form-label">Reason For Decline</label>
@@ -860,7 +931,7 @@
 </div>
 <!-- Planning Recommendation Modal -->
 <div class="modal fade" id="planningRecommendationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">  
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Planning Recommendation</h5>
@@ -890,7 +961,6 @@
                                 <option value="" disabled selected>Select</option>
                                 <option value="architectural">Architectural Design</option>
                                 <option value="planningRec">Planning Recommendation</option>
-                                
                             </select>
                         </div>
                         <!-- Empty cells to complete a 2x2 grid -->
@@ -899,21 +969,26 @@
                     </div>
 
                     <div class="modal-footer" style="background-color: #f1f1f1;">
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%;">
                             <button type="button" class="bttn green-shadow" 
-                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" data-bs-dismiss="modal">
+                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 120px;" data-bs-dismiss="modal">
                                 Cancel
                                 <i class="material-icons" style="color: #f44336; font-size: 16px;">cancel</i>
                             </button>
-                            <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')"
-                                style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                Submit
-                                <i class="material-icons" style="color: #9E9E9E; font-size: 16px;">edit</i>
-                            </button>
                             <button type="submit" class="bttn green-shadow"
-                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;"  onclick="showPrintModal()">
-                                Print
-                                <i class="material-icons" style="color: #4CAF50; font-size: 16px;">print</i>
+                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 120px;" onclick="showPrintModal(); return false;">
+                                Submit
+                                <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                            </button>
+                            <button type="button" class="bttn gray-shadow" 
+                                style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 6px 12px; width: 140px;" onclick="showGenDocumentModal(); return false;">
+                                Gen & Print
+                                <i class="material-icons" style="color: #2196F3; font-size: 16px;">description</i>
+                            </button>
+                            <button type="button" class="bttn blue-shadow"
+                                style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3); font-size: 12px; padding: 6px 12px; width: 140px;" onclick="showGenBillModal(); return false;">
+                                Gen & Print Bill
+                                <i class="material-icons" style="color: #FF9800; font-size: 16px;">receipt</i>
                             </button>
                         </div>
                     </div>
@@ -923,6 +998,195 @@
     </div>
 </div>
 
+   <!-- Dummy Modals for Gen & Print and Gen & Print Bill -->
+                    <!-- Generated Document Modal -->
+                    <div class="modal fade" id="genDocumentModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Generated Document</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="genDocumentContent" style="min-height: 300px; padding: 20px; border: 1px solid #ddd;">
+                                        <h4 class="text-center mb-4">PLANNING RECOMMENDATION DOCUMENT</h4>
+                                        <p>This is a sample generated document for the planning recommendation.</p>
+                                        <p>Application ID: <strong>STM-2025-000-0X</strong></p>
+                                        <p>Applicant: <strong>SAMPLE APPLICANT NAME</strong></p>
+                                        <p>File No: <strong>SAMPLE-FILE-NO</strong></p>
+                                        <p>Date: <strong>{{ date('Y-m-d') }}</strong></p>
+                                        <p class="mt-4">The application has been reviewed and is recommended for approval.</p>
+                                        <div class="row mt-5">
+                                            <div class="col-6">
+                                                <p>_________________________</p>
+                                                <p>Planning Officer</p>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <p>_________________________</p>
+                                                <p>Director</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                    <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                        Close
+                                        <i class="material-icons" style="color: #9E9E9E;">close</i>
+                                    </button>
+                                    <button type="button" class="bttn blue-shadow" onclick="printGenDocument()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                        Print Document
+                                        <i class="material-icons" style="color: #3F51B5;">print</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generated Bill Modal -->
+                    <div class="modal fade" id="genBillModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Generated Bill</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="genBillContent" style="min-height: 300px; padding: 20px; border: 1px solid #ddd;">
+                                        <h4 class="text-center mb-4">BILL FOR PAYMENT</h4>
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <p><strong>Bill No:</strong> BILL-2025-001</p>
+                                                <p><strong>Date:</strong> {{ date('Y-m-d') }}</p>
+                                                <p><strong>File No:</strong> SAMPLE-FILE-NO</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p><strong>Applicant:</strong> SAMPLE APPLICANT NAME</p>
+                                                <p><strong>Application Type:</strong> Sectional Titling</p>
+                                                <p><strong>Status:</strong> Pending Payment</p>
+                                            </div>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Description</th>
+                                                    <th class="text-end">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Application Fee</td>
+                                                    <td class="text-end">₦ 10,000.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Processing Fee</td>
+                                                    <td class="text-end">₦ 25,000.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Document Fee</td>
+                                                    <td class="text-end">₦ 5,000.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="text-end"><strong>Total</strong></td>
+                                                    <td class="text-end"><strong>₦ 40,000.00</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="mt-4">
+                                            <p>Please make payment within 14 days from the date of this bill.</p>
+                                            <p>Payment should be made to the Accounts Department.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+                                    <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                                        Close
+                                        <i class="material-icons" style="color: #9E9E9E;">close</i>
+                                    </button>
+                                    <button type="button" class="bttn blue-shadow" onclick="printGenBill()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                                        Print Bill
+                                        <i class="material-icons" style="color: #3F51B5;">print</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        function showGenDocumentModal() {
+                            $('#planningRecommendationModal').modal('hide');
+                            $('#genDocumentModal').modal('show');
+                        }
+                        
+                        function showGenBillModal() {
+                            $('#planningRecommendationModal').modal('hide');
+                            $('#genBillModal').modal('show');
+                        }
+                        
+                        function printGenDocument() {
+                            const content = document.getElementById('genDocumentContent').innerHTML;
+                            const printWindow = window.open('', '_blank');
+                            printWindow.document.write(`
+                                <html>
+                                    <head>
+                                        <title>Planning Recommendation Document</title>
+                                        <style>
+                                            body { font-family: Arial, sans-serif; margin: 20px; }
+                                            h4 { text-align: center; margin-bottom: 20px; }
+                                            .row { display: flex; }
+                                            .col-6 { width: 50%; }
+                                            .text-end { text-align: right; }
+                                            .mt-4, .mt-5 { margin-top: 2rem; }
+                                        </style>
+                                    </head>
+                                    <body>
+                                        ${content}
+                                    </body>
+                                </html>
+                            `);
+                            printWindow.document.close();
+                            printWindow.focus();
+                            setTimeout(() => {
+                                printWindow.print();
+                                printWindow.close();
+                            }, 500);
+                        }
+                        
+                        function printGenBill() {
+                            const content = document.getElementById('genBillContent').innerHTML;
+                            const printWindow = window.open('', '_blank');
+                            printWindow.document.write(`
+                                <html>
+                                    <head>
+                                        <title>Bill for Payment</title>
+                                        <style>
+                                            body { font-family: Arial, sans-serif; margin: 20px; }
+                                            h4 { text-align: center; margin-bottom: 20px; }
+                                            .row { display: flex; }
+                                            .col-6 { width: 50%; }
+                                            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                                            table, th, td { border: 1px solid #ddd; }
+                                            th, td { padding: 8px; text-align: left; }
+                                            .text-end { text-align: right; }
+                                            .mt-4 { margin-top: 2rem; }
+                                        </style>
+                                    </head>
+                                    <body>
+                                        ${content}
+                                    </body>
+                                </html>
+                            `);
+                            printWindow.document.close();
+                            printWindow.focus();
+                            setTimeout(() => {
+                                printWindow.print();
+                                printWindow.close();
+                            }, 500);
+                        }
+                    </script>
 <!-- Print Modal -->
 <div class="modal fade" id="printModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -1074,6 +1338,47 @@
         </div>
     </div>
 </div>
+
+<!-- New Modal for View Record Details -->
+<div class="modal fade" id="viewRecordDetailModal" tabindex="-1" aria-labelledby="viewRecordDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewRecordDetailModalLabel">Record Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="recordDetailContent">
+        <!-- Content will be loaded via AJAX -->
+        <div class="text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal">
+          Close
+          <i class="material-icons" style="color: #9E9E9E;">close</i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to load record details -->
+<script>
+function loadRecordDetails(id) {
+  fetch(`{{ url('record/details') }}/${id}`)
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('recordDetailContent').innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Error loading record details:', error);
+      document.getElementById('recordDetailContent').innerHTML = '<p class="text-danger">Failed to load details.</p>';
+    });
+}
+</script>
 
       <!-- jQuery and DataTables JS -->
       <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
@@ -1372,5 +1677,60 @@ document.addEventListener("click", function (event) {
                 });
             });
     }
+</script>
+
+<script>
+    // Handle E-Registry modal
+    $(document).ready(function() {
+        // When E-Registry modal is about to be shown, populate it with data
+        $('#eRegistryModal').on('show.bs.modal', function(event) {
+            const button = $(event.relatedTarget); // Button that triggered the modal
+            const applicationId = button.data('id'); // Extract application ID from data-id attribute
+            
+            // Find the corresponding application row in the table
+            const row = button.closest('tr');
+            
+            // Extract data from the row
+            const fileNo = row.find('td:eq(1)').text().trim(); // File Number is in the second column
+            
+            // Get the owner name
+            let ownerName = row.find('td:eq(2)').text().trim(); // Owner Name is in the third column
+            // Remove any tooltip indicators or extra content
+            ownerName = ownerName.replace(/\s*\(.*?\)\s*/g, '').trim();
+            
+            // Set values in the modal
+            $('#eRegistryId').val(applicationId);
+            $('#eRegistryFileName').val(ownerName);
+            $('#eRegistryFileNo').val(fileNo);
+            
+            // Set current date as default for commissioning date
+            const today = new Date().toISOString().split('T')[0];
+            $('#eRegistryCommissionDate').val(today);
+        });
+        
+        // Handle form submission
+        $('#eRegistryForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const registryData = {
+                application_id: $('#eRegistryId').val(),
+                file_location: $('#eRegistryFileLocation').val(),
+                commission_date: $('#eRegistryCommissionDate').val(),
+                decommission_date: $('#eRegistryDecommissionDate').val()
+            };
+            
+            // Here you would normally send this data to the server
+            // For now, just show a success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'E-Registry information saved successfully!'
+            });
+            
+            // Close the modal
+            $('#eRegistryModal').modal('hide');
+        });
+    });
 </script>
 @endsection
