@@ -344,6 +344,7 @@
                                         </script>
                                         <td class="relative">
                                             <div class="relative inline-block">
+                                                
                                                 <!-- Dropdown Toggle Button -->
                                                 <button onclick="toggleDropdown(this)" class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400">
                                                     <i class="fas fa-ellipsis-h text-gray-600"></i>
@@ -351,6 +352,12 @@
                                             
                                                 <!-- Dropdown Menu -->
                                                 <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
+                                                    <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                                                            data-id="{{ $application->id }}" data-bs-toggle="modal" data-bs-target="#viewRecordDetailModal"
+                                                            onclick="loadRecordDetails({{ $application->id }})">
+                                                            <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
+                                                            <span>View Record Details</span>
+                                                        </button>
                                                     <li>
                                                         <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-id="{{ $application->id }}" data-bs-toggle="modal" data-bs-target="#actionsModal" onclick="setSelectedApplicationId({{ $application->id }})">
@@ -380,6 +387,12 @@
                                                             <span>Director's Approval</span>
                                                         </button>
                                                     </li>
+                                                     <li>
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2" data-bs-toggle="modal" data-bs-target="#finalConveyanceModal" data-id="{{ $application->id }}">
+                                                            <i class="fas fa-file-invoice-dollar text-orange-500" style="width: 18px;"></i>
+                                                            <span>Final Conveyance</span>
+                                                        </button>
+
                                                     <li>
                                                         <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="{{ $application->id }}">
@@ -388,12 +401,7 @@
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            data-id="{{ $application->id }}" data-bs-toggle="modal" data-bs-target="#viewRecordDetailModal"
-                                                            onclick="loadRecordDetails({{ $application->id }})">
-                                                            <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
-                                                            <span>View Record Details</span>
-                                                        </button>
+                                                        
                                                     </li>
                                                     @if ($application->application_status == 'Approved')
                                                         <li>
@@ -442,6 +450,204 @@
             </div>
             <!-- Actions Modal -->
            <!-- MODAL -->
+
+        <!-- Final Conveyance Modal -->
+        <div class="modal fade" id="finalConveyanceModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Final Conveyance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <form id="finalConveyanceForm">
+                    <!-- Hidden field for application id -->
+                    <input type="hidden" name="application_id" id="finalConveyanceApplicationId" value="">
+                    <div id="conveyanceInputsContainer">
+                    <div class="conveyance-input-group mb-3 grid grid-cols-2 gap-4">
+                        <div>
+                        <label for="buyerName1" class="form-label">Buyer Name</label>
+                        <input type="text" class="form-control" id="buyerName1" name="buyerName[]" required>
+                        </div>
+                        <div>
+                        <label for="sectionNo1" class="form-label">Section No.</label>
+                        <input type="text" class="form-control" id="sectionNo1" name="sectionNo[]" required>
+                        </div>
+                    </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="addConveyanceInputButton">
+                    Add More
+                    <i class="material-icons" style="color: #3F51B5;">add</i>
+                    </button>
+                    <hr>
+                    <br>
+                    <div class="modal-footer" style="background-color: #f1f1f1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px 20px;">
+                   
+                        <button type="submit" class="bttn green-shadow" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px;">
+                            Submit
+                            <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
+                        </button>
+                        <button type="button" class="bttn blue-shadow" data-bs-toggle="modal" data-bs-target="#buyersListModal" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3); font-size: 12px; padding: 6px 12px;">
+                            Buyers List
+                            <i class="material-icons" style="color: #3F51B5; font-size: 16px;">group</i>
+                        </button>
+
+                     
+                    </div>
+                </form>
+
+                <script>
+                    $(document).ready(function() {
+                        $('#finalConveyanceModal').on('show.bs.modal', function(event) {
+                            const button = $(event.relatedTarget);
+                            const applicationId = button.data('id');
+                            $('#finalConveyanceApplicationId').val(applicationId);
+                            console.log('Setting application ID to:', applicationId);
+                        });
+                    });
+
+                    document.getElementById('addConveyanceInputButton').addEventListener('click', function() {
+                    const container = document.getElementById('conveyanceInputsContainer');
+                    const inputCount = container.querySelectorAll('.conveyance-input-group').length + 1;
+
+                    const newInputGroup = document.createElement('div');
+                    newInputGroup.classList.add('conveyance-input-group', 'mb-3', 'grid', 'grid-cols-2', 'gap-4');
+                    newInputGroup.innerHTML = `
+                        <div>
+                        <label for="buyerName${inputCount}" class="form-label">Buyer Name</label>
+                        <input type="text" class="form-control" id="buyerName${inputCount}" name="buyerName[]" required>
+                        </div>
+                        <div>
+                        <label for="sectionNo${inputCount}" class="form-label">Section No.</label>
+                        <input type="text" class="form-control" id="sectionNo${inputCount}" name="sectionNo[]" required>
+                        </div>
+                    `;
+                    container.appendChild(newInputGroup);
+                    });
+
+                    document.getElementById('finalConveyanceForm').addEventListener('submit', function(e){
+                        e.preventDefault();
+                        const appId = document.getElementById('finalConveyanceApplicationId').value;
+                        
+                        if (!appId) {
+                            alert('Application ID is missing. Please try again.');
+                            return;
+                        }
+                        
+                        const buyerNames = document.querySelectorAll('input[name="buyerName[]"]');
+                        const sectionNos = document.querySelectorAll('input[name="sectionNo[]"]');
+                        
+                        const conveyanceRecord = {
+                            buyerName: buyerNames[0].value,
+                            sectionNo: sectionNos[0].value
+                        };
+
+                        const requestData = {
+                            application_id: parseInt(appId),
+                            conveyance: conveyanceRecord
+                        };
+                        
+                        console.log('Sending data:', requestData);
+                        
+                        fetch("{{ route('conveyance.update') }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                            },
+                            body: JSON.stringify(requestData)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.text().then(text => { 
+                                    try {
+                                        const jsonError = JSON.parse(text);
+                                        throw new Error(jsonError.message || text);
+                                    } catch (e) {
+                                        throw new Error(text);
+                                    }
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: data.message
+                            });
+                            $('#finalConveyanceModal').modal('hide');
+                            // Optionally, refresh the page or update the UI to reflect the changes
+                            location.reload(); // Uncomment this line to refresh the page
+                        })
+                        .catch(err => {
+                            console.error('Error:', err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: err.message || 'An error occurred while saving the conveyance data.'
+                            });
+                            
+                        });
+                    });
+                </script>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+
+<!-- Buyers List Modal -->
+<div class="modal fade" id="buyersListModal" tabindex="-1" aria-hidden="true">
+ <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+            <div class="modal-header">
+                 <h5 class="modal-title">Buyers List</h5>
+                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @include('sectionaltitling.partials.buyers_list')  
+            </div>
+            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between;">
+                 <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
+                      Close
+                      <i class="material-icons" style="color: #5a0000;">close</i>
+                 </button>
+                 <button type="button" class="bttn blue-shadow" onclick="printBuyersList()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
+                      Print Buyers List
+                      <i class="material-icons" style="color: #3F51B5;">print</i>
+                 </button>
+            </div>
+      </div>
+ </div>
+</div>
+
+<script>
+ function printBuyersList() {
+      const modalContent = document.querySelector('#buyersListModal .modal-body').innerHTML;
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+            <html>
+                 <head>
+                      <title>Buyers List</title>
+                      <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h5 { text-align: center; margin-bottom: 20px; }
+                      </style>
+                 </head>
+                 <body>
+                      <h5>Buyers List</h5>
+                      ${modalContent}
+                 </body>
+            </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+ }
+</script>
 
         <div class="modal fade" id="actionsModal" tabindex="-1" aria-labelledby="actionsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="max-width:210px;">
@@ -634,62 +840,8 @@
                             </div>
                         </div>
 
-<!-- Deeds Modal -->
-<div class="modal fade" id="deedsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Deeds</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="deedsForm">
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">Serial No</label>
-                            <input type="text" class="form-control" value="10" disabled>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Page No</label>
-                            <input type="text" class="form-control" value="10" disabled>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Volume NO</label>
-                            <input type="text" class="form-control" value="1" disabled>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Deeds Time</label>
-                            <input type="text" class="form-control" value="12:00 PM" disabled>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Deeds Date</label>
-                            <input type="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" disabled>
-                        </div>
-                    </div> 
-                    
-                    <div class="modal-footer" style="background-color: #f1f1f1;">
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; width: 100%;">
-                            <button type="button" class="bttn green-shadow" data-bs-dismiss="modal" aria-label="Close"
-                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 150px; height: 40px;">
-                                Close
-                                <i class="material-icons" style="color: #c70707; font-size: 16px;">cancel</i>
-                            </button>
-                             
-                            <button type="submit" class="bttn green-shadow"
-                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 150px; height: 40px;">
-                                Submit
-                                <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+         <!-- Deeds Modal -->
+         @include('sectionaltitling.partials.deeds')
 
             <!-- Initial Bill Approval Modals -->
        @include('sectionaltitling.partials.initailbill')

@@ -31,6 +31,8 @@ use App\Http\Controllers\RecordController;
 use App\Http\Controllers\LegalSearchController;
 use App\Http\Controllers\ResidentialController;
 use App\Http\Controllers\eRegistryController;
+use App\Http\Controllers\DeedsController;
+use App\Http\Controllers\ConveyanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -447,5 +449,9 @@ Route::group(
         Route::get('record/details/{id}', [RecordController::class, 'show'])->name('record.details');
     }
 );
+
+Route::post('/deeds/insert', [DeedsController::class, 'insert'])->name('deeds.insert');
+
+Route::post('/conveyance/update', [ConveyanceController::class, 'updateConveyance'])->name('conveyance.update');
 
 Route::impersonate();
