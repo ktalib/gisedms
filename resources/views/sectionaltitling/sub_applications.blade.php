@@ -329,67 +329,75 @@
                                 <td>{{ $subApplication->planning_recommendation_status }}</td>
                                 <td>{{ $subApplication->application_status }}</td>
                                 <td class="relative">
-                                    <div class="relative inline-block">
+                                    <div class="relative inline-block dropdown-container">
                                         <!-- Dropdown Toggle Button -->
-                                        <button onclick="toggleDropdown(this)"
-                                            class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400">
-                                            <i class="material-icons">more_horiz</i>
+                                        <button type="button" class="dropdown-toggle p-2 bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400">
+                                            <i class="material-icons">more_vert</i>
                                         </button>
                                         <!-- Dropdown Menu -->
-                                        <ul
-                                            class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50 text-sm">
-
+                                        <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50 text-sm">
                                             <li>
                                                 <button type="button"
-                                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dropdown-item"
                                                     data-id="{{ $subApplication->id }}" data-bs-toggle="modal"
-                                                    data-bs-target="#actionsModal"
-                                                    onclick="openPaymentsModal('{{ $subApplication->id }}')">
-                                                    <i class="material-icons text-green-500 mr-3">payments</i>
-                                                    <span>Payments</span>
+                                                    data-bs-target="#actionsModal">
+                                                    <div class="flex items-center">
+                                                        <i class="material-icons text-green-500 mr-3">payments</i>
+                                                        <span>Payments</span>
+                                                    </div>
                                                 </button>
                                             </li>
                                             <li>
                                                 <button type="button"
-                                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dropdown-item"
                                                     data-id="{{ $subApplication->id }}" data-bs-toggle="modal"
                                                     data-bs-target="#OtherApprovals">
-                                                    <i class="material-icons text-red-500 mr-3">app_registration</i>
-                                                    <span>Other Approvals</span>
+                                                    <div class="flex items-center">
+                                                        <i class="material-icons text-red-500 mr-3">app_registration</i>
+                                                        <span>Other Approvals</span>
+                                                    </div>
                                                 </button>
                                             </li>
                                             <li>
                                                 <button type="button"
-                                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
-                                                    onclick="showDepartmentConfirmation('planningRec')"
+                                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dropdown-item planning-rec-btn"
                                                     data-id="{{ $subApplication->id }}">
-                                                    <i class="material-icons text-blue-500 mr-3">assignment</i>
-                                                    <span>Planning Recommendation</span>
+                                                    <div class="flex items-center">
+                                                        <i class="material-icons text-blue-500 mr-3">assignment</i>
+                                                        <span>Planning Recommendation</span>
+                                                    </div>
                                                 </button>
                                             </li>
                                             <li>
                                                 <button type="button"
-                                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center decision-mother-btn"
+                                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dropdown-item decision-mother-btn"
                                                     data-id="{{ $subApplication->id }}"
-                                                    data-fileno="{{ $subApplication->fileno }}">
-                                                    <i class="material-icons text-green-600 mr-3">check_circle</i>
-                                                    <span>Director's Approval</span>
+                                                    data-file-no="{{ $subApplication->fileno }}">
+                                                    <div class="flex items-center">
+                                                        <i class="material-icons text-green-600 mr-3">check_circle</i>
+                                                        <span>Director's Approval</span>
+                                                    </div>
                                                 </button>
                                             </li>
                                             <li>
-                                                <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                                                <button type="button" 
+                                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dropdown-item"
                                                     data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="{{ $subApplication->id }}">
-                                                    <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
-                                                    <span>E-Registry</span>
+                                                    <div class="flex items-center">
+                                                        <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
+                                                        <span class="ml-2">E-Registry</span>
+                                                    </div>
                                                 </button>
                                             </li>
                                             <li>
                                                 <button type="button"
-                                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 dropdown-item"
                                                     data-id="{{ $subApplication->id }}" data-bs-toggle="modal"
                                                     data-bs-target="#certificateModal{{ $subApplication->id }}">
-                                                    <i class="material-icons text-amber-500 mr-3">description</i>
-                                                    <span>Certificate</span>
+                                                    <div class="flex items-center">
+                                                        <i class="material-icons text-amber-500 mr-3">description</i>
+                                                        <span>Certificate</span>
+                                                    </div>
                                                 </button>
                                             </li>
                                         </ul>
@@ -411,18 +419,46 @@
     @include('sectionaltitling.sub_appmodals.survey')
     @include('sectionaltitling.sub_appmodals.deeds')
     @include('sectionaltitling.sub_appmodals.planningrecommendation')
-    @include('sectionaltitling.sub_appmodals.genBetterment')
-    @include('sectionaltitling.sub_appmodals.certificats')
-    @include('sectionaltitling.sub_appmodals.printAcceptance')
-    @include('sectionaltitling.sub_appmodals.eregistry')
-    @include('sectionaltitling.sub_appmodals.director')
-    @include('sectionaltitling.partials.sub_initailbill')
-    @include('sectionaltitling.sub_appmodals.sub_js')
-
     <script>
-        // Handle E-Registry modal
+        // Handle dropdown menus
         $(document).ready(function() {
-            // When E-Registry modal is about to be shown, populate it with data
+            // Toggle dropdown on button click
+            $(document).on('click', '.dropdown-toggle', function(e) {
+                e.stopPropagation();
+                const container = $(this).closest('.dropdown-container');
+                const menu = container.find('.action-menu');
+                
+                // Close all other open menus first
+                $('.action-menu').not(menu).addClass('hidden');
+                
+                // Toggle current menu
+                menu.toggleClass('hidden');
+            });
+            
+            // Close dropdown when clicking on an item
+            $(document).on('click', '.dropdown-item', function() {
+                // If it's a planning recommendation button, show confirmation first
+                if ($(this).hasClass('planning-rec-btn')) {
+                    showDepartmentConfirmation('planningRec');
+                }
+                
+                // If it's a payments button, open the payments modal
+                if ($(this).data('bs-target') === '#actionsModal') {
+                    openPaymentsModal($(this).data('id'));
+                }
+                
+                // Close the dropdown
+                $(this).closest('.action-menu').addClass('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.dropdown-container').length) {
+                    $('.action-menu').addClass('hidden');
+                }
+            });
+            
+            // Handle E-Registry modal
             $('#eRegistryModal').on('show.bs.modal', function(event) {
                 const button = $(event.relatedTarget); // Button that triggered the modal
                 const applicationId = button.data('id'); // Extract application ID from data-id attribute
@@ -465,6 +501,14 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
+                    text: 'E-Registry information saved successfully!'
+                });
+                
+                // Close the modal
+                $('#eRegistryModal').modal('hide');
+            });
+        });
+    </script>
                     text: 'E-Registry information saved successfully!'
                 });
                 
