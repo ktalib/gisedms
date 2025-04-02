@@ -450,5 +450,6 @@ Route::get('/sectionaltitling/generate-bill/{id?}', [SubApplicationController::c
 Route::get('/sectionaltitling/generate-bill', [SubApplicationController::class, 'GenerateBill'])->name('sectionaltitling.generate_bill_no_id');
 
 Route::get('/subapplications/{id}', [SubApplicationController::class, 'getSubApplication']);
+Route::get('sectionaltitling/viewrecorddetail_sub',  [App\Http\Controllers\ApplicationMotherController::class, 'Veiwrecords'])->name('sectionaltitling.viewrecorddetail_sub');
 
 Route::impersonate();

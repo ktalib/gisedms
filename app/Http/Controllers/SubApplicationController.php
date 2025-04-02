@@ -171,10 +171,37 @@ class SubApplicationController extends Controller
      * @param float $number The number to convert
      * @return string The number in words
      */
+
+
     private function numberToWords($number) 
     {
         $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
         $words = $formatter->format($number);
         return ucfirst($words) . ' Naira Only';
     }
+   
+
+    public function Veiwrecords(Request $request)
+    {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            return redirect()->route('sectionaltitling.index')->with('error', 'No record ID provided');
+        }
+        
+        $application = DB::connection('sqlsrv')
+            ->table('dbo.mother_applications')
+            ->where('id', $id)
+            ->first();
+            
+        if (!$application) {
+            return redirect()->route('sectionaltitling.index')->with('error', 'Record not found');
+        }
+        
+        return view('sectionaltitling.viewrecorddetail', compact('application'));
+    }
+
+
+
+
 }
