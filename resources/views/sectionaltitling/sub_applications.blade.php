@@ -238,7 +238,7 @@
                     <thead>
                         <tr>
                             <th style="text-transform: none;    color: #005f16;">main Application ID</th>
-                            <th style="text-transform: none; background-color:   color: #005f16;">ST FileNo</th>
+                            <th style="text-transform: none;  color: #005f16;">ST FileNo</th>
                             <th style="text-transform: none; color: #005f16;">Original Owner</th>
                             <th style="text-transform: none; color: #005f16;">Unit Owner Name</th>
                             <th style="text-transform: none; color: #005f16;">Phone Number</th>
@@ -377,6 +377,13 @@
                                                 </button>
                                             </li>
                                             <li>
+                                                <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                                                    data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="{{ $subApplication->id }}">
+                                                    <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
+                                                    <span>E-Registry</span>
+                                                </button>
+                                            </li>
+                                            <li>
                                                 <button type="button"
                                                     class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
                                                     data-id="{{ $subApplication->id }}" data-bs-toggle="modal"
@@ -411,4 +418,59 @@
     @include('sectionaltitling.sub_appmodals.director')
     @include('sectionaltitling.partials.sub_initailbill')
     @include('sectionaltitling.sub_appmodals.sub_js')
+
+    <script>
+        // Handle E-Registry modal
+        $(document).ready(function() {
+            // When E-Registry modal is about to be shown, populate it with data
+            $('#eRegistryModal').on('show.bs.modal', function(event) {
+                const button = $(event.relatedTarget); // Button that triggered the modal
+                const applicationId = button.data('id'); // Extract application ID from data-id attribute
+                
+                // Find the corresponding application row in the table
+                const row = button.closest('tr');
+                
+                // Extract data from the row
+                const fileNo = row.find('td:eq(1)').text().trim(); // File Number is in the second column
+                
+                // Get the owner name
+                let ownerName = row.find('td:eq(2)').text().trim(); // Owner Name is in the third column
+                // Remove any tooltip indicators or extra content
+                ownerName = ownerName.replace(/\s*\(.*?\)\s*/g, '').trim();
+                
+                // Set values in the modal
+                $('#eRegistryId').val(applicationId);
+                $('#eRegistryFileName').val(ownerName);
+                $('#eRegistryFileNo').val(fileNo);
+                
+                // Set current date as default for commissioning date
+                const today = new Date().toISOString().split('T')[0];
+                $('#eRegistryCommissionDate').val(today);
+            });
+            
+            // Handle form submission
+            $('#eRegistryForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const registryData = {
+                    application_id: $('#eRegistryId').val(),
+                    file_location: $('#eRegistryFileLocation').val(),
+                    commission_date: $('#eRegistryCommissionDate').val(),
+                    decommission_date: $('#eRegistryDecommissionDate').val()
+                };
+                
+                // Here you would normally send this data to the server
+                // For now, just show a success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'E-Registry information saved successfully!'
+                });
+                
+                // Close the modal
+                $('#eRegistryModal').modal('hide');
+            });
+        });
+    </script>
 @endsection

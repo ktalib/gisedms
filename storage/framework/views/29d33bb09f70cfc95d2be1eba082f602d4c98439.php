@@ -313,7 +313,10 @@
                             <tbody>
                                 <?php $__currentLoopData = $Main_application; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $application): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
-                                        <td>STM-2025-000-0<?php echo e($application->id); ?></td>
+                                        
+                                        
+                                        <td><a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>?main_application_id=<?php echo e($application->id); ?>">STM-2025-000-0<?php echo e($application->id); ?> </a></td>
+                                       
                                         <td><?php echo e($application->fileno); ?></td>
                                         <td>
                                             <?php
@@ -400,7 +403,7 @@
                                             
                                                 <!-- Dropdown Menu -->
                                                 <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
-                                <a href="<?php echo e(route('sectionaltitling.viewrecorddetail')); ?>?id=<?php echo e($application->id); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                                        <a href="<?php echo e(route('sectionaltitling.viewrecorddetail')); ?>?id=<?php echo e($application->id); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
                                                             <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
                                                             <span>View Record Details</span>
                                                 </a>
@@ -486,7 +489,7 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                        
+                                      
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
@@ -857,7 +860,7 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Lands Department</h5>
+                                        <h5 class="modal-title">Lands</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -879,7 +882,7 @@
                                                     </button>
                                                     <button type="button" class="bttn gray-shadow" 
                                                         style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" onclick="openFile()">
-                                                        Open File
+                                                        EDMS
                                                         <i class="material-icons" style="color: #2196F3; font-size: 16px;">folder_open</i>
                                                     </button>
                                                     <button type="submit" class="bttn green-shadow"

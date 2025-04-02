@@ -312,7 +312,10 @@
                             <tbody>
                                 @foreach ($Main_application as $application)
                                     <tr>
-                                        <td>STM-2025-000-0{{ $application->id }}</td>
+                                        
+                                        
+                                        <td><a href="{{ route('sectionaltitling.sub_applications') }}?main_application_id={{ $application->id }}">STM-2025-000-0{{ $application->id }} </a></td>
+                                       
                                         <td>{{ $application->fileno }}</td>
                                         <td>
                                             @php
@@ -485,7 +488,7 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                        
+                                      
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -856,7 +859,7 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Lands Department</h5>
+                                        <h5 class="modal-title">Lands</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -878,7 +881,7 @@
                                                     </button>
                                                     <button type="button" class="bttn gray-shadow" 
                                                         style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" onclick="openFile()">
-                                                        Open File
+                                                        EDMS
                                                         <i class="material-icons" style="color: #2196F3; font-size: 16px;">folder_open</i>
                                                     </button>
                                                     <button type="submit" class="bttn green-shadow"

@@ -64,10 +64,9 @@ class ApplicationMotherController extends Controller
     {
         return view('sectionaltitling.create');
     }
-
-    public function Subapplications()
+    public function Subapplications(Request $request)
     {
-        $subApplications = DB::connection('sqlsrv')
+        $query = DB::connection('sqlsrv')
             ->table('dbo.subapplications AS sub')
             ->join('dbo.mother_applications AS main', 'sub.main_application_id', '=', 'main.id')
             ->select([
@@ -77,8 +76,40 @@ class ApplicationMotherController extends Controller
                 'main.first_name as main_first_name', 'main.middle_name as main_middle_name',
                 'main.surname as main_surname', 'main.corporate_name as main_corporate_name',
                 'main.multiple_owners_names as main_multiple_owners_names'
-            ])
-            ->get();
+            ]);
+            
+        // Filter by main_application_id if provided in the URL
+        if ($request->has('main_application_id')) {
+            $mainId = $request->main_application_id;
+            
+            // Check if main application exists
+            $mainAppExists = DB::connection('sqlsrv')
+                ->table('dbo.mother_applications')
+                ->where('id', $mainId)
+                ->exists();
+                
+            if (!$mainAppExists) {
+                return redirect()->back()->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'Error',
+                    'text' => 'Mother application with ID ' . $mainId . ' not found.'
+                ]);
+            }
+            
+            $query->where('sub.main_application_id', $mainId);
+        }
+        
+        $subApplications = $query->get();
+
+        // If filtering by main_application_id and no results found
+        if ($request->has('main_application_id') && $subApplications->isEmpty()) {
+            return view('sectionaltitling.sub_applications', compact('subApplications'))
+                ->with('sweet_alert', [
+                    'type' => 'info',
+                    'title' => 'No Records',
+                    'text' => 'No sub-applications found for mother application ID ' . $request->main_application_id
+                ]);
+        }
 
         return view('sectionaltitling.sub_applications', compact('subApplications'));
     }
@@ -656,4 +687,6 @@ class ApplicationMotherController extends Controller
         
         return view('sectionaltitling.viewrecorddetail', compact('application'));
     }
+
+ 
 }
