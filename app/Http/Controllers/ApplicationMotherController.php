@@ -525,6 +525,31 @@ class ApplicationMotherController extends Controller
         }
     }
     
+    
+    public function getBillingData2($id)
+    {
+        try {
+            $application = DB::connection('sqlsrv')->table('dbo.subapplications')->where('id', $id)->first();
+            
+            if (!$application) {
+                \Log::error("getBillingData2: Application with ID {$id} not found");
+                return response()->json(['error' => 'Application not found'], 404);
+            }
+            
+            \Log::info("getBillingData2: Successfully retrieved data for application ID {$id}");
+            return response()->json([
+                'application_fee' => $application->application_fee,
+                'processing_fee' => $application->processing_fee,
+                'site_plan_fee' => $application->site_plan_fee,
+                'payment_date' => $application->payment_date,
+                'receipt_number' => $application->receipt_number
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("getBillingData2: Error retrieving data for application ID {$id}: " . $e->getMessage());
+            return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
+        }
+    }
+    
     public function saveBillingData(Request $request)
     {
         try {
@@ -610,5 +635,25 @@ class ApplicationMotherController extends Controller
             \Log::error("saveERegistry: Error saving data: " . $e->getMessage());
             return response()->json(['error' => 'Database error: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function Veiwrecords(Request $request)
+    {
+        $id = $request->query('id');
+        
+        if (!$id) {
+            return redirect()->route('sectionaltitling.index')->with('error', 'No record ID provided');
+        }
+        
+        $application = DB::connection('sqlsrv')
+            ->table('dbo.mother_applications')
+            ->where('id', $id)
+            ->first();
+            
+        if (!$application) {
+            return redirect()->route('sectionaltitling.index')->with('error', 'Record not found');
+        }
+        
+        return view('sectionaltitling.viewrecorddetail', compact('application'));
     }
 }

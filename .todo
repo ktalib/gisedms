@@ -1,0 +1,66 @@
+{
+  "todotree": {
+    "tree": [
+      {
+        "key": 1743516300651,
+        "children": [
+          {
+            "key": 1743516375697,
+            "children": [],
+            "todo": {
+              "content": "",
+              "id": 1743516375697,
+              "level": "default",
+              "done": false,
+              "start": 1743516375697
+            }
+          }
+        ],
+        "todo": {
+          "content": "Fix conveyance data feltch by last id  error",
+          "id": 1743516300651,
+          "level": "warning",
+          "done": false,
+          "start": 1743516300651
+        }
+      },
+      {
+        "key": 1743516300231,
+        "children": [],
+        "todo": {
+          "content": "",
+          "id": 1743516300231,
+          "level": "default",
+          "done": false,
+          "start": 1743516300231
+        }
+      },
+      {
+        "key": 1743516300318,
+        "children": [],
+        "todo": {
+          "content": "",
+          "id": 1743516300318,
+          "level": "default",
+          "done": false,
+          "start": 1743516300319
+        }
+      }
+    ],
+    "expandKeys": [
+      1743516300651
+    ],
+    "schema": "https://github.com/Saber2pr/vsc-ext-todolist/blob/master/src/api/type.ts#L3",
+    "add_mode": "bottom",
+    "virtual": false,
+    "timelines": [],
+    "showLine": false,
+    "playFontSize": 24,
+    "title": ".todo",
+    "autoSort": false,
+    "showEndTime": false,
+    "simpleMode": false,
+    "lang": "en",
+    "version": "1743516375835"
+  }
+}

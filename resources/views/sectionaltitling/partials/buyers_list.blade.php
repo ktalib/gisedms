@@ -9,10 +9,42 @@
             <section class="mb-6">
                 <p class="mb-2">This Final Conveyance Agreement is made this [Insert Date], between:</p>
                 <ul class="list-none pl-6 mb-4">
-                    <li class="mb-1">- The Original Owner: [Insert Name]</li>
-                    <li class="mb-1">- Property Location: [Insert Property Address]</li>
-                    <li class="mb-1">- Decommissioned Certificate of Occupancy (CofO) Number: [Insert Original CofO No.]</li>
-                    <li class="mb-1">- Total Land Area: [Insert Size in Square Meters]</li>
+                    <li class="mb-1">- The Original Owner: 
+                        @if(isset($application))
+                            @if($application->corporate_name)
+                                {{ $application->corporate_name }}
+                            @elseif($application->multiple_owners_names)
+                                {{ is_array(json_decode($application->multiple_owners_names, true)) 
+                                    ? implode(', ', json_decode($application->multiple_owners_names, true)) 
+                                    : $application->multiple_owners_names }}
+                            @else
+                                {{ trim($application->first_name . ' ' . $application->middle_name . ' ' . $application->surname) }}
+                            @endif
+                        @else
+                            [Insert Name]
+                        @endif
+                    </li>
+                    <li class="mb-1">- Property Location: 
+                        @if(isset($application))
+                            {{ trim($application->plot_house_no . ' ' . $application->plot_plot_no . ' ' . $application->plot_street_name . ', ' . $application->plot_district) }}
+                        @else
+                            [Insert Property Address]
+                        @endif
+                    </li>
+                    <li class="mb-1">- Decommissioned Certificate of Occupancy (CofO) Number: 
+                        @if(isset($application))
+                            {{ $application->fileno ?? '[No CofO Number Available]' }}
+                        @else
+                            [Insert Original CofO No.]
+                        @endif
+                    </li>
+                    <li class="mb-1">- Total Land Area: 
+                        @if(isset($application) && $application->plot_size)
+                            {{ $application->plot_size }} Square Meters
+                        @else
+                            [Insert Size in Square Meters]
+                        @endif
+                    </li>
                 </ul>
     
                 <p class="mb-2">This document serves as an official agreement between the original titleholder of the
@@ -35,39 +67,93 @@
                     <tbody>
                         <tr>
                             <td class="border border-gray-400 p-2 w-1/2">Original CofO No.</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->fileno ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">Plot Number</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->plot_plot_no ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">Block Number</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->plot_house_no ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">Approved Plan Number</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->scheme_no ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">Survey Plan No.</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->scheme_no ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">Surveyed By</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->revenue_accountant ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">Layout Name</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->plot_district ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">District Name</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->plot_district ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <td class="border border-gray-400 p-2">Local Government Area (LGA)</td>
-                            <td class="border border-gray-400 p-2">[Insert Value]</td>
+                            <td class="border border-gray-400 p-2">
+                                @if(isset($application))
+                                    {{ $application->property_lga ?? '[No Data]' }}
+                                @else
+                                    [Insert Value]
+                                @endif
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -84,14 +170,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                   
-                       
                         <tr>
                             <td class="border border-gray-400 p-2">7</td>
                             <td class="border border-gray-400 p-2">FARIDA ABUBAKAR MUHAMMAD</td>
                             <td class="border border-gray-400 p-2">[Unit No.]</td>
                         </tr>
-                      
                     </tbody>
                 </table>
             </section>
@@ -101,9 +184,34 @@
                     $conveyanceData = json_decode($application->conveyance, true);
                 @endphp
                 <div class="mt-4 p-4 bg-white shadow">
-                    <h3 class="text-lg font-bold mb-2">Final Conveyance Record</h3>
-                    <p><strong>Buyer Name:</strong> {{ $conveyanceData['buyerName'] ?? '' }}</p>
-                    <p><strong>Section No:</strong> {{ $conveyanceData['sectionNo'] ?? '' }}</p>
+                    <h3 class="text-lg font-bold mb-2">Final Conveyance Records</h3>
+                    
+                    @if(isset($conveyanceData['records']) && is_array($conveyanceData['records']))
+                        <table class="w-full border-collapse mb-4">
+                            <thead>
+                                <tr>
+                                    <th class="border border-gray-400 p-2 text-left">SN</th>
+                                    <th class="border border-gray-400 p-2 text-left">BUYER NAME</th>
+                                    <th class="border border-gray-400 p-2 text-left">SECTION NO.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($conveyanceData['records'] as $index => $record)
+                                <tr>
+                                    <td class="border border-gray-400 p-2">{{ $index + 1 }}</td>
+                                    <td class="border border-gray-400 p-2">{{ $record['buyerName'] ?? '' }}</td>
+                                    <td class="border border-gray-400 p-2">{{ $record['sectionNo'] ?? '' }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @elseif(isset($conveyanceData['buyerName']) && isset($conveyanceData['sectionNo']))
+                        <!-- Fallback for the old single-record format -->
+                        <p><strong>Buyer Name:</strong> {{ $conveyanceData['buyerName'] }}</p>
+                        <p><strong>Section No:</strong> {{ $conveyanceData['sectionNo'] }}</p>
+                    @else
+                        <p>No conveyance records found.</p>
+                    @endif
                 </div>
             @endif
     

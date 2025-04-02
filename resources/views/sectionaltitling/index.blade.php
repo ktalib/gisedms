@@ -190,6 +190,53 @@
                         font-size: bold;
                     }
        </style>
+    <!-- External JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Comprehensive fix for modal backdrop issues
+        $(document).on('hidden.bs.modal', '.modal', function () {
+            removeBackdrop();
+        });
+
+        // Function to clean up modal artifacts
+        function removeBackdrop() {
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+            $('body').css('padding-right', '');
+            $('body').attr('style', $('body').attr('style')?.replace(/overflow:\s*hidden/i, ''));
+        }
+
+        // Additional cleanup on any modal close/hide event
+        $(document).on('hide.bs.modal', '.modal', function() {
+            setTimeout(removeBackdrop, 150);
+        });
+
+        // Global close method that can be called manually if needed
+        window.closeModal = function(modalId) {
+            $(modalId).modal('hide');
+            setTimeout(removeBackdrop, 150);
+        };
+
+        // Initial check and periodic cleanup
+        $(document).ready(function() {
+            removeBackdrop();
+            
+            // Periodic check for lingering backdrops when no modals are visible
+            setInterval(function() {
+                if ($('.modal.show').length === 0 && $('.modal-backdrop').length > 0) {
+                    removeBackdrop();
+                }
+            }, 500);
+        });
+    </script>
 
     <div class="container mx-auto mt-4 p-4">
 
@@ -352,12 +399,10 @@
                                             
                                                 <!-- Dropdown Menu -->
                                                 <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
-                                                    <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            data-id="{{ $application->id }}" data-bs-toggle="modal" data-bs-target="#viewRecordDetailModal"
-                                                            onclick="loadRecordDetails({{ $application->id }})">
+                                        <a href="{{ route('sectionaltitling.viewrecorddetail')}}?id={{$application->id}}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
                                                             <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
                                                             <span>View Record Details</span>
-                                                        </button>
+                                                </a>
                                                     <li>
                                                         <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-id="{{ $application->id }}" data-bs-toggle="modal" data-bs-target="#actionsModal" onclick="setSelectedApplicationId({{ $application->id }})">
@@ -537,17 +582,26 @@
                         const buyerNames = document.querySelectorAll('input[name="buyerName[]"]');
                         const sectionNos = document.querySelectorAll('input[name="sectionNo[]"]');
                         
-                        const conveyanceRecord = {
-                            buyerName: buyerNames[0].value,
-                            sectionNo: sectionNos[0].value
-                        };
-
+                        // Create an array of all conveyance records
+                        const records = [];
+                        for (let i = 0; i < buyerNames.length; i++) {
+                            if (buyerNames[i].value && sectionNos[i].value) {
+                                records.push({
+                                    buyerName: buyerNames[i].value,
+                                    sectionNo: sectionNos[i].value
+                                });
+                            }
+                        }
+                        
+                        // Send all records as a single object
                         const requestData = {
                             application_id: parseInt(appId),
-                            conveyance: conveyanceRecord
+                            conveyance: {
+                                records: records
+                            }
                         };
                         
-                        console.log('Sending data:', requestData);
+                        console.log('Sending conveyance data:', requestData);
                         
                         fetch("{{ route('conveyance.update') }}", {
                             method: 'POST',

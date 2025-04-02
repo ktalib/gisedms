@@ -21,26 +21,25 @@ class ConveyanceController extends Controller
                 'application_id' => 'required|integer',
                 'conveyance'    => 'required|array'
             ]);
-
+    
             $app = DB::connection('sqlsrv')->table('mother_applications')->where('id', $request->application_id)->first();
             if (!$app) {
                 return response()->json(['message' => 'Application not found.'], 404);
             }
-
-            // Ensure conveyance is an array of records
-            $conveyanceRecords = array_map(function ($buyerName, $sectionNo) {
-                return [
-                    'buyerName' => $buyerName,
-                    'sectionNo' => $sectionNo
-                ];
-            }, $request->conveyance['buyerName'], $request->conveyance['sectionNo']);
-
+    
+            // Get the conveyance data
+            $conveyanceData = $request->conveyance;
+            
+            // Log the data for debugging
+            
+            // Save the conveyance data exactly as received
             DB::connection('sqlsrv')->table('mother_applications')
                 ->where('id', $request->application_id)
-                ->update(['conveyance' => json_encode($conveyanceRecords)]);
-
+                ->update(['conveyance' => json_encode($conveyanceData)]);
+    
             return response()->json(['message' => 'Conveyance data updated successfully.']);
         } catch (\Exception $e) {
+            \Log::error('Error in updateConveyance: ' . $e->getMessage());
             return response()->json(['message' => 'Server error: ' . $e->getMessage()], 500);
         }
     }

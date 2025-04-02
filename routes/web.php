@@ -358,7 +358,7 @@ Route::get('/instruments/DeedOfMortgage', [InstrumentController::class, 'DeedOfM
 
 Route::get('/instruments/Coroi', [InstrumentController::class, 'Coroi'])->name('instruments.Coroi');
 
-// Instrument routes
+
 
 Route::post('/instruments', [InstrumentController::class, 'store'])->name('instruments.store');
 Route::get('/instruments/{id}/edit', [InstrumentController::class, 'edit']);
@@ -410,7 +410,12 @@ Route::get('sectionaltitling/getFinancialData', [App\Http\Controllers\Applicatio
 
 // Add these routes in the appropriate section of your web.php file
 Route::get('sectionaltitling/get-billing-data/{id}', [App\Http\Controllers\ApplicationMotherController::class, 'getBillingData'])->name('sectionaltitling.getBillingData');
+
+Route::get('sectionaltitling/get-billing-data2/{id}', [App\Http\Controllers\ApplicationMotherController::class, 'getBillingData2'])->name('sectionaltitling.getBillingData2');
 Route::post('sectionaltitling/save-billing-data', [App\Http\Controllers\ApplicationMotherController::class, 'saveBillingData'])->name('sectionaltitling.saveBillingData');
+
+Route::get('sectionaltitling/viewrecorddetail',  [App\Http\Controllers\ApplicationMotherController::class, 'Veiwrecords'])->name('sectionaltitling.viewrecorddetail');
+
 
 // Add this route in the appropriate section
 Route::post('/sectionaltitling/save-eregistry', [eRegistryController::class, 'saveERegistry'])->name('sectionaltitling.saveERegistry');
@@ -437,21 +442,13 @@ Route::get('sectionaltitling/residential/sub_application', [ResidentialControlle
 Route::get('sectionaltitling/residential/sub_applications', [ResidentialController::class, 'subApplication'])->name('sectionaltitling.residential.sub_applications');
 Route::post('sectionaltitling/residential', [ResidentialController::class, 'storeResMotherApp'])->name('sectionaltitling.residential.store');
 
-
-Route::group(
-    [
-        'middleware' => [
-            'auth',
-            'XSS',
-        ],
-    ],
-    function () {
-        Route::get('record/details/{id}', [RecordController::class, 'show'])->name('record.details');
-    }
-);
-
 Route::post('/deeds/insert', [DeedsController::class, 'insert'])->name('deeds.insert');
 
 Route::post('/conveyance/update', [ConveyanceController::class, 'updateConveyance'])->name('conveyance.update');
+
+Route::get('/sectionaltitling/generate-bill/{id?}', [SubApplicationController::class, 'GenerateBill'])->name('sectionaltitling.generate_bill');
+Route::get('/sectionaltitling/generate-bill', [SubApplicationController::class, 'GenerateBill'])->name('sectionaltitling.generate_bill_no_id');
+
+Route::get('/subapplications/{id}', [SubApplicationController::class, 'getSubApplication']);
 
 Route::impersonate();
