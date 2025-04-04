@@ -3,7 +3,23 @@
     $admin_logo = getSettingsValByName('company_logo');
     $lightLogo = getSettingsValByName('light_logo');
 ?>
-
+<footer class="pc-footer">
+    <div class="footer-wrapper container-fluid">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end align-items-center">
+                <div class="d-flex align-items-center">
+                    <p class="m-0 text-end" style="margin-right: 10px;">
+                        <strong>
+                            Copyright LAAD-Sys (Land Admin System) <?php echo e(date('Y')); ?><br>
+                            All rights reserved.
+                        </strong>
+                    </p>
+                    <img src="<?php echo e(asset(Storage::url('uploads')).'/logo.jpeg'); ?>" alt="Logo" class="footer-logo" style="width: auto; height: 50px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
 <script src="<?php echo e(asset('js/jquery.js')); ?>"></script>
 <!-- Required Js -->
 <script src="<?php echo e(asset('assets/js/plugins/popper.min.js')); ?>"></script>

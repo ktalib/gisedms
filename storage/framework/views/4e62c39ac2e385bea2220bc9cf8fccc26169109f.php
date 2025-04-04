@@ -84,7 +84,7 @@
                             <div class="carousel-inner">
                                 <?php $__currentLoopData = $titles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $title): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="carousel-item <?php echo e($index == 0 ? 'active' : ''); ?>">
-                                        <h1><b><?php echo e($title); ?></b></h1>
+                                        <h1 style="color:#1b934c"><b>LAAD-Sys </b></h1>
                                         <p class="f-12 mt-4"><?php echo e($descriptions[$index] ?? ''); ?></p>
                                     </div>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -100,7 +100,7 @@
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
-                        <img src="https://i.ibb.co/pSpyR5B/Whats-App-Image-2025-02-21-at-7-06-36-AM.jpg" alt="images"
+                        <img src="<?php echo e(asset(Storage::url('uploads')).'/logo.jpeg'); ?>" alt="images"
                             class="img-fluid mt-3 w-75" />
 
 

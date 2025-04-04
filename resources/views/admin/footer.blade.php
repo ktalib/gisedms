@@ -3,24 +3,23 @@
     $admin_logo = getSettingsValByName('company_logo');
     $lightLogo = getSettingsValByName('light_logo');
 @endphp
-{{-- <footer class="pc-footer">
+<footer class="pc-footer">
     <div class="footer-wrapper container-fluid">
         <div class="row">
-            <div class="col-sm-6 my-1">
-                <p class="m-0">
-                    {{ __('Copyright') }} {{ date('Y') }} © {{ env('APP_NAME') }} {{ __('All rights reserved') }}.
-                </p>
-            </div>
-            <div class="col-sm-6 ms-auto my-1">
-                <ul class="list-inline footer-link mb-0 justify-content-sm-end d-flex">
-                    @foreach ($DefaultCustomPage as $item)
-                        <li class="list-inline-item"><a href="{{ route('page', $item->slug) }}" target="_blank">{{ $item->title }}</a></li>
-                    @endforeach
-                </ul>
+            <div class="col-12 d-flex justify-content-end align-items-center">
+                <div class="d-flex align-items-center">
+                    <p class="m-0 text-end" style="margin-right: 10px;">
+                        <strong>
+                            Copyright LAAD-Sys (Land Admin System) {{ date('Y') }}<br>
+                            All rights reserved.
+                        </strong>
+                    </p>
+                    <img src="{{ asset(Storage::url('uploads')).'/logo.jpeg' }}" alt="Logo" class="footer-logo" style="width: auto; height: 50px;">
+                </div>
             </div>
         </div>
     </div>
-</footer> --}}
+</footer>
 <script src="{{ asset('js/jquery.js') }}"></script>
 <!-- Required Js -->
 <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>

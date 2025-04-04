@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class ApplicationMotherController extends Controller
 {
@@ -64,8 +65,12 @@ class ApplicationMotherController extends Controller
     {
         return view('sectionaltitling.create');
     }
+
+
     public function Subapplications(Request $request)
     {
+        $subApplications = collect(); // Initialize as an empty collection to avoid undefined variable error
+
         $query = DB::connection('sqlsrv')
             ->table('dbo.subapplications AS sub')
             ->join('dbo.mother_applications AS main', 'sub.main_application_id', '=', 'main.id')
@@ -103,13 +108,12 @@ class ApplicationMotherController extends Controller
 
         // If filtering by main_application_id and no results found
         if ($request->has('main_application_id') && $subApplications->isEmpty()) {
-            return view('sectionaltitling.sub_applications', compact('subApplications'))
-                ->with('sweet_alert', [
-                    'type' => 'info',
-                    'title' => 'No Records',
-                    'text' => 'No sub-applications found for mother application ID ' . $request->main_application_id
-                ]);
+            return redirect()->route('sectionaltitling.index')->with('error', 'No sub-applications found for mother application ID.');
+
         }
+
+
+        // Return the view with the sub-applications data
 
         return view('sectionaltitling.sub_applications', compact('subApplications'));
     }
@@ -223,97 +227,7 @@ class ApplicationMotherController extends Controller
         return view('sectionaltitling.AcceptLetter');
     }
 
-    public function storeMotherApp(Request $request)
-    {
-        $request->validate([
-            'applicant_type' => 'required',
-            'applicant_title' => 'nullable',
-            'first_name' => 'nullable',
-            'middle_name' => 'nullable',
-            'surname' => 'nullable',
-            'passport' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'fileno' => 'nullable',
-            'corporate_name' => 'nullable',
-            'rc_number' => 'nullable',
-            'multiple_owners_names' => 'nullable',
-            'multiple_owners_passport' => 'nullable',
-            'address' => 'nullable',
-            'phone_number' => 'nullable',
-            'email' => 'nullable|email',
-            'identification_type' => 'nullable',
-            'NoOfUnits' => 'nullable',
-            'plot_house_no' => 'nullable',
-            'plot_plot_no' => 'nullable',
-            'plot_street_name' => 'nullable',
-            'plot_district' => 'nullable',
-            'owner_house_no' => 'nullable',
-            'owner_plot_no' => 'nullable',
-            'owner_street_name' => 'nullable',
-            'owner_district' => 'nullable',
-            'additional_comments' => 'nullable',
-            'application_fee' => 'nullable|numeric',
-            'payment_date' => 'nullable|date',
-            'receipt_number' => 'nullable',
-            'receipt_date' => 'nullable|date',
-            'revenue_accountant' => 'nullable',
-            'accountant_signature_date' => 'nullable|date',
-            'scheme_no' => 'nullable',
-            'application_status' => 'required|string|in:pending',
-            'approval_date' => 'nullable|date',
-            'plot_size' => 'nullable|numeric',
-            'land_use' => 'nullable',
-            'comments' => 'nullable',
-            'planning_recommendation_status' => 'required|string|in:pending',
-            'application_fee' => 'nullable|numeric',
-            'processing_fee' => 'nullable|numeric',
-            'site_plan_fee' => 'nullable|numeric',
-            'payment_date' => 'nullable',
-            'receipt_number' => 'nullable',
-            'address_house_no' => 'nullable|string|max:50',
-            'address_plot_no' => 'nullable|string|max:50',
-            'address_street_name' => 'nullable|string|max:100',
-            'address_district' => 'nullable|string|max:100',
-            'address_lga' => 'nullable|string|max:100',
-            'address_state' => 'nullable|string|max:50',
-            'property_house_no' => 'nullable|string|max:50',
-            'property_plot_no' => 'nullable|string|max:50',
-            'property_street_name' => 'nullable|string|max:100',
-            'property_district' => 'nullable|string|max:100',
-            'property_lga' => 'nullable|string|max:100',
-            'property_state' => 'nullable|string|max:50',
-            'residential_type' => 'nullable|string|max:50',
-            'house_number' => 'nullable|string|max:50',
-            'floor_number' => 'nullable|string|max:20',
-            'ownership_type' => 'nullable|string|max:50',
-            'ownership_type_others_text' => 'nullable|string|max:255'
-        ]);
-
-        $data = $request->except('_token', 'fileNoPrefix', 'fileNumber');
-
-        if ($request->hasFile('passport')) {
-            $data['passport'] = $request->file('passport')->store('passports', 'public');
-        }
-
-        if ($request->hasFile('multiple_owners_passport')) {
-            $files = $request->file('multiple_owners_passport');
-            $filePaths = [];
-            foreach ($files as $file) {
-                $filePaths[] = $file->store('multiple_owners_passports', 'public');
-            }
-            $data['multiple_owners_passport'] = json_encode($filePaths);
-        }
-
-        foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                $data[$key] = json_encode($value);
-            }
-        }
-
-        DB::connection('sqlsrv')->table('dbo.mother_applications')->insert($data);
-
-        return redirect()->route('sectionaltitling.index')->with('success', 'Mother Application created successfully.');
-    }
-
+  
     public function storeSub(Request $request)
     {
         $validatedData = $request->validate([
@@ -346,19 +260,24 @@ class ApplicationMotherController extends Controller
             'planning_recommendation_status' => 'required|string|in:pending',
         ]);
 
-        // Insert into StFileNo table
-        DB::connection('sqlsrv')->table('dbo.StFileNo')->insert([
-            'file_prefix' => $request->input('file_prefix'),
-            'serial_number' => $request->input('serial_number'),
-            'year' => $request->input('year'),
-            'fileno' => $request->input('fileno'),
-        ]);
+        try {
+            // Insert into StFileNo table
+            DB::connection('sqlsrv')->table('dbo.StFileNo')->insert([
+                'file_prefix' => $request->input('file_prefix'),
+                'serial_number' => $request->input('serial_number'),
+                'year' => $request->input('year'),
+                'fileno' => $request->input('fileno'),
+            ]);
 
-        if ($request->hasFile('passport')) {
-            $validatedData['passport'] = $request->file('passport')->store('sub_applications/passports', 'public');
+            if ($request->hasFile('passport')) {
+                $validatedData['passport'] = $request->file('passport')->store('sub_applications/passports', 'public');
+            }
+
+            DB::connection('sqlsrv')->table('dbo.subapplications')->insert($validatedData);
+        } catch (\Exception $e) {
+            \Log::error("storeSub: Error inserting sub-application - " . $e->getMessage());
+            return redirect()->back()->with('error', 'Error creating Sub-application.');
         }
-
-        DB::connection('sqlsrv')->table('dbo.subapplications')->insert($validatedData);
 
         return redirect()->route('sectionaltitling.sub_applications')->with('success', 'Sub-application created successfully.');
     }

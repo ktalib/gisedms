@@ -74,40 +74,68 @@
                     }
 
                     function printReceipt() {
+                        // Format money values with commas
+                        const formatCurrency = (amount) => {
+                            return parseFloat(amount).toLocaleString('en-NG', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                        };
+                        
                         const receiptContent = `
-                            <div style="width: 80mm; padding: 10mm; font-family: Arial; margin: 0 auto;">
-                                <div style="text-align: center; margin-bottom: 10mm; position: relative;">
+                            <div style="width: 80mm; padding: 10mm; font-family: 'Segoe UI', Arial, sans-serif; margin: 0 auto; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0,0,0,0.1); background-color: #fff;">
+                                <div style="text-align: center; margin-bottom: 12mm; position: relative; border-bottom: 2px solid #005c28;">
                                     <!-- Left Logo -->
-                                    <img src="{{ asset('assets/images/kanologo.png') }}" 
-                                         style="position: absolute; left: 10px; top: 10px; width: 50px; height: auto;">
+                                    <img src="{{ asset('assets/logo/logo1.jpg') }}" 
+                                         style="position: absolute; left: 5px; top: 5px; width: 55px; height: auto;">
                                     
                                     <!-- Right Logo -->
-                                    <img src="{{ asset('assets/images/blm.png') }}" 
-                                         style="position: absolute; right: 10px; top: 10px; width: 50px; height: auto;">
+                                    <img src="{{ asset('assets/logo/logo3.jpeg') }}" 
+                                         style="position: absolute; right: 5px; top: 5px; width: 55px; height: auto;">
                                     
-                                    <h2 style="margin: 0; padding-top: 60px;">KANO STATE GOVERNMENT</h2>
-                                    <h3 style="margin: 5px 0;">Bureau for Land Management</h3>
-                                    <h4 style="margin: 5px 0;">OFFICIAL RECEIPT</h4>
+                                    <h2 style="margin: 0; padding-top: 65px; color: #005c28; font-size: 16px; letter-spacing: 1px;">KANO STATE GOVERNMENT</h2>
+                                    <h3 style="margin: 5px 0; color: #333; font-size: 14px;">MINISTRY OF LAND AND PHYSICAL PLANNING</h3>
+                                    <h4 style="margin: 8px 0 15px; color: #333; background-color: #f9f9f9; padding: 5px; font-size: 16px; font-weight: bold;">INITIAL BILL RECEIPT</h4>
                                 </div>
 
-                                <div style="margin-bottom: 5mm;">
-                                    <p style="margin: 2px 0;"><b>Receipt No:</b> ${document.getElementById('receipt_number').value}</p>
-                                    <p style="margin: 2px 0;"><b>Date:</b> ${document.getElementById('payment_date').value}</p>
+                                <div style="margin-bottom: 8mm; background-color: #f9f9f9; padding: 8px; border-radius: 4px;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 3px 0;"><b style="color: #555;">Receipt No:</b></td>
+                                            <td style="text-align: right; font-weight: bold;">${document.getElementById('receipt_number').value}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 3px 0;"><b style="color: #555;">Date:</b></td>
+                                            <td style="text-align: right; font-weight: bold;">${document.getElementById('payment_date').value}</td>
+                                        </tr>
+                                    </table>
                                 </div>
 
-                                <div style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 5mm 0; margin-bottom: 5mm;">
-                                    <p style="margin: 2px 0;"><b>Application Fee:</b> ₦${document.getElementById('application_fee').value}</p>
-                                    <p style="margin: 2px 0;"><b>Processing Fee:</b> ₦${document.getElementById('processing_fee').value}</p>
-                                    <p style="margin: 2px 0;"><b>Site Plan Fee:</b> ₦${document.getElementById('site_plan_fee').value}</p>
+                                <div style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 8mm 0; margin-bottom: 8mm; background-color: #fafafa;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 5px 0; color: #444;"><b>Application Fee:</b></td>
+                                            <td style="text-align: right; font-weight: bold;">₦${formatCurrency(document.getElementById('application_fee').value)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px 0; color: #444;"><b>Processing Fee:</b></td>
+                                            <td style="text-align: right; font-weight: bold;">₦${formatCurrency(document.getElementById('processing_fee').value)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 5px 0; color: #444;"><b>Site Plan Fee:</b></td>
+                                            <td style="text-align: right; font-weight: bold;">₦${formatCurrency(document.getElementById('site_plan_fee').value)}</td>
+                                        </tr>
+                                    </table>
                                 </div>
 
-                                <div style="text-align: right; margin-bottom: 5mm;">
-                                    <h3 style="margin: 0;">Total: ₦${document.getElementById('totalAmount').value}</h3>
+                                <div style="text-align: right; margin-bottom: 10mm; background-color: #000000FF;  padding: 8px 12px; border-radius: 4px;">
+                                    <h3 style="margin: 0; font-size: 16px; color: white;">Total: ₦${formatCurrency(document.getElementById('totalAmount').value)}</h3>
                                 </div>
 
-                                <div style="text-align: center; font-size: 12px;">
-                                    <p style="margin: 2px 0;">Thank you for your payment</p>
-                                    <p style="margin: 2px 0;">This is an official receipt</p>
+                                <div style="text-align: center; font-size: 12px; border-top: 1px dashed #ccc; padding-top: 8px;">
+                                    <p style="margin: 2px 0; color: #666;">Thank you for your payment</p>
+                                    <p style="margin: 2px 0; color: #666;">This is an official receipt</p>
+                                    <p style="margin: 8px 0 0; font-size: 10px; color: #999;">Printed on: ${new Date().toLocaleString()}</p>
                                 </div>
                             </div>
                         `;

@@ -139,7 +139,7 @@
                         <span class="pc-arrow"><i class="fas fa-chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a href="#" class="pc-link">{{ __('File Digital Archive') }}</a></li>
+                        <li class="pc-item"><a href="#" class="pc-link">{{ __(' E-Registry') }}</a></li>
                         <li class="pc-item"><a href="#" class="pc-link">{{ __('File Tracker/Tracking') }}</a></li>
                         <li class="pc-item pc-hasmenu">
                             <a href="#" class="pc-link">{{ __('Indexing') }}<span class="pc-arrow"><i class="fas fa-chevron-right"></i></span></a>

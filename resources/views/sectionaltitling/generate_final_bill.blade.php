@@ -32,7 +32,7 @@
         <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none overflow-hidden" style="top: -520px;">
             <div>
             <div>
-                <img src="{{ asset('assets/logo/logo2.jpg') }}" alt="KANGIS Logo"  style="width: 200px; height: 200px; object-fit: contain;">
+                <img src="{{ asset('assets/logo/logo3.jpeg') }}" alt="KANGIS Logo"  style="width: 200px; height: 200px; object-fit: contain;">
             </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
            
             <h3 class="text-sm font-semibold mt-1">Application for Sectional Titling</h3>
             </div>
-            <img src="{{ asset('assets/logo/logo2.jpg') }}" alt="KANGIS Logo" class="w-16 h-16 object-contain">
+            <img src="{{ asset('assets/logo/logo3.jpeg') }}" alt="KANGIS Logo" class="w-16 h-16 object-contain">
         </div>
 
         <!-- Date -->

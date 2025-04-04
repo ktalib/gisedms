@@ -33,7 +33,7 @@ use App\Http\Controllers\ResidentialController;
 use App\Http\Controllers\eRegistryController;
 use App\Http\Controllers\DeedsController;
 use App\Http\Controllers\ConveyanceController;
-
+use App\Http\Controllers\SaveMainAppController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -388,7 +388,7 @@ Route::post('/sectionaltitling/storesub', [ApplicationMotherController::class, '
 
 Route::post('/sectionaltitling', [ApplicationMotherController::class, 'store'])->name('sectionaltitling.store');
 Route::get('/sectionaltitling/{id}/edit', [ApplicationMotherController::class, 'edit']);
-Route::post('/sectionaltitling', [ApplicationMotherController::class, 'storeMotherApp'])->name('sectionaltitling.storeMotherApp');
+
 
 Route::post('sectionaltitling/approve-sub', [ApplicationMotherController::class, 'approveSubApplication'])
     ->name('sectionaltitling.approveSubApplication');
@@ -450,6 +450,22 @@ Route::get('/sectionaltitling/generate-bill/{id?}', [SubApplicationController::c
 Route::get('/sectionaltitling/generate-bill', [SubApplicationController::class, 'GenerateBill'])->name('sectionaltitling.generate_bill_no_id');
 
 Route::get('/subapplications/{id}', [SubApplicationController::class, 'getSubApplication']);
-Route::get('sectionaltitling/viewrecorddetail_sub',  [App\Http\Controllers\ApplicationMotherController::class, 'Veiwrecords'])->name('sectionaltitling.viewrecorddetail_sub');
+
+
+Route::get('sectionaltitling/viewrecorddetail_sub',  [SubApplicationController::class, 'Veiwrecords'])->name('sectionaltitling.viewrecorddetail_sub');
+
+Route::get('/sectionaltitling/get-conveyance-data/{id}', [App\Http\Controllers\ConveyanceController::class, 'getConveyanceData'])->name('conveyance.getData');
+
+// Fix the route definition - we have a duplicate route
+Route::post('/sectionaltitling/store-mother-app', [SaveMainAppController::class, 'storeMotherApp'])
+    ->name('sectionaltitling.storeMotherApp');
+
+// Remove or comment out the duplicate route
+// Route::post('/sectionaltitling', [SaveMainAppController::class, 'storeMotherApp'])->name('sectionaltitling.storeMotherApp');
+
+// Add a fallback route for debugging
+Route::fallback(function () {
+    return response('Route not found. Please check the URL.', 404);
+});
 
 Route::impersonate();

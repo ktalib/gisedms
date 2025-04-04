@@ -1,12 +1,12 @@
 
 
 <?php $__env->startSection('page-title'); ?>
-    <?php echo e(__('APPLICATION FOR SECTIONAL TITLING COMMERCIAL MODULE')); ?>
+    <?php echo e(__('APPLICATION FOR SECTIONAL TITLING  MODULE')); ?>
 
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('breadcrumb'); ?>
     <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
-    <li class="breadcrumb-item" aria-current="page"> <?php echo e(__('APPLICATION FOR SECTIONAL TITLING COMMERCIAL MODULE')); ?></li>
+    <li class="breadcrumb-item" aria-current="page"> <?php echo e(__('APPLICATION FOR SECTIONAL TITLING  MODULE')); ?></li>
 <?php $__env->stopSection(); ?>
 <?php $__env->startPush('script-page'); ?>
     <script src="<?php echo e(asset('assets/js/plugins/ckeditor/classic/ckeditor.js')); ?>"></script>
@@ -34,8 +34,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-icons@1.13.14/iconfont/material-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
     
     <style>
         body {
@@ -199,45 +198,10 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Comprehensive fix for modal backdrop issues
-        $(document).on('hidden.bs.modal', '.modal', function () {
-            removeBackdrop();
-        });
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-        // Function to clean up modal artifacts
-        function removeBackdrop() {
-            $('.modal-backdrop').remove();
-            $('body').removeClass('modal-open');
-            $('body').css('padding-right', '');
-            $('body').attr('style', $('body').attr('style')?.replace(/overflow:\s*hidden/i, ''));
-        }
-
-        // Additional cleanup on any modal close/hide event
-        $(document).on('hide.bs.modal', '.modal', function() {
-            setTimeout(removeBackdrop, 150);
-        });
-
-        // Global close method that can be called manually if needed
-        window.closeModal = function(modalId) {
-            $(modalId).modal('hide');
-            setTimeout(removeBackdrop, 150);
-        };
-
-        // Initial check and periodic cleanup
-        $(document).ready(function() {
-            removeBackdrop();
-            
-            // Periodic check for lingering backdrops when no modals are visible
-            setInterval(function() {
-                if ($('.modal.show').length === 0 && $('.modal-backdrop').length > 0) {
-                    removeBackdrop();
-                }
-            }, 500);
-        });
-    </script>
 
     <div class="container mx-auto mt-4 p-4">
 
@@ -250,11 +214,11 @@
                     <a href="#" class="btn btn-success me-2" id="createAppBtn">
                         <i class="fa fa-plus"></i> Create Application
                     </a>
-
-                    <div class="dropdown d-none ms-2" id="selectLanduseDropdown">
+                    
+                    <div class="dropdown d-none ms-2" id="select-landuse-dropdown">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-plus"></i>Select Landuse Type
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-plus"></i> Select Landuse Type
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="<?php echo e(route('sectionaltitling.create')); ?>?landuse=Residential">
@@ -270,11 +234,11 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         const createAppBtn = document.getElementById('createAppBtn');
-                        const selectLanduseDropdown = document.getElementById('selectLanduseDropdown');
+                        const selectLanduseDropdown = document.getElementById('select-landuse-dropdown');
                         
                         createAppBtn.addEventListener('click', function(e) {
                             e.preventDefault();
@@ -284,10 +248,14 @@
                     });
                 </script>
 
-
-                <a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>" class="btn btn-secondary">
-                    <i class="fa fa-list"></i> View Sub Applications
-                </a>
+<div class="btn-group" role="group">
+    <a href="#" class="btn me-2" id="importFieldDataBtn" style="background-color: orange; border-color: orange; color: white;">
+        <i class="fa fa-upload"></i> Import Field Data
+    </a>
+    <a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>" class="btn btn-secondary">
+        <i class="fa fa-list"></i> View Sub Applications
+    </a>
+</div>
             </div>
             <div>
                 <div class="card shadow-sm" style="width:100%">
@@ -394,19 +362,21 @@
                                             }
                                         </script>
                                         <td class="relative">
-                                            <div class="relative inline-block">
-                                                
+                                            <div class="relative inline-block dropdown-container">
                                                 <!-- Dropdown Toggle Button -->
-                                                <button onclick="toggleDropdown(this)" class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400">
-                                                    <i class="fas fa-ellipsis-h text-gray-600"></i>
+                                                <button type="button" class="dropdown-toggle p-2 bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400" onclick="toggleDropdown(this, event)">
+                                                  <i class="material-icons">more_vert</i>
+                                               </button>
                                                 </button>
                                             
                                                 <!-- Dropdown Menu -->
                                                 <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
-                                        <a href="<?php echo e(route('sectionaltitling.viewrecorddetail')); ?>?id=<?php echo e($application->id); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                                                    <li>
+                                             <a href="<?php echo e(route('sectionaltitling.viewrecorddetail')); ?>?id=<?php echo e($application->id); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
                                                             <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
                                                             <span>View Record Details</span>
                                                 </a>
+                                            </li>
                                                     <li>
                                                         <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#actionsModal" onclick="setSelectedApplicationId(<?php echo e($application->id); ?>)">
@@ -419,6 +389,13 @@
                                                             data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#OtherApprovals">
                                                             <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
                                                             <span>Other Approvals</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                                                            data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="<?php echo e($application->id); ?>">
+                                                            <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
+                                                            <span>E-Registry</span>
                                                         </button>
                                                     </li>
                                                     <li>
@@ -442,13 +419,7 @@
                                                             <span>Final Conveyance</span>
                                                         </button>
 
-                                                    <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
-                                                            <span>E-Registry</span>
-                                                        </button>
-                                                    </li>
+                                                   
                                                     <li>
                                                         
                                                     </li>
@@ -486,6 +457,14 @@
                                                             </a>
                                                         </li>
                                                     <?php endif; ?>
+
+
+                                                    <li>
+                                                        <a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>?main_application_id=<?php echo e($application->id); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                                                        <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
+                                                                <span>Sub-Applications</span>
+                                                           </a>
+                                                       </li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -513,16 +492,7 @@
                     <!-- Hidden field for application id -->
                     <input type="hidden" name="application_id" id="finalConveyanceApplicationId" value="">
                     <div id="conveyanceInputsContainer">
-                    <div class="conveyance-input-group mb-3 grid grid-cols-2 gap-4">
-                        <div>
-                        <label for="buyerName1" class="form-label">Buyer Name</label>
-                        <input type="text" class="form-control" id="buyerName1" name="buyerName[]" required>
-                        </div>
-                        <div>
-                        <label for="sectionNo1" class="form-label">Section No.</label>
-                        <input type="text" class="form-control" id="sectionNo1" name="sectionNo[]" required>
-                        </div>
-                    </div>
+                    <!-- Input fields will be generated here -->
                     </div>
                     <button type="button" class="btn btn-primary" id="addConveyanceInputButton">
                     Add More
@@ -552,26 +522,89 @@
                             const applicationId = button.data('id');
                             $('#finalConveyanceApplicationId').val(applicationId);
                             console.log('Setting application ID to:', applicationId);
+                            
+                            // Clear existing inputs first
+                            $('#conveyanceInputsContainer').empty();
+                            
+                            // Fetch existing conveyance data
+                            fetch(`<?php echo e(url('/')); ?>/sectionaltitling/get-conveyance-data/${applicationId}`)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! Status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log('Fetched conveyance data:', data);
+                                    
+                                    let buyers = [];
+                                    
+                                    // Handle different formats of conveyance data
+                                    if (data && data.conveyance) {
+                                        try {
+                                            const conveyanceData = typeof data.conveyance === 'string' 
+                                                ? JSON.parse(data.conveyance) 
+                                                : data.conveyance;
+                                            
+                                            // Format 1: {buyerName: "...", sectionNo: "..."}
+                                            if (conveyanceData.buyerName && conveyanceData.sectionNo) {
+                                                buyers.push({
+                                                    buyerName: conveyanceData.buyerName,
+                                                    sectionNo: conveyanceData.sectionNo
+                                                });
+                                            }
+                                            // Format 2: {records: [{buyerName: "...", sectionNo: "..."}, ...]}
+                                            else if (conveyanceData.records && Array.isArray(conveyanceData.records)) {
+                                                buyers = conveyanceData.records;
+                                            }
+                                        } catch (e) {
+                                            console.error('Error parsing conveyance data:', e);
+                                        }
+                                    }
+                                    
+                                    // If no buyers found, add one empty input group
+                                    if (buyers.length === 0) {
+                                        addConveyanceInputGroup();
+                                    } else {
+                                        // Add input groups for each buyer
+                                        buyers.forEach(buyer => {
+                                            addConveyanceInputGroup(buyer.buyerName, buyer.sectionNo);
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching conveyance data:', error);
+                                    // Add one empty input group on error
+                                    addConveyanceInputGroup();
+                                });
                         });
                     });
 
-                    document.getElementById('addConveyanceInputButton').addEventListener('click', function() {
-                    const container = document.getElementById('conveyanceInputsContainer');
-                    const inputCount = container.querySelectorAll('.conveyance-input-group').length + 1;
+                    // Function to add conveyance input group with optional values
+                    function addConveyanceInputGroup(buyerName = '', sectionNo = '') {
+                        const container = document.getElementById('conveyanceInputsContainer');
+                        const inputCount = container.querySelectorAll('.conveyance-input-group').length + 1;
+                        
+                        const newInputGroup = document.createElement('div');
+                        newInputGroup.classList.add('conveyance-input-group', 'mb-3', 'grid', 'grid-cols-2', 'gap-4');
+                        
+                        newInputGroup.innerHTML = `
+                            <div>
+                            <label for="buyerName${inputCount}" class="form-label">Buyer Name</label>
+                            <input type="text" class="form-control" id="buyerName${inputCount}" name="buyerName[]" value="${buyerName}" required>
+                            </div>
+                            <div>
+                            <label for="sectionNo${inputCount}" class="form-label">Section No.</label>
+                            <input type="text" class="form-control" id="sectionNo${inputCount}" name="sectionNo[]" value="${sectionNo}" required>
+                            </div>
+                        `;
+                        
+                        container.appendChild(newInputGroup);
+                    }
 
-                    const newInputGroup = document.createElement('div');
-                    newInputGroup.classList.add('conveyance-input-group', 'mb-3', 'grid', 'grid-cols-2', 'gap-4');
-                    newInputGroup.innerHTML = `
-                        <div>
-                        <label for="buyerName${inputCount}" class="form-label">Buyer Name</label>
-                        <input type="text" class="form-control" id="buyerName${inputCount}" name="buyerName[]" required>
-                        </div>
-                        <div>
-                        <label for="sectionNo${inputCount}" class="form-label">Section No.</label>
-                        <input type="text" class="form-control" id="sectionNo${inputCount}" name="sectionNo[]" required>
-                        </div>
-                    `;
-                    container.appendChild(newInputGroup);
+                    // Add conveyance input button event
+                    document.getElementById('addConveyanceInputButton').addEventListener('click', function() {
+                        addConveyanceInputGroup();
                     });
 
                     document.getElementById('finalConveyanceForm').addEventListener('submit', function(e){
@@ -746,25 +779,13 @@
   
  
 <div class="modal fade" id="generateBettermentBillModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Generate Betterment Fee Bill</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div id="bettermentPdfViewer" style="width:100%; height:600px;"></div>
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.7/pdfobject.min.js"></script>
-                <script>
-                    PDFObject.embed("<?php echo e(asset('storage/uploads/betterment_bill.pdf')); ?>", "#bettermentPdfViewer", {
-                        pdfOpenParams: {
-                            zoom: "80" // Set default zoom to 80%
-                        }
-                    });
-                </script>
-            </div>
-
-            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
+            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between;">
                 <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
                     Close
                     <i class="material-icons" style="color: #9E9E9E;">close</i>
@@ -773,14 +794,20 @@
                     Print Betterment Bill
                     <i class="material-icons" style="color: #3F51B5;">print</i>
                 </button>
+                <button type="button" class="bttn green-shadow" onclick="launchArcGIS()" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
+                    Launch ArcGIS
+                    <i class="material-icons" style="color: #4CAF50;">map</i>
+                </button>
             </div>
-
-             
         </div>
     </div>
 </div>
- 
 
+<script>
+    function launchArcGIS() {
+        window.open('https://www.arcgis.com', '_blank');
+    }
+</script>
 
             <!-- View Actions Modal -->
             <div class="modal fade" id="viewActionsModal" tabindex="-1" aria-labelledby="viewActionsModalLabel" aria-hidden="true">
@@ -1020,7 +1047,7 @@
                                                 <div class="modal-body">
                                                     <!-- Dummy image for demonstration -->
                                                     <div class="text-center">
-                                                        <img src="https://via.placeholder.com/800x600?text=Survey+Plan+Example" alt="Survey Plan" class="img-fluid">
+                                                        <img src="<?php echo e(asset(Storage::url('uploads')).'/survey.jpeg'); ?>" alt="Survey Plan" class="img-fluid">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
@@ -1042,7 +1069,7 @@
                                             // Create a new window with just the image content
                                             const printWindow = window.open('', '_blank');
                                             printWindow.document.write('<html><head><title>Survey Plan</title></head><body>');
-                                            printWindow.document.write('<img src="https://via.placeholder.com/800x600?text=Survey+Plan+Example" style="width: 100%;">');
+                                            printWindow.document.write('<img src="<?php echo e(asset('storage/uploads/survey.jpeg')); ?>" style="width: 100%;">');
                                             printWindow.document.write('</body></html>');
                                             printWindow.document.close();
                                             printWindow.focus();
@@ -1192,14 +1219,10 @@
                             </button>
                             <button type="button" class="bttn gray-shadow" 
                                 style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 6px 12px; width: 140px;" onclick="showGenDocumentModal(); return false;">
-                                Gen & Print
+                                Gen & Print Bill
                                 <i class="material-icons" style="color: #2196F3; font-size: 16px;">description</i>
                             </button>
-                            <button type="button" class="bttn blue-shadow"
-                                style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3); font-size: 12px; padding: 6px 12px; width: 140px;" onclick="showGenBillModal(); return false;">
-                                Gen & Print Bill
-                                <i class="material-icons" style="color: #FF9800; font-size: 16px;">receipt</i>
-                            </button>
+                           
                         </div>
                     </div>
                 </form>
@@ -1597,7 +1620,7 @@ function loadRecordDetails(id) {
       <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
       <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
       <!-- Bootstrap JS -->
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+       
       <!-- SweetAlert2 -->
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <script>

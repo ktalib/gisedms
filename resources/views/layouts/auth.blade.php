@@ -84,7 +84,7 @@
                             <div class="carousel-inner">
                                 @foreach ($titles as $index => $title)
                                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                        <h1><b>{{ $title }}</b></h1>
+                                        <h1 style="color:#1b934c"><b>LAAD-Sys </b></h1>
                                         <p class="f-12 mt-4">{{ $descriptions[$index] ?? '' }}</p>
                                     </div>
                                 @endforeach
@@ -100,7 +100,7 @@
                                 @endforeach
                             </div>
                         </div>
-                        <img src="https://i.ibb.co/pSpyR5B/Whats-App-Image-2025-02-21-at-7-06-36-AM.jpg" alt="images"
+                        <img src="{{ asset(Storage::url('uploads')).'/logo.jpeg' }}" alt="images"
                             class="img-fluid mt-3 w-75" />
 
 

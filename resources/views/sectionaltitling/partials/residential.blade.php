@@ -41,24 +41,24 @@
         <h3 class="text-sm font-medium mb-4">Residential Type <span style="color:red">*</span></h3>
         <div class="grid grid-cols-3 gap-4">
             <label class="flex items-center space-x-3">
-                <input type="radio" name="residentialType" value="single_family" class="radio-custom">
+                <input type="radio" name="residential_type" value="Single Family" class="radio-custom">
                 <span class="text-sm">Single Family Home</span>
             </label>
             <label class="flex items-center space-x-3">
-                <input type="radio" name="residentialType" value="apartment" class="radio-custom">
+                <input type="radio" name="residential_type" value="Apartment" class="radio-custom">
                 <span class="text-sm">Apartment</span>
             </label>
             <label class="flex items-center space-x-3">
-                <input type="radio" name="residentialType" value="condominium" class="radio-custom">
+                <input type="radio" name="residential_type" value="Condominium" class="radio-custom">
                 <span class="text-sm">Condominium</span>
             </label>
             <label class="flex items-center space-x-3">
-                <input type="radio" name="residentialType" value="townhouse" class="radio-custom">
+                <input type="radio" name="residential_type" value="Town House" class="radio-custom">
                 <span class="text-sm">Townhouse</span>
             </label>
             <!-- Other field with custom input -->
             <div class="col-span-3 flex items-center space-x-3">
-                <input type="radio" name="residentialType" value="others" class="radio-custom" id="residentialOthers">
+                <input type="radio" name="residential_type" value="others" class="radio-custom" id="residentialOthers">
                 <span class="text-sm">Others (Specify)</span>
                 <input type="text" id="residentialOthersInput" name="residentialOthersInput"
                     class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex-1"

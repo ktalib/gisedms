@@ -20,11 +20,11 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700">LGA <span style="color:red">*</span></label>
-            <input type="text" name="lga" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter LGA">
+            <input type="text" name="address_lga" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter LGA">
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700">State <span style="color:red">*</span></label>
-            <input type="text" name="state" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter state">
+            <input type="text" name="address_state" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter state">
         </div>
     </div>
 </div>

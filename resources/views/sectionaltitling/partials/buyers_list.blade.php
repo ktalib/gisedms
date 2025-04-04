@@ -159,25 +159,7 @@
                 </table>
             </section>
     
-            <section class="mb-6">
-                <h2 class="text-base font-bold mb-2">LIST OF BUYERS & ALLOCATED SECTIONS</h2>
-                <table class="w-full border-collapse mb-4">
-                    <thead>
-                        <tr>
-                            <th class="border border-gray-400 p-2 text-left">SN</th>
-                            <th class="border border-gray-400 p-2 text-left">BUYER NAME</th>
-                            <th class="border border-gray-400 p-2 text-left">SECTION NO.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="border border-gray-400 p-2">7</td>
-                            <td class="border border-gray-400 p-2">FARIDA ABUBAKAR MUHAMMAD</td>
-                            <td class="border border-gray-400 p-2">[Unit No.]</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
+            
     
             @if(isset($application) && $application->conveyance)
                 @php

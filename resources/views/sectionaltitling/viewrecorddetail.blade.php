@@ -234,6 +234,28 @@
                                 <strong class="block font-medium text-gray-700 mb-1">Land Use:</strong>
                                 <span class="text-gray-900">{{ ucfirst($application->land_use ?? 'N/A') }}</span>
                             </div>
+                            
+                            @if(!empty($application->residential_type))
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <strong class="block font-medium text-gray-700 mb-1">Residential Type:</strong>
+                                <span class="text-gray-900">{{ ucfirst($application->residential_type) }}</span>
+                            </div>
+                            @endif
+
+                            @if(!empty($application->industrial_type))
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <strong class="block font-medium text-gray-700 mb-1">Industrial Type:</strong>
+                                <span class="text-gray-900">{{ ucfirst($application->industrial_type) }}</span>
+                            </div>
+                            @endif
+
+                            @if(!empty($application->commercial_type))
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <strong class="block font-medium text-gray-700 mb-1">Commercial Type:</strong>
+                                <span class="text-gray-900">{{ ucfirst($application->commercial_type) }}</span>
+                            </div>
+                            @endif
+
                             <div class="bg-gray-50 p-4 rounded-lg">
                                 <strong class="block font-medium text-gray-700 mb-1">Plot Size:</strong>
                                 <span class="text-gray-900">{{ $application->plot_size ?? 'N/A' }} sqm</span>
@@ -245,11 +267,21 @@
                         </div>
 
                         <div class="mt-4 bg-gray-50 p-4 rounded-lg">
-                            <strong class="block font-medium text-gray-700 mb-1">Property  Location:</strong>
-                            <span class="text-gray-900">
-                                House/Plot No: {{ $application->plot_house_no ?? '' }} {{ $application->plot_plot_no ?? '' }},
-                                {{ $application->plot_street_name ?? '' }},
-                                {{ $application->plot_district ?? '' }}
+                            <strong class="block font-medium text-gray-700 mb-1">Property Location:</strong>
+                            <span class="block text-gray-900">
+                                Plot No: {{ $application->property_house_no ?? '' }} {{ $application->property_plot_no ?? '' }}
+                            </span>
+                            <span class="block text-gray-900">
+                                Street Name: {{ $application->property_street_name ?? '' }}
+                            </span>
+                            <span class="block text-gray-900">
+                                District: {{ $application->property_district ?? '' }}
+                            </span>
+                            <span class="block text-gray-900">
+                                LGA: {{ $application->property_lga ?? '' }}
+                            </span>
+                            <span class="block text-gray-900">
+                                State: {{ $application->property_state ?? '' }}
                             </span>
                         </div>
                     </div>
@@ -309,13 +341,90 @@
                             Back to List
                         </a>
                         
-                         
-                        {{-- <button onclick="window.print()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out flex items-center">
+                        <button onclick="document.getElementById('conveyanceModal').classList.remove('hidden')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
                             </svg>
-                            Print Record
-                        </button> --}}
+                            View Conveyance
+                        </button>
+
+                        <div id="conveyanceModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                            <div class="bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+                                <!-- Modal header -->
+                                <div class="flex justify-between items-center py-4 px-6 bg-gray-100 border-b">
+                                    <h3 class="text-xl font-medium">Conveyance Records</h3>
+                                    <button onclick="document.getElementById('conveyanceModal').classList.add('hidden')" class="text-gray-600 hover:text-gray-900 text-2xl leading-none">&times;</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-6">
+                                    @php
+                                        // Debug information
+                                        $conveyanceDebug = $application->conveyance ?? 'No conveyance data';
+                                        
+                                        // Try to decode if it's a JSON string
+                                        $conveyanceData = $application->conveyance;
+                                        if (is_string($conveyanceData) && !empty($conveyanceData)) {
+                                            try {
+                                                $conveyanceData = json_decode($conveyanceData, true);
+                                            } catch (\Exception $e) {
+                                                // Keep as is if not valid JSON
+                                            }
+                                        }
+                                        
+                                        // Get records with multiple fallback options
+                                        $records = [];
+                                        if (is_array($conveyanceData) && isset($conveyanceData['records'])) {
+                                            $records = $conveyanceData['records'];
+                                        } elseif (isset($conveyance->records)) {
+                                            $records = $conveyance->records;
+                                        } elseif (is_array($conveyanceData)) {
+                                            $records = $conveyanceData; // Maybe records is the root array
+                                        }
+                                    @endphp
+                                    
+                                   
+                                    
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Buyer Name</th>
+                                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Section No</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody> 
+                                            @forelse($records as $record)
+                                                <tr class="{{ $loop->iteration % 2 == 0 ? 'bg-gray-50' : '' }}">
+                                                    <td class="px-4 py-2">
+                                                        @if(is_array($record))
+                                                            {{ $record['buyerName'] ?? ($record['buyer_name'] ?? 'N/A') }}
+                                                        @else
+                                                            {{ $record->buyerName ?? ($record->buyer_name ?? 'N/A') }}
+                                                        @endif
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        @if(is_array($record))
+                                                            {{ $record['sectionNo'] ?? ($record['section_no'] ?? 'N/A') }}
+                                                        @else
+                                                            {{ $record->sectionNo ?? ($record->section_no ?? 'N/A') }}
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="2" class="px-4 py-2 text-center text-gray-500">No conveyance records available.</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="px-6 py-4 bg-gray-100 border-t text-right">
+                                    <button onclick="document.getElementById('conveyanceModal').classList.add('hidden')" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

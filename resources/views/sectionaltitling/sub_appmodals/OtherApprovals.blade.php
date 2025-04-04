@@ -12,10 +12,12 @@ aria-hidden="true">
             <div>
                 <div class="button-grid">
                     <!-- Row 1 -->
-                    <button class="bttn purple-shadow" onclick="showDepartmentConfirmation('lands')">
-                        Lands
-                        <i class="material-icons" style="color: #9C27B0;">landscape</i>
-                    </button>
+                   <!-- Row 1 -->
+                   <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#landsModal">
+                    Lands
+                    <i class="material-icons" style="color: #9C27B0;">landscape</i>
+                </button>
+
                     <button class="bttn pink-shadow" onclick="showDepartmentConfirmation('survey')">
                         Survey
                         <i class="material-icons" style="color: #FF9800;">map</i>

@@ -13,6 +13,27 @@ class ConveyanceController extends Controller
     {
         
     }
+    
+    /**
+     * Get conveyance data for an application
+     */
+    public function getConveyanceData($id)
+    {
+        try {
+            $application = DB::connection('sqlsrv')->table('mother_applications')->where('id', $id)->first();
+            
+            if (!$application) {
+                return response()->json(['error' => 'Application not found'], 404);
+            }
+            
+            return response()->json([
+                'conveyance' => $application->conveyance ?? null
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error in getConveyanceData: ' . $e->getMessage());
+            return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+        }
+    }
    
     public function updateConveyance(Request $request)
     {

@@ -12,6 +12,10 @@ Main Application')); ?>
 <?php echo e(__('Application for Sectional Titling Commercial Main Application')); ?>
 
 
+<?php elseif(request()->query('landuse') === 'Industrial'): ?>
+<?php echo e(__('Application for Sectional Titling Industrial Main Application')); ?>
+
+
 <?php endif; ?>
 
   
@@ -129,16 +133,24 @@ Main Application')); ?>
 
                     </div>
                 <?php endif; ?>
-                <form method="POST" class="space-y-6" action="<?php echo e(route('sectionaltitling.storeMotherApp')); ?>"
-                    enctype="multipart/form-data">
+                
+                
+                <?php if($errors->any()): ?>
+                    <div class="alert alert-danger">
+                        <h5>Please fix the following errors:</h5>
+                        <ul>
+                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <li><?php echo e($error); ?></li>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+                
+                <form method="POST" class="space-y-6" action="<?php echo e(route('sectionaltitling.storeMotherApp')); ?>" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
-               
-                    <?php
-                    $landuse = request()->query('landuse', ''); // Get the landuse value, default empty string
-                    ?>
                     
                     
-                    <input type="hidden" id="landuse" value="<?php echo e($landuse); ?>">
+                    <input type="hidden" id="landuse" name="landuse" value="<?php echo e(request()->query('landuse', '')); ?>">
                  
                     <div class="grid grid-cols-3 gap-2 mb-6">
                         <div>
@@ -581,7 +593,51 @@ Main Application')); ?>
                     <?php endif; ?>
 
                   
-                    <br>
+                    <?php if(request()->query('landuse') === 'Industrial'): ?>
+                        <div class="form-section">
+                            <h2 class="section-title">Type of Industrial</h2>
+                            <div class="grid grid-cols-4 gap-4">
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" name="industrial_type" value="Industrial Layout" class="checkbox-custom">
+                                    <span class="text-sm">Industrial Layout</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" name="industrial_type" value="Industrial Estate" class="checkbox-custom">
+                                    <span class="text-sm">Industrial Estate</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" name="industrial_type" value="Section" class="checkbox-custom">
+                                    <span class="text-sm">Section</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" name="industrial_type" value="Others" class="checkbox-custom" id="industrialTypeOthers" onchange="toggleOtherInput('industrialTypeOthers', 'industrialTypeOthersInput')">
+                                    <span class="text-sm">Others</span>
+                                </label>
+                                <div class="col-span-2" id="industrialTypeOthersContainer" style="display: none;">
+                                    <input type="text" id="industrialTypeOthersInput" name="industrial_type_others" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Specify other type">
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const industrialOthersCheckbox = document.getElementById('industrialTypeOthers');
+                                const industrialOthersInput = document.getElementById('industrialTypeOthersInput');
+                                const industrialOthersContainer = document.getElementById('industrialTypeOthersContainer');
+
+                                industrialOthersCheckbox.addEventListener('change', function() {
+                                    if (this.checked) {
+                                        industrialOthersContainer.style.display = 'block';
+                                        industrialOthersInput.required = true;
+                                    } else {
+                                        industrialOthersContainer.style.display = 'none';
+                                        industrialOthersInput.value = '';
+                                        industrialOthersInput.required = false;
+                                    }
+                                });
+                            });
+                        </script>
+                    <?php endif; ?>
 
                         <?php if(request()->query('landuse') === 'Residential'): ?>
                             <?php echo $__env->make('sectionaltitling.partials.residential', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>

@@ -189,16 +189,106 @@ class SubApplicationController extends Controller
             return redirect()->route('sectionaltitling.index')->with('error', 'No record ID provided');
         }
         
+        // Join subapplications with mother_applications to get complete data
         $application = DB::connection('sqlsrv')
-            ->table('dbo.mother_applications')
-            ->where('id', $id)
+            ->table('dbo.subapplications as sub')
+            ->leftJoin('dbo.mother_applications as mother', 'sub.main_application_id', '=', 'mother.id')
+            ->select(
+                'sub.*',
+                'mother.applicant_type as mother_applicant_type',
+                'mother.applicant_title as mother_applicant_title',
+                'mother.first_name as mother_first_name',
+                'mother.middle_name as mother_middle_name',
+                'mother.surname as mother_surname',
+                'mother.passport as mother_passport',
+                'mother.corporate_name as mother_corporate_name',
+                'mother.rc_number as mother_rc_number',
+                'mother.multiple_owners_names as mother_multiple_owners_names',
+                'mother.multiple_owners_passport as mother_multiple_owners_passport',
+                'mother.address as mother_address',
+                'mother.phone_number as mother_phone_number',
+                'mother.email as mother_email',
+                'mother.land_use as mother_land_use',
+                'mother.plot_size as mother_plot_size',
+                'mother.fileno as mother_fileno'
+            )
+            ->where('sub.id', $id)
             ->first();
             
         if (!$application) {
             return redirect()->route('sectionaltitling.index')->with('error', 'Record not found');
         }
         
-        return view('sectionaltitling.viewrecorddetail', compact('application'));
+        // Parse JSON data for sub-application multiple owners
+        if (!empty($application->multiple_owners_names)) {
+            // Try to decode as JSON first
+            $decoded = json_decode($application->multiple_owners_names, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $application->multiple_owners_names_array = $decoded;
+            } 
+            // If not valid JSON, try CSV format with quotes
+            else if (is_string($application->multiple_owners_names) && 
+                    strpos($application->multiple_owners_names, ',') !== false) {
+                // Handle CSV format with quotes
+                preg_match_all('/"([^"]+)"/', $application->multiple_owners_names, $matches);
+                $application->multiple_owners_names_array = !empty($matches[1]) ? $matches[1] : 
+                    array_map('trim', explode(',', $application->multiple_owners_names));
+            } 
+            // If single string
+            else {
+                $application->multiple_owners_names_array = [$application->multiple_owners_names];
+            }
+        } else {
+            $application->multiple_owners_names_array = [];
+        }
+        
+        // Parse multiple_owners_passport (JSON)
+        if (!empty($application->multiple_owners_passport)) {
+            $application->multiple_owners_passport_array = json_decode($application->multiple_owners_passport, true) ?: [];
+        } else {
+            $application->multiple_owners_passport_array = [];
+        }
+        
+        // Parse multiple_owners_data (JSON)
+        if (!empty($application->multiple_owners_data)) {
+            $application->multiple_owners_data_array = json_decode($application->multiple_owners_data, true) ?: [];
+        } else {
+            $application->multiple_owners_data_array = [];
+        }
+        
+        // Parse mother application multiple owners
+        if (!empty($application->mother_multiple_owners_names)) {
+            // Try to decode as JSON first
+            $decoded = json_decode($application->mother_multiple_owners_names, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $application->mother_multiple_owners_names_array = $decoded;
+            } 
+            // If not valid JSON, try CSV format with quotes
+            else if (is_string($application->mother_multiple_owners_names) && 
+                    strpos($application->mother_multiple_owners_names, ',') !== false) {
+                // Handle CSV format with quotes
+                preg_match_all('/"([^"]+)"/', $application->mother_multiple_owners_names, $matches);
+                $application->mother_multiple_owners_names_array = !empty($matches[1]) ? $matches[1] : 
+                    array_map('trim', explode(',', $application->mother_multiple_owners_names));
+            } 
+            // If single string
+            else {
+                $application->mother_multiple_owners_names_array = [$application->mother_multiple_owners_names];
+            }
+        } else {
+            $application->mother_multiple_owners_names_array = [];
+        }
+        
+        // Log data for debugging
+        \Log::info('Viewing subapplication record', [
+            'id' => $id,
+            'application_data_exists' => !empty($application),
+            'multiple_owners_names' => $application->multiple_owners_names ?? null,
+            'multiple_owners_names_array' => $application->multiple_owners_names_array ?? [],
+            'mother_multiple_owners_names_array' => $application->mother_multiple_owners_names_array ?? []
+        ]);
+        
+        return view('sectionaltitling.viewrecorddetail_sub', compact('application'));
     }
 
 

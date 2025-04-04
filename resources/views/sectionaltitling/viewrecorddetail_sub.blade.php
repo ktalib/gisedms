@@ -1,324 +1,330 @@
-{{-- filepath: c:\wamp64\www\gisedms\resources\views\sectionaltitling\viewrecorddetail.blade.php --}}
 @extends('layouts.app')
-@section('page-title')
-    {{ __('APPLICATION FOR SECTIONAL TITLING COMMERCIAL RECORD DETAILS') }}
-@endsection
+
+@section('page-title', __('Sub-Application Details'))
+
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a></li>
-    <li class="breadcrumb-item" aria-current="page"> {{ __('APPLICATION FOR SECTIONAL TITLING COMMERCIAL RECORD DETAILS') }}
-    </li>
+    <li class="breadcrumb-item"><a href="{{ route('sectionaltitling.index') }}">{{ __('Sub-Applications') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ __('View Details') }}</li>
 @endsection
 
 @section('content')
-    <div class="container mx-auto mt-4 p-4">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-gray-50 border-b border-gray-200 py-3 px-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-bold text-gray-800">Record Details</h2>
-                    <div class="flex items-center gap-2">
-                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        Application Status    {{ $application->application_status ?? 'Pending' }}
-                        </span>
-                        <span class="bg-{{ $application->planning_recommendation_status == 'Approved' ? 'green' : ($application->planning_recommendation_status == 'Rejected' ? 'red' : 'yellow') }}-100 
-                               text-{{ $application->planning_recommendation_status == 'Approved' ? 'green' : ($application->planning_recommendation_status == 'Rejected' ? 'red' : 'yellow') }}-800 
-                               text-xs font-medium px-2.5 py-0.5 rounded-full">
-                            Planning Recommendation: {{ $application->planning_recommendation_status ?? 'Pending' }}
-                        </span>
-                    </div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">ST FileNo - {{ $application->fileno ?? 'N/A' }}</h4>
                 </div>
-            </div>
-            <div class="card-body p-0">
-                <div class="bg-white p-6">
-                    <!-- File Info and Status -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="col-span-2">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <strong class="block font-medium text-gray-700 mb-1">File Number:</strong>
-                                    <span class="text-gray-900 text-lg">{{ $application->fileno ?? 'N/A' }}</span>
+                <div class="card-body">
+                    <!-- Main Application Details -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-users mr-2"></i> Original Owner Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p><strong>File No:</strong> <span class="text-primary">{{ $application->mother_fileno ?? 'N/A' }}</span></p>
                                 </div>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <strong class="block font-medium text-gray-700 mb-1">Application Type:</strong>
-                                    <span class="text-gray-900 text-lg">{{ ucfirst($application->applicant_type ?? 'N/A') }}</span>
+                                <div class="col-md-4">
+                                    <p><strong>Form ID:</strong> STM-2025-000{{ $application->main_application_id ?? 'N/A' }}</p>
                                 </div>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <strong class="block font-medium text-gray-700 mb-1">Application Date:</strong>
-                                    <span class="text-gray-900">{{ $application->created_at ? date('d M Y', strtotime($application->created_at)) : 'N/A' }}</span>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <strong class="block font-medium text-gray-700 mb-1">Approval Date:</strong>
-                                    <span class="text-gray-900">{{ $application->approval_date ? date('d M Y', strtotime($application->approval_date)) : 'Pending' }}</span>
+                                <div class="col-md-4">
+                                    <p><strong>Owner Type:</strong> {{ ucfirst($application->mother_applicant_type ?? 'N/A') }}</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex justify-center items-center">
-                            <!-- Passport Photo Section -->
-                            <div class="text-center">
-                                <div class="mb-2 border border-gray-300 rounded-lg overflow-hidden inline-block">
-                                    @if(isset($application->passport) && !empty($application->passport))
-                                        <img src="{{ asset('storage/app/public/'.$application->passport) }}" alt="Applicant Photo" class="w-36 h-36 object-cover">
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <p><strong>Original Owner(s):</strong></p>
+                                    @if ($application->mother_applicant_type == 'corporate')
+                                        <div class="alert alert-info">
+                                            <p><i class="fas fa-building mr-2"></i> {{ $application->mother_corporate_name ?? 'N/A' }} (RC: {{ $application->mother_rc_number ?? 'N/A' }})</p>
+                                        </div>
+                                    @elseif ($application->mother_applicant_type == 'multiple' && !empty($application->mother_multiple_owners_names_array))
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-users mr-2"></i> 
+                                            <ul class="mb-0 list-unstyled">
+                                                @foreach($application->mother_multiple_owners_names_array as $ownerName)
+                                                    <li>{{ $ownerName }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                     @else
-                                        <div class="w-36 h-36 bg-gray-200 flex items-center justify-center">
-                                            <span class="text-gray-500 text-sm">No Photo Available</span>
+                                        <div class="alert alert-info">
+                                            <p><i class="fas fa-user mr-2"></i> {{ $application->mother_applicant_title ?? '' }} {{ $application->mother_first_name ?? '' }} {{ $application->mother_middle_name ?? '' }} {{ $application->mother_surname ?? '' }}</p>
                                         </div>
                                     @endif
                                 </div>
-                                <p class="text-sm text-gray-600">Applicant Photo</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Applicant Information -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">Applicant Information</h3>
-                        
-                        @if($application->applicant_type == 'individual')
-                            <!-- Individual Applicant(s) -->
-                            <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                                <strong class="block font-medium text-gray-700 mb-2">Primary Applicant:</strong>
-                                <div class="flex items-center">
-                                    <div class="mr-4">
-                                        @if(isset($application->passport) && !empty($application->passport))
-                                            <img src="{{ asset('storage/app/public/'.$application->passport) }}" alt="Primary Applicant" class="w-16 h-16 object-cover rounded-full border border-gray-300">
-                                        @else
-                                            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                                                <span class="text-gray-500 text-xs">No Photo</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <p class="text-gray-900 font-medium">{{ $application->applicant_title ?? '' }} {{ $application->first_name ?? '' }} {{ $application->middle_name ?? '' }} {{ $application->surname ?? '' }}</p>
-                                        <p class="text-gray-600 text-sm">{{ $application->email ?? 'N/A' }} </p>
-                                    </div>
-                                </div>
                             </div>
                             
-                            <!-- Co-Applicants (if any) -->
-                            @if(isset($application->co_applicants) && !empty($application->co_applicants))
-                                <strong class="block font-medium text-gray-700 mb-2">Co-Applicants:</strong>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    @foreach($application->co_applicants as $co_applicant)
-                                    <div class="bg-gray-50 p-4 rounded-lg">
-                                        <div class="flex items-center">
-                                            <div class="mr-4">
-                                                @if(isset($co_applicant->passport_photo) && !empty($co_applicant->passport_photo))
-                                                    <img src="{{ asset('storage/'.$co_applicant->passport_photo) }}" alt="Co-Applicant" class="w-12 h-12 object-cover rounded-full border border-gray-300">
-                                                @else
-                                                    <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                                                        <span class="text-gray-500 text-xs">No Photo</span>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div>
-                                                <p class="text-gray-900">{{ $co_applicant->title ?? '' }} {{ $co_applicant->name ?? 'N/A' }}</p>
-                                                <p class="text-gray-600 text-sm">{{ $co_applicant->email ?? 'N/A' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            @endif
-                        @elseif($application->applicant_type == 'corporate')
-                            <!-- Corporate Applicant -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <strong class="block font-medium text-gray-700 mb-1">Corporate Name:</strong>
-                                    <span class="text-gray-900">{{ $application->corporate_name ?? 'N/A' }}</span>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <strong class="block font-medium text-gray-700 mb-1">RC Number:</strong>
-                                    <span class="text-gray-900">{{ $application->rc_number ?? 'N/A' }}</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Corporate Representatives (if any) -->
-                            @if(isset($application->representatives) && !empty($application->representatives))
-                                <div class="mt-4">
-                                    <strong class="block font-medium text-gray-700 mb-2">Corporate Representatives:</strong>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        @foreach($application->representatives as $rep)
-                                        <div class="bg-gray-50 p-4 rounded-lg">
-                                            <div class="flex items-center">
-                                                <div class="mr-4">
-                                                    @if(isset($rep->passport_photo) && !empty($rep->passport_photo))
-                                                        <img src="{{ asset('storage/'.$rep->passport_photo) }}" alt="Representative" class="w-12 h-12 object-cover rounded-full border border-gray-300">
-                                                    @else
-                                                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                                                            <span class="text-gray-500 text-xs">No Photo</span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div>
-                                                    <p class="text-gray-900">{{ $rep->name ?? 'N/A' }}</p>
-                                                    <p class="text-gray-600 text-sm">{{ $rep->position ?? 'N/A' }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
-                        @endif
-
-                        <div class="mt-4 bg-gray-50 p-4 rounded-lg">
-                            <strong class="block font-medium text-gray-700 mb-1">Contact Information:</strong>
-                            <div class="text-gray-900">
-                                <div>{{ $application->address ?? 'N/A' }}</div>
-                                <div>
-                                    Phone: 
-                                    @if(isset($application->phone_number))
+                            <!-- Original Owner Passport Photos -->
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <p><strong>Photo Identification:</strong></p>
+                                    @if ($application->mother_applicant_type == 'multiple')
                                         @php
-                                            $phoneNumbers = explode(',', $application->phone_number);
+                                            $motherPassports = !empty($application->mother_multiple_owners_passport) 
+                                                ? json_decode($application->mother_multiple_owners_passport, true) 
+                                                : [];
+                                            
+                                            // If decoding failed or it's not in the expected format
+                                            if (json_last_error() !== JSON_ERROR_NONE || !is_array($motherPassports)) {
+                                                $motherPassports = [];
+                                            }
                                         @endphp
-                                        @if(count($phoneNumbers) > 1)
-                                            @foreach($phoneNumbers as $phoneNumber)
-                                                {{ trim($phoneNumber) }}@if(!$loop->last), @endif
-                                            @endforeach
+                                        
+                                        @if(!empty($motherPassports))
+                                            <div class="row">
+                                                @foreach($motherPassports as $index => $passport)
+                                                    <div class="col-md-3 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-body text-center">
+                                                                @if(is_string($passport) && !empty($passport))
+                                                                    <img src="{{ asset('storage/app/public/passports/' . $passport) }}" 
+                                                                         alt="Owner {{ $index + 1 }}" 
+                                                                         class="img-thumbnail mb-2" 
+                                                                         style="max-width: 150px; height: auto;">
+                                                                @elseif(is_array($passport) && !empty($passport['photo']))
+                                                                    <img src="{{ asset('storage/app/public/passports/' . $passport['photo']) }}" 
+                                                                         alt="{{ $passport['name'] ?? 'Owner ' . ($index + 1) }}" 
+                                                                         class="img-thumbnail mb-2" 
+                                                                         style="max-width: 150px; height: auto;">
+                                                                    <h6>{{ $passport['name'] ?? ('Owner ' . ($index + 1)) }}</h6>
+                                                                @else
+                                                                    <div class="avatar-placeholder mb-2">
+                                                                        <i class="fas fa-user fa-3x"></i>
+                                                                    </div>
+                                                                    <h6>Owner {{ $index + 1 }}</h6>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         @else
-                                            {{ $application->phone_number ?? 'N/A' }}
+                                            <div class="alert alert-light">
+                                                <p><i class="fas fa-info-circle mr-2"></i> No passport photos available for multiple owners</p>
+                                            </div>
                                         @endif
+                                    @elseif(!empty($application->mother_passport))
+                                        <div class="text-center mt-2">
+                                            <img src="{{ asset('storage/app/public/' . $application->mother_passport) }}" 
+                                                 alt="Original Owner Passport" 
+                                                 class="img-thumbnail" 
+                                                 style="max-width: 150px;">
+                                        </div>
                                     @else
-                                        N/A
+                                        <div class="alert alert-light">
+                                            <p><i class="fas fa-info-circle mr-2"></i> No passport photo available</p>
+                                        </div>
                                     @endif
                                 </div>
-                                <div>Email: {{ $application->email ?? 'N/A' }}</div>
                             </div>
-                        </div>
-                        
-                        <!-- Multiple Owners Section -->
-                        @if(isset($application->multiple_owners_names) && !empty($application->multiple_owners_names))
-                            <div class="mt-4">
-                                <strong class="block font-medium text-gray-700 mb-2">Multiple Owners:</strong>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    @php
-                                        $ownerNames = is_array($application->multiple_owners_names) 
-                                            ? $application->multiple_owners_names 
-                                            : json_decode($application->multiple_owners_names, true);
-                                            
-                                        $ownerPassports = is_array($application->multiple_owners_passport)
-                                            ? $application->multiple_owners_passport
-                                            : json_decode($application->multiple_owners_passport, true);
-                                    @endphp
-                                    
-                                    @foreach($ownerNames as $key => $ownerName)
-                                        <div class="bg-gray-50 p-4 rounded-lg">
-                                            <div class="flex items-center">
-                                                <div class="mr-4">
-                                                    @if(isset($ownerPassports[$key]) && !empty($ownerPassports[$key]))
-                                                        <img src="{{ asset('storage/app/public/'.$ownerPassports[$key]) }}" 
-                                                             alt="Owner Photo" 
-                                                             class="w-16 h-16 object-cover rounded-full border border-gray-300">
-                                                    @else
-                                                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                                                            <span class="text-gray-500 text-xs">No Photo</span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div>
-                                                    <p class="text-gray-900 font-medium">{{ $ownerName }}</p>
-                                                    <p class="text-gray-600 text-sm">Owner {{ $key + 1 }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <p><strong>Land Use:</strong> {{ ucfirst($application->mother_land_use ?? 'N/A') }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Plot Size:</strong> {{ $application->mother_plot_size ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Phone:</strong> {{ $application->mother_phone_number ?? 'N/A' }}</p>
                                 </div>
                             </div>
-                        @endif
-                    </div>
-
-                    <!-- Property Information -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">Property Information</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Land Use:</strong>
-                                <span class="text-gray-900">{{ ucfirst($application->land_use ?? 'N/A') }}</span>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Plot Size:</strong>
-                                <span class="text-gray-900">{{ $application->plot_size ?? 'N/A' }} sqm</span>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Number of Units:</strong>
-                                <span class="text-gray-900">{{ $application->NoOfUnits ?? 'N/A' }}</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 bg-gray-50 p-4 rounded-lg">
-                            <strong class="block font-medium text-gray-700 mb-1">Property  Location:</strong>
-                            <span class="text-gray-900">
-                                House/Plot No: {{ $application->plot_house_no ?? '' }} {{ $application->plot_plot_no ?? '' }},
-                                {{ $application->plot_street_name ?? '' }},
-                                {{ $application->plot_district ?? '' }}
-                            </span>
                         </div>
                     </div>
 
-                    <!-- Financial Information -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">Initial Bill</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Application Fee:</strong>
-                                <span class="text-gray-900">₦{{ number_format($application->application_fee ?? 0, 2) }}</span>
+                    <!-- Sub-Application Details -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-file-alt mr-2"></i> Unit Owner Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p><strong>Block Number:</strong> {{ $application->block_number ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Section Number (Floor):</strong> {{ $application->floor_number ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Unit Number:</strong> {{ $application->unit_number ?? 'N/A' }}</p>
+                                </div>
                             </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Processing Fee:</strong>
-                                <span class="text-gray-900">₦{{ number_format($application->processing_fee ?? 0, 2) }}</span>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <p><strong>Unit Owner(s):</strong></p>
+                                    @if ($application->applicant_type == 'corporate')
+                                        <div class="alert alert-info">
+                                            <p><i class="fas fa-building mr-2"></i> {{ $application->corporate_name ?? 'N/A' }} (RC: {{ $application->rc_number ?? 'N/A' }})</p>
+                                        </div>
+                                    @elseif ($application->applicant_type == 'multiple' && !empty($application->multiple_owners_names_array))
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-users mr-2"></i> 
+                                            <ul class="mb-0 list-unstyled">
+                                                @foreach($application->multiple_owners_names_array as $ownerName)
+                                                    <li>{{ $ownerName }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        
+                                        @if(!empty($application->multiple_owners_data_array))
+                                        <div class="mt-3">
+                                            <p><strong>Owner Details:</strong></p>
+                                            <div class="row">
+                                                @foreach($application->multiple_owners_data_array as $ownerData)
+                                                    <div class="col-md-4 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-body text-center">
+                                                                @if(!empty($ownerData['photo']))
+                                                                    <img src="{{ asset('storage/app/public/' . $ownerData['photo']) }}" 
+                                                                         alt="{{ $ownerData['name'] }}" 
+                                                                         class="img-thumbnail mb-2" 
+                                                                         style="max-width: 150px;">
+                                                                @else
+                                                                    <div class="avatar-placeholder mb-2">
+                                                                        <i class="fas fa-user fa-3x"></i>
+                                                                    </div>
+                                                                @endif
+                                                                <h6>{{ $ownerData['name'] ?? 'N/A' }}</h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        @endif
+                                    @else
+                                        <div class="alert alert-info">
+                                            <p><i class="fas fa-user mr-2"></i> {{ $application->applicant_title ?? '' }} {{ $application->first_name ?? '' }} {{ $application->middle_name ?? '' }} {{ $application->surname ?? '' }}</p>
+                                        </div>
+                                        
+                                        @if(!empty($application->passport))
+                                            <div class="text-center mt-2">
+                                                <img src="{{ asset('storage/app/public/' . $application->passport) }}" 
+                                                     alt="Passport Photo" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 150px;">
+                                            </div>
+                                        @endif
+                                    @endif
+                                </div>
                             </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Site Plan Fee:</strong>
-                                <span class="text-gray-900">₦{{ number_format($application->site_plan_fee ?? 0, 2) }}</span>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Receipt Number:</strong>
-                                <span class="text-gray-900">{{ $application->receipt_number ?? 'N/A' }}</span>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Payment Date:</strong>
-                                <span class="text-gray-900">{{ $application->payment_date ? date('d M Y', strtotime($application->payment_date)) : 'N/A' }}</span>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <strong class="block font-medium text-gray-700 mb-1">Total Fees:</strong>
-                                <span class="text-gray-900 font-bold">₦{{ 
-                                    number_format(
-                                        ($application->application_fee ?? 0) + 
-                                        ($application->processing_fee ?? 0) + 
-                                        ($application->site_plan_fee ?? 0), 2) 
-                                }}</span>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <p><strong>Phone Number:</strong> {{ $application->phone_number ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Email:</strong> {{ $application->email ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Address:</strong> {{ $application->address ?? 'N/A' }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    @if($application->comments)
-                    <div class="mb-8">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b">Comments</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-gray-700">
-                                {{ $application->comments }}
-                            </p>
+                    
+                    <!-- Application Status -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-clipboard-check mr-2"></i> Application Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p><strong>Planning Recommendation:</strong> 
+                                       <span class="badge {{ $application->planning_recommendation_status === 'Approved' ? 'bg-success' : 'bg-warning' }}">
+                                           {{ $application->planning_recommendation_status ?? 'Pending' }}
+                                       </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Application Status:</strong> 
+                                       <span class="badge {{ $application->application_status === 'Approved' ? 'bg-success' : 'bg-warning' }}">
+                                           {{ $application->application_status ?? 'Processing' }}
+                                       </span>
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Approval Date:</strong> 
+                                        {{ $application->approval_date ? date('F j, Y', strtotime($application->approval_date)) : 'N/A' }}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <p><strong>Application Fee:</strong> ₦{{ number_format($application->application_fee ?? 0, 2) }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Processing Fee:</strong> ₦{{ number_format($application->processing_fee ?? 0, 2) }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p><strong>Site Plan Fee:</strong> ₦{{ number_format($application->site_plan_fee ?? 0, 2) }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <p><strong>Payment Date:</strong> 
+                                        {{ $application->payment_date ? date('F j, Y', strtotime($application->payment_date)) : 'N/A' }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Receipt Number:</strong> {{ $application->receipt_number ?? 'N/A' }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    @endif
-
-                    <div class="mt-6 flex gap-3">
-                        <a href="{{ route('sectionaltitling.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-                            </svg>
-                            Back to List
+                    
+                    <!-- Property Details -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-home mr-2"></i> Property Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Property Location:</strong> {{ $application->property_location ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Land Use:</strong> {{ ucfirst($application->land_use ?? 'N/A') }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <p><strong>Comments:</strong> {{ $application->comments ?? 'No comments' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="text-center mt-4">
+                        <a href="{{ route('sectionaltitling.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left mr-1"></i> Back to List
                         </a>
                         
-                         
-                        {{-- <button onclick="window.print()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
-                            </svg>
-                            Print Record
-                        </button> --}}
+                        {{-- <a href="{{ route('generateSubBill', ['id' => $application->id]) }}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-file-invoice-dollar mr-1"></i> Generate Bill
+                        </a> --}}
+                        
+                        @if($application->application_status === 'Approved')
+                        <a href="#" class="btn btn-success">
+                            <i class="fas fa-certificate mr-1"></i> Certificate
+                        </a>
+                        @endif
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection

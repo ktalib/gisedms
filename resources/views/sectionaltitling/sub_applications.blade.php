@@ -231,6 +231,31 @@
 
     <!-- Main Content Container -->
     <div class="container mx-auto mt-4 p-4">
+
+        <div class="d-flex justify-content-between mb-3">
+                
+           
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const createAppBtn = document.getElementById('createAppBtn');
+                    const selectLanduseDropdown = document.getElementById('select-landuse-dropdown');
+                    
+                    createAppBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        selectLanduseDropdown.classList.remove('d-none');
+                        selectLanduseDropdown.classList.add('d-inline-block');
+                    });
+                });
+            </script>
+
+<div class="btn-group" role="group">
+<a href="#" class="btn me-2" id="importFieldDataBtn" style="background-color: orange; border-color: orange; color: white;">
+    <i class="fa fa-upload"></i> Import Field Data
+</a>
+ 
+</div>
+        </div>
         <div class="card shadow-sm">
             <div class="card-body">
                 <h5 class="card-title">{{ __('Sub-Applications') }}</h5>
@@ -337,7 +362,14 @@
                                         <!-- Dropdown Menu -->
                                         <ul
                                             class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50 text-sm">
-
+                                          add  view   record 
+                                            <li>
+                                                    <a href="{{ route('sectionaltitling.viewrecorddetail_sub', $subApplication->id) }}"
+                                                        class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center">
+                                                        <i class="material-icons text-blue-500 mr-3">visibility</i>
+                                                        <span>View Record</span>
+                                                    </a>
+                                            </li>
                                             <li>
                                                 <button type="button"
                                                     class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
@@ -439,7 +471,7 @@
     @include('sectionaltitling.sub_appmodals.finalbill')
     @include('sectionaltitling.sub_appmodals.OtherApprovals')
     @include('sectionaltitling.sub_appmodals.survey')
-    @include('sectionaltitling.sub_appmodals.deeds')
+    @include('sectionaltitling.partials.deeds')
     @include('sectionaltitling.sub_appmodals.planningrecommendation')
     @include('sectionaltitling.sub_appmodals.genBetterment')
     @include('sectionaltitling.sub_appmodals.certificats')
