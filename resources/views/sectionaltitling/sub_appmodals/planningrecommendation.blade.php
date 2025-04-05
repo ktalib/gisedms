@@ -8,12 +8,19 @@
             </div>
             <div class="modal-body">
                 <div id="printContent">
-                    <!-- Content from the screenshot goes here -->
+                    <div class="flex justify-between items-center mb-4 relative z-10">
+                        <img src="{{ asset('assets/logo/logo1.jpg') }}" alt="Kano State Coat of Arms" class="w-16 h-16 object-contain">
+                        <div class="text-center mt-20">
+                            <h1 class="text-lg font-bold">KANO STATE MINISTRY OF LAND AND PHYSICAL PLANNING</h1>
+                            <h3 class="text-sm font-semibold mt-1"><strong>PERMANENT SECRETARY</strong></h3>
+                        </div>
+                        <img src="{{ asset('assets/logo/logo3.jpeg') }}" alt="KANGIS Logo" class="w-16 h-16 object-contain">
+                    </div>
+            
                     <div class="print-section">
-                        <p><strong>PERMANENT SECRETARY</strong></p>
                         <p>Kindly find Page 01 in an application for sectional titling in respect of a
-                            property (plaza) covered by Certificate of Occupancy No. COM/2025/0001 situated
-                            at Kantin Kwari market in the name of <strong>ABDULLAHI USMAN ADAMU</strong></p>
+                            property (plaza) covered by Certificate of Occupancy No. <span id="printModalFileNo"></span> situated
+                            at <span id="printModalLocation"></span> in the name of <strong id="printModalOwnerName"></strong></p>
                         <p>As well as change of name to various shop owners as per attached on the
                             application.</p>
                         <p>The application was referred to Physical Planning Department for planning,
@@ -31,16 +38,15 @@
                             of the Honorable Commissioner:</p>
                         <ol>
                             <li>Consider and approve the application for Sectional Titling over plot 01
-                                situated at Kantin Kwari covered by Certificate of Occupancy No.
-                                COM/2025/0001 in favor of <strong>ABDULLAHI USMAN ADAMU</strong></li>
+                                situated at <span id="printModalLocationRepeat"></span> covered by Certificate of Occupancy No.
+                                <span id="printModalFileNoRepeat"></span> in favor of <strong id="printModalOwnerNameRepeat"></strong></li>
                             <li>Consider and approve the change of name of various shop owners as per
                                 provisions of the Bill.</li>
                             <li>Consider and approve the Revocation of old Certificate of Occupancy
-                                COM/2025/0001 to pave the way for new Sectional Titles to the new owners.
+                                <span id="printModalFileNoRepeat2"></span> to pave the way for new Sectional Titles to the new owners.
                             </li>
                         </ol>
-                        <div
-                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
                             <div>
                                 <p>Name:___________________________</p>
                                 <p>Rank: ___________________________</p>
@@ -49,8 +55,7 @@
                             </div>
                             <div>
                                 <p>Counter Sign: ___________________________</p>
-                                <p style="white-space: pre-line;"> <strong>Director Section
-                                        Titling</strong></p>
+                                <p style="white-space: pre-line;"><strong>Director Section Titling</strong></p>
                                 <p>Date: ___________________________</p>
                             </div>
                         </div>
@@ -61,7 +66,7 @@
                             <br>
                             <p>Date: ______2025.</p>
                         </div>
-                        <div style=" justify-content: end;">
+                        <div style="justify-content: end;">
                             <div style="text-align: right;">
                                 <p>___________________________</p>
                                 <p><strong>Permanent Secretary</strong></p>
@@ -75,15 +80,14 @@
                             <p>Date: __________________2025.</p>
                             <div style="text-align: right;">
                                 <p>___________________________</p>
-                                <p><strong>HONOURABLE COMMISSIONER. </strong></p>
+                                <p><strong>HONOURABLE COMMISSIONER.</strong></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal-footer"
-                style="background-color: #f1f1f1; display: flex; justify-content: center;">
+            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
                 <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal"
                     style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
                     Close
@@ -146,39 +150,33 @@
                             </div>
                         </div>
                         <div class="modal-footer" style="background-color: #f1f1f1;">
-                            <div
-                                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
                                 <button type="button" class="bttn green-shadow"
                                     onclick="showDepartmentConfirmation('ok')"
                                     style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
                                     OK
-                                    <i class="material-icons"
-                                        style="color: #4CAF50; font-size: 16px;">check_circle</i>
+                                    <i class="material-icons" style="color: #4CAF50; font-size: 16px;">check_circle</i>
                                 </button>
                                 <button type="button" class="bttn gray-shadow"
                                     onclick="showDepartmentConfirmation('edit')"
                                     style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
                                     Edit
-                                    <i class="material-icons"
-                                        style="color: #9E9E9E; font-size: 16px;">edit</i>
+                                    <i class="material-icons" style="color: #9E9E9E; font-size: 16px;">edit</i>
                                 </button>
                                 <button type="submit" class="bttn green-shadow"
                                     style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
                                     Submit
-                                    <i class="material-icons"
-                                        style="color: #eeeeee; font-size: 16px;">send</i>
+                                    <i class="material-icons" style="color: #eeeeee; font-size: 16px;">send</i>
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </form>
-
-
             </div>
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="planningRecommendationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -214,7 +212,6 @@
                                 <option value="" disabled selected>Select</option>
                                 <option value="architectural">Architectural Design</option>
                                 <option value="planningRec">Planning Recommendation</option>
-
                             </select>
                         </div>
                         <!-- Empty cells to complete a 2x2 grid -->
@@ -223,28 +220,24 @@
                     </div>
 
                     <div class="modal-footer" style="background-color: #f1f1f1;">
-                        <div
-                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
                             <button type="button" class="bttn green-shadow"
                                 style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;"
                                 data-bs-dismiss="modal">
                                 Cancel
-                                <i class="material-icons"
-                                    style="color: #f44336; font-size: 16px;">cancel</i>
+                                <i class="material-icons" style="color: #f44336; font-size: 16px;">cancel</i>
                             </button>
                             <button type="button" class="bttn gray-shadow"
                                 onclick="showDepartmentConfirmation('edit')"
                                 style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
                                 Submit
-                                <i class="material-icons"
-                                    style="color: #9E9E9E; font-size: 16px;">edit</i>
+                                <i class="material-icons" style="color: #9E9E9E; font-size: 16px;">edit</i>
                             </button>
-                            <button type="submit" class="bttn green-shadow"
+                            <button type="button" class="bttn green-shadow"
                                 style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;"
                                 onclick="showPrintModal()">
                                 Print
-                                <i class="material-icons"
-                                    style="color: #4CAF50; font-size: 16px;">print</i>
+                                <i class="material-icons" style="color: #4CAF50; font-size: 16px;">print</i>
                             </button>
                         </div>
                     </div>

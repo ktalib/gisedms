@@ -227,10 +227,76 @@
                 }
             }, 500);
         });
+
+        function showPrintModal() {
+            // Get the selected application ID
+            const applicationId = document.querySelector('.decision-mother-btn[data-id]:focus')?.dataset?.id;
+            
+            if (!applicationId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No application selected. Please select an application first.'
+                });
+                return;
+            }
+
+            // Find the selected row data
+            const row = document.querySelector(`#subRecordsTable tr:has(button[data-id="${applicationId}"])`);
+            if (row) {
+                const fileNo = row.cells[1].textContent.trim();
+                const ownerName = row.cells[3].textContent.trim().split(/\s*\(/)[0].trim();
+                
+                // Get original owner info for additional context
+                const originalOwner = row.cells[2].textContent.trim();
+                
+                // Try to extract location information
+                let location = "";
+                
+                // Check if we have location data in the row data attributes
+                if (row.dataset.location) {
+                    location = row.dataset.location;
+                } else if (row.dataset.address) {
+                    location = row.dataset.address;
+                } else {
+                    // If no direct location attribute, try to build from components
+                    const plotNo = row.dataset.plotNo || '';
+                    const streetName = row.dataset.streetName || '';
+                    const district = row.dataset.district || '';
+                    const lga = row.dataset.lga || 'Kano';
+                    
+                    // Assemble location from components if available
+                    const locationParts = [plotNo, streetName, district, lga].filter(Boolean);
+                    
+                    if (locationParts.length > 0) {
+                        location = locationParts.join(', ');
+                    } else {
+                        // Try to extract from the original owner column
+                        const addressMatch = originalOwner.match(/at\s+([^,]+)/i);
+                        if (addressMatch && addressMatch[1]) {
+                            location = addressMatch[1];
+                        } else {
+                            // Default fallback
+                            location = "Kano, Kano State";
+                        }
+                    }
+                }
+                
+                // Update the modal content with dynamic data
+                document.getElementById('printModalFileNo').textContent = fileNo;
+                document.getElementById('printModalFileNoRepeat').textContent = fileNo;
+                document.getElementById('printModalOwnerName').textContent = ownerName;
+                document.getElementById('printModalOwnerNameRepeat').textContent = ownerName;
+                document.getElementById('printModalLocation').textContent = location;
+                document.getElementById('printModalLocationRepeat').textContent = location.split(',')[0] || location;
+            }
+            
+            $('#printModal').modal('show');
+        }
     </script>
 
     <!-- Main Content Container -->
-    <div class="container mx-auto mt-4 p-4">
+    <div class="container mx-auto mt-4 p-4" data-application-id="">
 
         <div class="d-flex justify-content-between mb-3">
                 
@@ -366,7 +432,7 @@
                                         <!-- Dropdown Menu -->
                                         <ul
                                             class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50 text-sm">
-                                          add  view   record 
+                                       
                                             <li>
                                                     <a href="<?php echo e(route('sectionaltitling.viewrecorddetail_sub', $subApplication->id)); ?>"
                                                         class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center">
@@ -391,7 +457,17 @@
                                                     data-bs-target="#OtherApprovals"
                                                     onclick="closeAllDropdowns();">
                                                     <i class="material-icons text-red-500 mr-3">app_registration</i>
-                                                    <span>Other Approvals</span>
+                                                    <span>Other Departments</span>
+                                                </button>
+                                            </li>
+
+                                            <li>
+                                                <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+                                                    data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="<?php echo e($subApplication->id); ?>"
+                                                    onclick="closeAllDropdowns();">
+                                                    <i class="material-icons text-red-500" >grid_view</i>
+                                                    <span>Lands & E-Registry
+                                                    </span>
                                                 </button>
                                             </li>
                                             <li>
@@ -413,14 +489,7 @@
                                                     <span>Director's Approval</span>
                                                 </button>
                                             </li>
-                                            <li>
-                                                <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                    data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="<?php echo e($subApplication->id); ?>"
-                                                    onclick="closeAllDropdowns();">
-                                                    <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
-                                                    <span>E-Registry</span>
-                                                </button>
-                                            </li>
+                                            
                                             <li>
                                                 <button type="button"
                                                     class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
@@ -538,6 +607,19 @@
                 $('#eRegistryModal').modal('hide');
             });
         });
+
+        
+    function updateContainerId(id) {
+    document.getElementById('main-container').dataset.applicationId = id;
+}
+ 
+    // Update the current application ID when clicking on a table row
+    document.querySelectorAll('#recordsTable tbody tr').forEach(row => {
+        row.addEventListener('click', function() {
+            const applicationId = this.getAttribute('data-id'); // Use the data-id attribute for the database ID
+            document.getElementById('current-application-id').value = applicationId;
+        });
+    });
     </script>
 <?php $__env->stopSection(); ?>
 

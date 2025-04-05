@@ -1,6 +1,14 @@
 <?php
     $admin_logo = getSettingsValByName('company_logo');
 ?>
+<?php
+    $admin_logo = getSettingsValByName('company_logo');
+    $ids = parentId();
+    $authUser = \App\Models\User::find($ids);
+    $subscription = \App\Models\Subscription::find($authUser->subscription);
+    $routeName = \Request::route()->getName();
+    $pricing_feature_settings = getSettingsValByIdName(1, 'pricing_feature');
+?>
 <nav class="pc-sidebar">
     <div class="navbar-wrapper">
         <div class="m-header">
@@ -16,6 +24,9 @@
                         <span class="pc-mtext"><?php echo e(__('DASHBOARD')); ?></span>
                     </a>
                 </li>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || strpos(\Auth::user()->assign_role, 'Customer Management') !== false): ?>
+
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-users"></i></span>
@@ -41,6 +52,10 @@
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?> 
+
+
+                <?php if(\Auth::user()->assign_role == 'owner' || strpos(\Auth::user()->assign_role, 'Programmes -') !== false): ?>
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-briefcase"></i></span>
@@ -68,6 +83,12 @@
                         <li class="pc-item"><a href="<?php echo e(route('sectionaltitling.index')); ?>" class="pc-link"><?php echo e(__('Sectional Titling')); ?></a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+
+
+                <?php if(\Auth::user()->assign_role == 'owner' || strpos(\Auth::user()->assign_role, 'Information Products -') !== false): ?>
+
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-info-circle"></i></span>
@@ -82,6 +103,12 @@
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('Certificate of Occupancy')); ?></a></li>
                     </ul>
                 </li>
+
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'Instrument Registration') !== false || 
+                    strpos(\Auth::user()->assign_role, 'Property Records Assistant') !== false): ?>
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-folder"></i></span>
@@ -93,6 +120,11 @@
                         <li class="pc-item"><a href="<?php echo e(route('propertycard.create')); ?>" class="pc-link"><?php echo e(__('Property Card Assistant')); ?></a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'Legal Search - On-premise Official') !== false || 
+                    strpos(\Auth::user()->assign_role, 'Legal Search - On-premise Commercial') !== false): ?>
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-search"></i></span>
@@ -102,17 +134,22 @@
                     <ul class="pc-submenu">
                         <li class="pc-item pc-hasmenu">
                             <a href="<?php echo e(route('note.index')); ?>" class="pc-link"><?php echo e(__('Official Purpose ')); ?><span class="pc-arrow"><i class="fas fa-chevron-right"></i></span></a>
-                          
                         </li> 
                         <li class="pc-item pc-hasmenu">
                             <a href="<?php echo e(route('note.index')); ?>" class="pc-link"><?php echo e(__('On-Premises')); ?><span class="pc-arrow"><i class="fas fa-chevron-right"></i></span></a>
-                          
-                        </li> <li class="pc-item pc-hasmenu">
+                        </li> 
+                        <li class="pc-item pc-hasmenu">
                             <a href="<?php echo e(route('note.index')); ?>" class="pc-link"><?php echo e(__('Online')); ?><span class="pc-arrow"><i class="fas fa-chevron-right"></i></span></a>
-                          
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'Revenue Management - Billing') !== false ||
+                    strpos(\Auth::user()->assign_role, 'Revenue Management - Receipt') !== false || 
+                    strpos(\Auth::user()->assign_role, 'Revenue Management - LUC') !== false || 
+                    strpos(\Auth::user()->assign_role, 'Revenue Management - Bill Balance') !== false): ?>
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-money-bill-wave"></i></span>
@@ -132,6 +169,13 @@
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('Bill Balance')); ?></a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'File Digital Registry - File Tracking') !== false ||
+                    strpos(\Auth::user()->assign_role, 'File Digital Registry - Indexing') !== false ||
+                    strpos(\Auth::user()->assign_role, 'File Digital Registry - Scanning') !== false ||
+                    strpos(\Auth::user()->assign_role, 'File Digital Registry - Pagetyping') !== false): ?>
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-folder-open"></i></span>
@@ -139,7 +183,7 @@
                         <span class="pc-arrow"><i class="fas fa-chevron-right"></i></span>
                     </a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__(' E-Registry')); ?></a></li>
+                        <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('E-Registry')); ?></a></li>
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('File Tracker/Tracking')); ?></a></li>
                         <li class="pc-item pc-hasmenu">
                             <a href="#" class="pc-link"><?php echo e(__('Indexing')); ?><span class="pc-arrow"><i class="fas fa-chevron-right"></i></span></a>
@@ -158,6 +202,11 @@
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('PageTyping')); ?></a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'Systems - Caveat') !== false ||
+                    strpos(\Auth::user()->assign_role, 'Systems - Encumbrance') !== false): ?>
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-layer-group"></i></span>
@@ -169,12 +218,21 @@
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('Encumbrance')); ?></a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'Legacy Systems') !== false): ?>
                 <li class="pc-item">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-archive"></i></span>
                         <span class="pc-mtext"><?php echo e(__('LEGACY SYSTEMS')); ?></span>
                     </a>
                 </li>
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'System Admin') !== false || 
+                    strpos(\Auth::user()->assign_role, 'Super Admin') !== false): ?>
                 <li class="pc-item pc-hasmenu">
                     <a href="#" class="pc-link">
                         <span class="pc-micon"><i class="fas fa-cogs"></i></span>
@@ -186,6 +244,18 @@
                         <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('System Settings')); ?></a></li>
                     </ul>
                 </li>
+                <?php endif; ?>
+
+                <?php if(\Auth::user()->assign_role == 'owner' || 
+                    strpos(\Auth::user()->assign_role, 'Management I') !== false ||
+                    strpos(\Auth::user()->assign_role, 'Management II') !== false): ?>
+                <li class="pc-item">
+                    <a href="#" class="pc-link">
+                        <span class="pc-micon"><i class="fas fa-user-cog"></i></span>
+                        <span class="pc-mtext"><?php echo e(__('MANAGEMENT')); ?></span>
+                    </a>
+                </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

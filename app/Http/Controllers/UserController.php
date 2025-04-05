@@ -60,6 +60,7 @@ class UserController extends Controller
                 $user = new User();
                 $user->name = $request->name;
                 $user->email = $request->email;
+                $user->assign_role = implode(',', $request->assign_role); // Save as comma-separated values
                 $user->password = \Hash::make($request->password);
                 $user->phone_number = $request->phone_number;
                 $user->type = 'owner';
@@ -130,6 +131,7 @@ class UserController extends Controller
                 $user->profile = 'avatar.png';
                 $user->lang = 'english';
                 $user->parent_id = parentId();
+                $user->assign_role = isset($request->assign_role) ? implode(',', $request->assign_role) : null; // Save assign_role
                 $user->save();
                 $user->assignRole($userRole);
 
@@ -230,6 +232,7 @@ class UserController extends Controller
                 $user->email = $request->email;
                 $user->phone_number = $request->phone_number;
                 $user->type = $userRole->name;
+                $user->assign_role = implode(',', $request->assign_role); // Save as comma-separated values
                 $user->save();
                 $user->roles()->sync($userRole);
                 return redirect()->route('users.index')->with('success', 'User successfully updated.');

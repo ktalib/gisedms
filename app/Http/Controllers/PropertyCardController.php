@@ -31,28 +31,64 @@ class PropertyCardController extends Controller
     
     public function getData(Request $request)
     {
-        $query = DB::table('property_records')
-            ->orderByRaw("CASE WHEN mlsfNo != '' OR kangisFileNo != '' THEN 0 ELSE 1 END")
-            ->get();
-    
-        return DataTables::of($query)
-            ->addColumn('actions', function ($row) {
-                return '
-                    <div class="d-flex gap-1">
-                        <button class="btn btn-icon btn-info" data-bs-toggle="modal" data-bs-target="#viewModal' . $row->id . '" title="View Details">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                        <button class="btn btn-icon btn-secondary" data-bs-toggle="tooltip" title="Edit">
-                            <i class="fa fa-pencil"></i>
-                        </button>
-                        <button class="btn btn-icon btn-danger" data-bs-toggle="tooltip" title="Delete">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </div>
-                ';
-            })
-            ->rawColumns(['actions'])
-            ->make(true);
+        try {
+            // Log that we're starting the getData method
+            \Log::info('PropertyCardController getData method started');
+            
+            // Check DB connection before query
+            try {
+                DB::connection()->getPdo();
+                \Log::info('Database connection successful');
+            } catch (\Exception $e) {
+                \Log::error('Database connection failed: ' . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'Database connection failed: ' . $e->getMessage()], 500);
+            }
+            
+            // Add query logging and chunking to prevent memory issues
+            \Log::info('Starting property_records query');
+            $records = DB::table('property_records')
+                ->orderByRaw("CASE WHEN mlsfNo != '' OR kangisFileNo != '' THEN 0 ELSE 1 END")
+                ->limit(1000) // Limit for safety
+                ->get();
+                
+            \Log::info('Query complete, record count: ' . $records->count());
+            
+            // Check for empty result
+            if ($records->isEmpty()) {
+                \Log::warning('No property records found');
+                return response()->json(['data' => [], 'recordsTotal' => 0, 'recordsFiltered' => 0]);
+            }
+            
+            return DataTables::of($records)
+                ->addColumn('actions', function ($row) {
+                    return '
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-icon btn-info" data-bs-toggle="modal" data-bs-target="#viewModal' . $row->id . '" title="View Details">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            <button class="btn btn-icon btn-secondary" data-bs-toggle="tooltip" title="Edit">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="btn btn-icon btn-danger" data-bs-toggle="tooltip" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    ';
+                })
+                ->rawColumns(['actions'])
+                ->make(true);
+        } catch (\Exception $e) {
+            // Log detailed error information
+            \Log::error('Error in getData: ' . $e->getMessage());
+            \Log::error('Error trace: ' . $e->getTraceAsString());
+            
+            // Return a more informative error response
+            return response()->json([
+                'success' => false, 
+                'message' => 'Error retrieving data: ' . $e->getMessage(),
+                'trace' => config('app.debug') ? $e->getTraceAsString() : 'Enable debug mode for more details'
+            ], 500);
+        }
     }
 
 
@@ -426,6 +462,28 @@ public function search(Request $request)
         $recordCount = DB::table('property_records')->count();
 
         return response()->json(array_merge(['success' => true, 'recordCount' => $recordCount], $mappedResult));
+    }
+
+    public function getRecordDetails(Request $request)
+    {
+        try {
+            $id = $request->input('id');
+            
+            if (!$id) {
+                return response()->json(['success' => false, 'message' => 'Record ID is required']);
+            }
+            
+            $record = DB::table('property_records')->where('id', $id)->first();
+            
+            if (!$record) {
+                return response()->json(['success' => false, 'message' => 'Record not found']);
+            }
+            
+            return response()->json(['success' => true, 'data' => $record]);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching record details: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()]);
+        }
     }
 }
 

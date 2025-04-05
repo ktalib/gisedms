@@ -211,6 +211,136 @@ class ApplicationMotherController extends Controller
         return view('sectionaltitling.generate_bill', $data);
     }
 
+
+
+    public function GenerateBill2(Request $request, $id = null)
+    {
+        // Use either route parameter or query parameter for ID
+        $id = $id ?? $request->get('id');
+        
+        // Fetch application data from database if ID is provided
+        if ($id) {
+            $application = DB::connection('sqlsrv')
+                ->table('dbo.subapplications')
+                ->where('id', $id)
+                ->first();
+                
+            if ($application) {
+                // Process owner name based on application type
+                $ownerName = '';
+                if ($application->applicant_type == 'corporate' && $application->corporate_name) {
+                    $ownerName = $application->corporate_name;
+                } elseif ($application->applicant_type == 'multiple' && $application->multiple_owners_names) {
+                    // Try to decode JSON; if it fails, use as a string
+                    $multipleOwners = json_decode($application->multiple_owners_names, true);
+                    $ownerName = is_array($multipleOwners) ? implode(', ', $multipleOwners) : $application->multiple_owners_names;
+                } else {
+                    $ownerName = trim(($application->applicant_title ?? '') . ' ' . 
+                                     ($application->first_name ?? '') . ' ' . 
+                                     ($application->middle_name ?? '') . ' ' . 
+                                     ($application->surname ?? ''));
+                }
+                
+                // Calculate fees based on land use
+                $processingFee = 0;
+                $surveyFee = 0;
+                $assignmentFee = 0;
+                $billBalance = 30525.00; // Default bill balance
+                $groundRent = 0;
+                
+                // Determine land use from application data or file number prefix
+                $landUse = '';
+                if (!empty($application->land_use)) {
+                    $landUse = strtolower($application->land_use);
+                } elseif (!empty($application->fileno)) {
+                    if (strpos($application->fileno, 'ST-COM') === 0) {
+                        $landUse = 'commercial';
+                    } elseif (strpos($application->fileno, 'ST-RES') === 0) {
+                        $landUse = 'residential';
+                    } elseif (strpos($application->fileno, 'ST-IND') === 0) {
+                        $landUse = 'industrial';
+                    }
+                }
+                
+                if ($landUse == 'residential') {
+                    $processingFee = 20000.00;
+                    $surveyFee = isset($application->NoOfUnits) && $application->NoOfUnits > 1 ? 50000.00 : 70000.00; // Block of flats or apartment
+                    $assignmentFee = 50000.00;
+                } else { // Commercial or others
+                    $processingFee = 50000.00;
+                    $surveyFee = 100000.00;
+                    $assignmentFee = 100000.00;
+                }
+                
+                // Calculate total
+                $total = $processingFee + $surveyFee + $assignmentFee + $billBalance + $groundRent;
+                
+                // Format date
+                $approvalDate = $request->get('approval_date') ?? 
+                    (isset($application->approval_date) ? date('Y-m-d', strtotime($application->approval_date)) : date('Y-m-d'));
+                
+                // Prepare location string from available fields
+                $location = '';
+                $locationParts = [];
+                
+                if (!empty($application->block_number)) {
+                    $locationParts[] = 'Block ' . $application->block_number;
+                }
+                
+                if (!empty($application->floor_number)) {
+                    $locationParts[] = 'Floor ' . $application->floor_number;
+                }
+                
+                if (!empty($application->unit_number)) {
+                    $locationParts[] = 'Unit ' . $application->unit_number;
+                }
+                
+                if (!empty($application->property_location)) {
+                    $locationParts[] = $application->property_location;
+                } elseif (!empty($application->address)) {
+                    $locationParts[] = $application->address;
+                }
+                
+                $location = implode(', ', $locationParts);
+                
+                // Prepare data for the view
+                $data = [
+                    'id' => $application->id,
+                    'fileno' => $application->fileno,
+                    'applicant_title' => $application->applicant_title,
+                    'owner_name' => $ownerName,
+                    'plot_size' => $application->plot_size ?? '',
+                    'land_use' => $landUse,
+                    'location' => $location,
+                    'block_number' => $application->block_number,
+                    'floor_number' => $application->floor_number,
+                    'unit_number' => $application->unit_number,
+                    'property_location' => $application->property_location,
+                    'address' => $application->address,
+                    'approval_date' => $approvalDate,
+                    'processing_fee' => $processingFee,
+                    'survey_fee' => $surveyFee,
+                    'assignment_fee' => $assignmentFee,
+                    'bill_balance' => $billBalance,
+                    'ground_rent' => $groundRent,
+                    'total' => $total,
+                    'total_words' => $this->numberToWords($total),
+                    'application_type' => $application->applicant_type,
+                ];
+                
+                return view('sectionaltitling.generate_bill_sub', $data);
+            }
+        }
+        
+        // Fallback to request data if no database record found
+        $data = $request->only([
+            'id', 'fileno', 'applicant_title', 'owner_name', 'block_number',
+            'floor_number', 'unit_number', 'property_location', 'address', 'approval_date', 'plot_size', 'land_use'
+        ]);
+        
+        return view('sectionaltitling.generate_bill_sub', $data);
+    }
+
     /**
      * Convert a number to words
      * @param float $number The number to convert
@@ -357,7 +487,8 @@ class ApplicationMotherController extends Controller
         $updateData = [
             'planning_recommendation_status' => $decision == 'approve' ? 'Approved' : 'Declined', 
             'planning_approval_date' => $approval_date,
-            'planning_officer' => Auth::user()->name, // Store the name of the planning officer
+           // 'planning_officer' => Auth::user()->name, 
+           // Store the name of the planning officer
         ];
         
         if ($decision == 'decline') {

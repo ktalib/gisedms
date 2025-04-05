@@ -17,3 +17,37 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// API routes for application data
+Route::get('/get-application-data', function (Request $request) {
+    $applicationId = $request->input('application_id');
+    
+    if (!$applicationId) {
+        return response()->json(['error' => 'No application ID provided'], 400);
+    }
+    
+    try {
+        $applicationData = DB::connection('sqlsrv')
+            ->table('dbo.mother_applications')
+            ->where('id', $applicationId)
+            ->first();
+            
+        if ($applicationData) {
+            return response()->json([
+                'success' => true,
+                'data' => $applicationData
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No data found for this application ID'
+            ], 404);
+        }
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error retrieving application data',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+})->name('api.get-application-data');

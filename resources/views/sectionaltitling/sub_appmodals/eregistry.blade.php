@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">E-Registry</h5>
+                <h5 class="modal-title">Lands & E-Registry</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -46,9 +46,9 @@
                         </div>
                     </div>
                     <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between; padding-top: 20px; padding-right: 20px; padding-left: 20px;">
-                        <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); transform: translateY(-5px);">
-                            OK
-                            <i class="material-icons" style="color: #4CAF50;">check_circle</i>
+                        <button type="button" class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#landsModal">
+                            Lands
+                            <i class="material-icons" style="color: #9C27B0;">landscape</i>
                         </button>
                         <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); margin-right: 10px; transform: translateY(-5px);">
                             Edit

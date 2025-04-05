@@ -429,7 +429,34 @@ Route::post('/propertycard/search', [PropertyCardController::class, 'search'])->
 Route::post('/propertycard/save-record', [PropertyCardController::class, 'savePropertyRecord'])->name('propertycard.saveRecord');
 Route::post('/propertycard/navigate', [PropertyCardController::class, 'navigateRecord'])->name('propertycard.navigate');
 
-
+// Add this fallback route for propertycard data
+Route::get('/propertycard/data-fallback', function() {
+    $sampleData = [
+        [
+            'id' => 1,
+            'mlsfNo' => 'MLSF-001',
+            'kangisFileNo' => 'KF-001',
+            'currentAllottee' => 'Sample Allottee',
+            'landUse' => 'Residential',
+            'districtName' => 'Sample District',
+        ],
+        [
+            'id' => 2,
+            'mlsfNo' => 'MLSF-002',
+            'kangisFileNo' => 'KF-002',
+            'currentAllottee' => 'Another Allottee',
+            'landUse' => 'Commercial',
+            'districtName' => 'Another District',
+        ]
+    ];
+    
+    return response()->json([
+        'draw' => 1,
+        'recordsTotal' => count($sampleData),
+        'recordsFiltered' => count($sampleData),
+        'data' => $sampleData
+    ]);
+})->name('propertycard.data.fallback');
 
 Route::get('/legal_search', [LegalSearchController::class, 'index'])->name('legal_search.index');
 Route::get('/legal_search/report', [LegalSearchController::class, 'report'])->name('legal_search.report');
@@ -443,6 +470,7 @@ Route::get('sectionaltitling/residential/sub_applications', [ResidentialControll
 Route::post('sectionaltitling/residential', [ResidentialController::class, 'storeResMotherApp'])->name('sectionaltitling.residential.store');
 
 Route::post('/deeds/insert', [DeedsController::class, 'insert'])->name('deeds.insert');
+Route::get('/deeds/getdeedsdublicate', [DeedsController::class, 'getDeedsDublicate'])->name('deeds.getDeedsDublicate');
 
 Route::post('/conveyance/update', [ConveyanceController::class, 'updateConveyance'])->name('conveyance.update');
 
@@ -452,7 +480,7 @@ Route::get('/sectionaltitling/generate-bill', [SubApplicationController::class, 
 Route::get('/subapplications/{id}', [SubApplicationController::class, 'getSubApplication']);
 
 
-Route::get('sectionaltitling/viewrecorddetail_sub',  [SubApplicationController::class, 'Veiwrecords'])->name('sectionaltitling.viewrecorddetail_sub');
+Route::get('sectionaltitling/viewrecorddetail_sub/{id?}',  [SubApplicationController::class, 'viewrecorddetail_sub'])->name('sectionaltitling.viewrecorddetail_sub');
 
 Route::get('/sectionaltitling/get-conveyance-data/{id}', [App\Http\Controllers\ConveyanceController::class, 'getConveyanceData'])->name('conveyance.getData');
 
@@ -468,4 +496,8 @@ Route::fallback(function () {
     return response('Route not found. Please check the URL.', 404);
 });
 
+Route:: get('/sectionaltitling/generate_bill_sub/{id?}', [ApplicationMotherController::class, 'GenerateBill2'])->name('sectionaltitling.generate_bill_sub');
+ 
 Route::impersonate();
+
+Route::get('/propertycard/record-details', [App\Http\Controllers\PropertyCardController::class, 'getRecordDetails'])->name('propertycard.getRecordDetails');

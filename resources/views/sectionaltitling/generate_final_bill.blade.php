@@ -54,23 +54,205 @@
             <p>{{ $approval_date ?? now()->format('Y-m-d') }}</p>
         </div>
 
+        <!-- Check if we have an ID for fetching record -->
+        @if(isset($id))
+            @php 
+                // First try to fetch from subapplications since this file is used for both
+                $appData = DB::connection('sqlsrv')
+                    ->select("SELECT id, 
+                            applicant_type, applicant_title, first_name, middle_name, surname, corporate_name,
+                            fileno, plot_size, land_use, NoOfUnits, approval_date,
+                            block_number, floor_number, unit_number, property_location, address,
+                            multiple_owners_names
+                            FROM dbo.subapplications WHERE id = ?", [$id]);
+                
+                // If no subapplication record found, try mother_applications
+                if(empty($appData)) {
+                    $appData = DB::connection('sqlsrv')
+                        ->select("SELECT id, 
+                                applicant_type, applicant_title, first_name, middle_name, surname, corporate_name,
+                                fileno, plot_size, land_use, landuse, NoOfUnits, approval_date,
+                                property_house_no, property_plot_no, property_street_name, property_district, 
+                                property_lga, property_state
+                                FROM dbo.mother_applications WHERE id = ?", [$id]);
+                }
+                
+                // Set $appRecord if data exists, otherwise set to null
+                $appRecord = !empty($appData) ? $appData[0] : null;
+                
+                // Determine if this is a subapplication or mother application
+                $isSubapplication = !empty($appRecord->block_number) || !empty($appRecord->floor_number) || !empty($appRecord->unit_number);
+            @endphp
+        @endif
+
         <!-- Content -->
         <div class="space-y-2 text-sm">
             <p>Dear Sir/Madame,</p>
             
             <p class="text-sm">I am directed to inform you that the total cost of processing of your application for Sectional Title located at 
-                <span class="italic">{{ $property_location ?? '' }}</span> 
+                <span class="italic">
+                @php
+                    if($appRecord) {
+                        if($isSubapplication ?? false) {
+                            // Format for subapplication
+                            $locationParts = [];
+                            
+                            if(!empty($appRecord->block_number)) {
+                                $locationParts[] = 'Block ' . $appRecord->block_number;
+                            }
+                            
+                            if(!empty($appRecord->floor_number)) {
+                                $locationParts[] = 'Floor ' . $appRecord->floor_number;
+                            }
+                            
+                            if(!empty($appRecord->unit_number)) {
+                                $locationParts[] = 'Unit ' . $appRecord->unit_number;
+                            }
+                            
+                            if(!empty($appRecord->property_location)) {
+                                $locationParts[] = $appRecord->property_location;
+                            } elseif(!empty($appRecord->address)) {
+                                $locationParts[] = $appRecord->address;
+                            }
+                            
+                            echo implode(', ', $locationParts);
+                        } else {
+                            // Format for mother application
+                            echo trim(
+                                ($appRecord->property_house_no ? 'House ' . $appRecord->property_house_no . ', ' : '') .
+                                ($appRecord->property_plot_no ? 'Plot ' . $appRecord->property_plot_no . ', ' : '') .
+                                ($appRecord->property_street_name ? $appRecord->property_street_name . ', ' : '') .
+                                ($appRecord->property_district ? $appRecord->property_district . ', ' : '') .
+                                ($appRecord->property_lga ?? '') . 
+                                (($appRecord->property_lga && $appRecord->property_state) ? ', ' : '') .
+                                ($appRecord->property_state ?? '')
+                            );
+                        }
+                    } else {
+                        // If no record found, try using the passed location data
+                        if(isset($property_location)) {
+                            echo $property_location;
+                        } elseif(isset($location)) {
+                            echo $location;
+                        } elseif(isset($address)) {
+                            echo $address;
+                        } else {
+                            // Build from components
+                            $locationParts = [];
+                            if(isset($block_number)) {
+                                $locationParts[] = 'Block ' . $block_number;
+                            }
+                            if(isset($floor_number)) {
+                                $locationParts[] = 'Floor ' . $floor_number;
+                            }
+                            if(isset($unit_number)) {
+                                $locationParts[] = 'Unit ' . $unit_number;
+                            }
+                            echo implode(', ', $locationParts);
+                        }
+                    }
+                @endphp
+                </span> 
                 with the following particulars;
             </p>
             
             <div class="space-y-0.5 text-sm">
                 <p> FormID: <span class="italic">STM-2025-000{{ $id ?? '' }}</span></p>
-                <p>FileNo: <span class="italic">{{ $fileno ?? '' }}</span></p>
-                <p>Name of Section Owner: <span class="italic">{{ $owner_name ?? '' }}</span></p>
-                <p>Plot Size: <span class="italic">{{ $plot_size ?? '' }}</span></p>
-                <p>Landuse: <span class="italic">{{ $land_use ?? '' }}</span></p>
-                <p>Location: <span class="italic">{{ $property_location ?? '' }}</span></p>
-                <p>Approval Date: <span class="italic">{{ $approval_date ?? now()->format('Y-m-d') }}</span></p>
+                <p>FileNo: <span class="italic">{{ $appRecord ? $appRecord->fileno : ($fileno ?? '') }}</span></p>
+                <p>Name of Section Owner: <span class="italic">
+                @php
+                    if($appRecord) {
+                        if(isset($appRecord->applicant_type) && strtolower($appRecord->applicant_type) == 'corporate') {
+                            echo $appRecord->corporate_name ?? '';
+                        } elseif(isset($appRecord->applicant_type) && strtolower($appRecord->applicant_type) == 'multiple') {
+                            // Try to decode JSON; if it fails, use as a string
+                            $multipleOwners = json_decode($appRecord->multiple_owners_names, true);
+                            echo is_array($multipleOwners) ? implode(', ', $multipleOwners) : $appRecord->multiple_owners_names;
+                        } else {
+                            echo trim(($appRecord->applicant_title ?? '') . ' ' . 
+                                ($appRecord->first_name ?? '') . ' ' . 
+                                ($appRecord->middle_name ?? '') . ' ' . 
+                                ($appRecord->surname ?? ''));
+                        }
+                    } else {
+                        echo $owner_name ?? '';
+                    }
+                @endphp
+                </span></p>
+                <p>Plot Size: <span class="italic">{{ $appRecord ? $appRecord->plot_size : ($plot_size ?? '') }}</span></p>
+                <p>Landuse: <span class="italic">
+                @php
+                    if($appRecord) {
+                        echo $appRecord->land_use ?? $appRecord->landuse ?? '';
+                    } else {
+                        echo $land_use ?? '';
+                    }
+                @endphp
+                </span></p>
+                <p>Location: <span class="italic">
+                @php
+                    if($appRecord) {
+                        if($isSubapplication ?? false) {
+                            // Format for subapplication
+                            $locationParts = [];
+                            
+                            if(!empty($appRecord->block_number)) {
+                                $locationParts[] = 'Block ' . $appRecord->block_number;
+                            }
+                            
+                            if(!empty($appRecord->floor_number)) {
+                                $locationParts[] = 'Floor ' . $appRecord->floor_number;
+                            }
+                            
+                            if(!empty($appRecord->unit_number)) {
+                                $locationParts[] = 'Unit ' . $appRecord->unit_number;
+                            }
+                            
+                            if(!empty($appRecord->property_location)) {
+                                $locationParts[] = $appRecord->property_location;
+                            } elseif(!empty($appRecord->address)) {
+                                $locationParts[] = $appRecord->address;
+                            }
+                            
+                            echo implode(', ', $locationParts);
+                        } else {
+                            // Format for mother application
+                            echo trim(
+                                ($appRecord->property_house_no ? 'House ' . $appRecord->property_house_no . ', ' : '') .
+                                ($appRecord->property_plot_no ? 'Plot ' . $appRecord->property_plot_no . ', ' : '') .
+                                ($appRecord->property_street_name ? $appRecord->property_street_name . ', ' : '') .
+                                ($appRecord->property_district ? $appRecord->property_district . ', ' : '') .
+                                ($appRecord->property_lga ?? '') . 
+                                (($appRecord->property_lga && $appRecord->property_state) ? ', ' : '') .
+                                ($appRecord->property_state ?? '')
+                            );
+                        }
+                    } else {
+                        // If no record found, try using the passed location data
+                        if(isset($property_location)) {
+                            echo $property_location;
+                        } elseif(isset($location)) {
+                            echo $location;
+                        } elseif(isset($address)) {
+                            echo $address;
+                        } else {
+                            // Build from components
+                            $locationParts = [];
+                            if(isset($block_number)) {
+                                $locationParts[] = 'Block ' . $block_number;
+                            }
+                            if(isset($floor_number)) {
+                                $locationParts[] = 'Floor ' . $floor_number;
+                            }
+                            if(isset($unit_number)) {
+                                $locationParts[] = 'Unit ' . $unit_number;
+                            }
+                            echo implode(', ', $locationParts);
+                        }
+                    }
+                @endphp
+                </span></p>
+                <p>Approval Date: <span class="italic">{{ $appRecord ? $appRecord->approval_date : ($approval_date ?? now()->format('Y-m-d')) }}</span></p>
                 <p>is at <span class="italic">₦{{ number_format($total ?? 0, 2) }} ({{ $total_words ?? '' }})</span>, see breakdown of cost below.</p>
             </div>
             
@@ -102,10 +284,18 @@
                             </td>
                             <td class="p-1.5 border-r border-black align-top">
                                 <p>&nbsp;</p>
-                                <p>{{ strtolower($land_use ?? '') == 'residential' ? 'N 20,000.00K' : '—' }}</p>
+                                @php
+                                    $landUseValue = '';
+                                    if($appRecord) {
+                                        $landUseValue = strtolower($appRecord->land_use ?? $appRecord->landuse ?? '');
+                                    } else {
+                                        $landUseValue = strtolower($land_use ?? '');
+                                    }
+                                @endphp
+                                <p>{{ $landUseValue == 'residential' ? 'N 20,000.00K' : '—' }}</p>
                                 <p>&nbsp;</p>
-                                @if(strtolower($land_use ?? '') == 'residential')
-                                    @if(isset($NoOfUnits) && $NoOfUnits > 1)
+                                @if($landUseValue == 'residential')
+                                    @if(isset($appRecord->NoOfUnits) && $appRecord->NoOfUnits > 1)
                                         <p>N 50,000.00K</p>
                                         <p>—</p>
                                     @else
@@ -116,13 +306,13 @@
                                     <p>—</p>
                                     <p>—</p>
                                 @endif
-                                <p>{{ strtolower($land_use ?? '') == 'residential' ? 'N 50,000.00' : '—' }}</p>
-                                <p>{{ strtolower($land_use ?? '') == 'residential' ? 'N 30,525.00K' : '—' }}</p>
+                                <p>{{ $landUseValue == 'residential' ? 'N 50,000.00' : '—' }}</p>
+                                <p>{{ $landUseValue == 'residential' ? 'N 30,525.00K' : '—' }}</p>
                                 <p>&nbsp;</p>
-                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 50,000.00K' : '—' }}</p>
-                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 100,000.00K' : '—' }}</p>
-                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 100,000.00K' : '—' }}</p>
-                                <p>{{ strtolower($land_use ?? '') != 'residential' ? 'N 30,525.00K' : '—' }}</p>
+                                <p>{{ $landUseValue != 'residential' ? 'N 50,000.00K' : '—' }}</p>
+                                <p>{{ $landUseValue != 'residential' ? 'N 100,000.00K' : '—' }}</p>
+                                <p>{{ $landUseValue != 'residential' ? 'N 100,000.00K' : '—' }}</p>
+                                <p>{{ $landUseValue != 'residential' ? 'N 30,525.00K' : '—' }}</p>
                             </td>
                             <td class="p-1.5 align-top">
                                 <p>&nbsp;</p>

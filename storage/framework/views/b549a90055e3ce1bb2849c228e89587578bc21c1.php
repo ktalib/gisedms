@@ -518,13 +518,19 @@ Main Application')); ?>
                         <div class="form-section">
                             <h2 class="section-title">No Of Blocks <span style="color:red">*</span></h2>
                             <div>
-                                <input type="text" name="NoOfUnits"
+                                <input type="text" name="NoOfBlocks"
                                     class="w-full p-2 border border-gray-300 rounded-md"
-                                    placeholder="No Of Units">
+                                    placeholder="No Of Blocks">
                             </div>
                         </div>
-
-                   
+                        <div class="form-section">
+                            <h2 class="section-title">No Of Sections (Floors) <span style="color:red">*</span></h2>
+                            <div>
+                                <input type="text" name="NoOfSections"
+                                    class="w-full p-2 border border-gray-300 rounded-md"
+                                    placeholder="No Of Sections (Floors)">
+                            </div>
+                        </div>
 
                     <?php endif; ?>
                   <br>

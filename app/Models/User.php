@@ -32,6 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'subscription_expire_date',
         'parent_id',
         'is_active',
+        'assign_role',
     ];
 
     public function sendEmailVerificationNotification()

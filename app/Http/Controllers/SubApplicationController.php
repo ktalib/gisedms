@@ -12,12 +12,10 @@ class SubApplicationController extends Controller
 {
     
  
- 
     
 
     
   
-    
     public function AcceptLetter(Request $request)
     {
         
@@ -43,6 +41,159 @@ class SubApplicationController extends Controller
 
 
     public function GenerateBill(Request $request, $id = null)
+    {
+        $id = $id ?? $request->get('id');
+        
+        // Debug output
+        \Log::info('GenerateBill called with ID: ' . ($id ?? 'null'));
+
+        if ($id) {
+            // Fetch from the subapplications table
+            $subApplication = DB::connection('sqlsrv')
+                ->table('dbo.subapplications')
+                ->where('id', $id)
+                ->first();
+                
+            \Log::info('Found subApplication: ' . ($subApplication ? 'Yes' : 'No'));
+                
+            if ($subApplication) {
+                // Determine owner name based on applicant type or fallback to any available field
+                if ($subApplication->applicant_type == 'corporate' && $subApplication->corporate_name) {
+                    $ownerName = $subApplication->corporate_name;
+                } elseif ($subApplication->applicant_type == 'multiple' && $subApplication->multiple_owners_names) {
+                    $multipleOwners = json_decode($subApplication->multiple_owners_names, true);
+                    $ownerName = is_array($multipleOwners) ? implode(', ', $multipleOwners) : $subApplication->multiple_owners_names;
+                } else {
+                    // Prefer first_name, middle_name, surname; if not present, fallback to passport.
+                    if (!empty($subApplication->first_name) || !empty($subApplication->middle_name) || !empty($subApplication->surname)) {
+                        $ownerName = trim(($subApplication->applicant_title ? $subApplication->applicant_title . ' ' : '') .
+                                        $subApplication->first_name . ' ' . 
+                                        $subApplication->middle_name . ' ' . 
+                                        $subApplication->surname);
+                    } elseif (!empty($subApplication->passport)) {
+                        $ownerName = $subApplication->passport;
+                    } else {
+                        $ownerName = 'N/A';
+                    }
+                }
+                
+                // Determine land use based on fileno prefix or explicit land_use field
+                $landUse = '';
+                if (!empty($subApplication->land_use)) {
+                    $landUse = strtolower($subApplication->land_use);
+                } elseif (!empty($subApplication->fileno)) {
+                    if (strpos($subApplication->fileno, 'ST-COM') === 0) {
+                        $landUse = 'commercial';
+                    } elseif (strpos($subApplication->fileno, 'ST-RES') === 0) {
+                        $landUse = 'residential';
+                    } elseif (strpos($subApplication->fileno, 'ST-IND') === 0) {
+                        $landUse = 'industrial';
+                    }
+                }
+                
+                // Calculate fees based on land use
+                $billBalance = 30525.00;
+                $groundRent = 0;
+                
+                if ($landUse === 'residential') {
+                    $processingFee = 20000.00;
+                    $surveyFee = isset($subApplication->NoOfUnits) && $subApplication->NoOfUnits > 1 ? 50000.00 : 70000.00;
+                    $assignmentFee = 50000.00;
+                } else { // commercial or other
+                    $processingFee = 50000.00;
+                    $surveyFee = 100000.00;
+                    $assignmentFee = 100000.00;
+                }
+                
+                $total = $processingFee + $surveyFee + $assignmentFee + $billBalance + $groundRent;
+                $approvalDate = $subApplication->approval_date 
+                    ? date('Y-m-d', strtotime($subApplication->approval_date)) 
+                    : date('Y-m-d');
+                
+                // Prepare location string from block/floor/unit/property_location
+                $locationParts = [];
+                
+                if (!empty($subApplication->block_number)) {
+                    $locationParts[] = 'Block ' . $subApplication->block_number;
+                }
+                
+                if (!empty($subApplication->floor_number)) {
+                    $locationParts[] = 'Floor ' . $subApplication->floor_number;
+                }
+                
+                if (!empty($subApplication->unit_number)) {
+                    $locationParts[] = 'Unit ' . $subApplication->unit_number;
+                }
+                
+                if (!empty($subApplication->property_location)) {
+                    $locationParts[] = $subApplication->property_location;
+                } elseif (!empty($subApplication->address)) {
+                    $locationParts[] = $subApplication->address;
+                }
+                
+                $location = implode(', ', $locationParts);
+                
+                // Prepare data for the view using subapplication fields
+                $data = [
+                    'id' => $subApplication->id,
+                    'fileno' => $subApplication->fileno,
+                    'applicant_title' => $subApplication->applicant_title,
+                    'owner_name' => $ownerName,
+                    'plot_size' => $subApplication->plot_size ?? '',
+                    'land_use' => $landUse,
+                    'location' => $location,
+                    'block_number' => $subApplication->block_number,
+                    'floor_number' => $subApplication->floor_number,
+                    'unit_number' => $subApplication->unit_number,
+                    'property_location' => $subApplication->property_location,
+                    'address' => $subApplication->address,
+                    'approval_date' => $approvalDate,
+                    'processing_fee' => $processingFee,
+                    'survey_fee' => $surveyFee,
+                    'assignment_fee' => $assignmentFee,
+                    'bill_balance' => $billBalance,
+                    'ground_rent' => $groundRent,
+                    'total' => $total,
+                    'total_words' => $this->numberToWords($total),
+                    'application_type' => $subApplication->applicant_type,
+                ];
+                
+                // Debug output before returning view
+                \Log::info('Prepared data for bill: ', [
+                    'id' => $subApplication->id,
+                    'fileno' => $subApplication->fileno,
+                    'owner_name' => $ownerName,
+                    'land_use' => $landUse,
+                    'location' => $location,
+                    'total' => $total
+                ]);
+                
+                return view('sectionaltitling.generate_bill_sub', $data);
+            }
+        }
+        
+        // If we get here, we couldn't find the record or there was no ID
+        \Log::warning('No sub-application found or no ID provided');
+        
+        // Fallback to request data if no database record found
+        $data = $request->only([
+            'id', 'fileno', 'applicant_title', 'owner_name', 'block_number',
+            'floor_number', 'unit_number', 'property_location', 'address', 'approval_date'
+        ]);
+        
+        // Add some dummy data to make sure the view at least shows something
+        $data['id'] = $id ?? 'No ID';
+        $data['owner_name'] = $data['owner_name'] ?? 'No Owner Name';
+        $data['fileno'] = $data['fileno'] ?? 'No File Number';
+        $data['property_location'] = $data['property_location'] ?? 'No Location';
+        $data['land_use'] = 'commercial'; // Default to commercial
+        $data['total'] = 280525.00; // Default total
+        $data['total_words'] = $this->numberToWords(280525.00);
+        
+        return view('sectionaltitling.generate_bill_sub', $data);
+    }
+
+ public function GenerateBill2(Request $request, $id = null)
     {
         $id = $id ?? $request->get('id');
         
@@ -160,10 +311,6 @@ class SubApplicationController extends Controller
         return view('sectionaltitling.generate_final_bill', $data);
     }
 
-    public function GenerateBill2(Request $request, $id = null)
-    {
-        return $this->GenerateBill($request, $id);
-    }
     
     /**
      * Convert a number to words
@@ -181,9 +328,30 @@ class SubApplicationController extends Controller
     }
    
 
-    public function Veiwrecords(Request $request)
+    public function viewrecorddetail_sub(Request $request)
     {
-        $id = $request->query('id');
+        // Check if the ID is provided directly in the URL path (as a route parameter)
+        $id = $request->route('id');
+        
+        // If not, check if it's in the query string
+        if (!$id) {
+            $id = $request->query('id');
+        }
+        
+        // If still no ID, check if it's the first segment of the query string (for URLs like viewrecorddetail_sub?5)
+        if (!$id) {
+            $queryString = $request->getQueryString();
+            if ($queryString && is_numeric($queryString)) {
+                $id = $queryString;
+            }
+        }
+        
+        // Log the input for debugging
+        \Log::info('Viewing subapplication record - ID detection', [
+            'request_query' => $request->query(),
+            'query_string' => $request->getQueryString(),
+            'detected_id' => $id
+        ]);
         
         if (!$id) {
             return redirect()->route('sectionaltitling.index')->with('error', 'No record ID provided');
@@ -215,6 +383,7 @@ class SubApplicationController extends Controller
             ->where('sub.id', $id)
             ->first();
             
+        // Rest of the method remains the same
         if (!$application) {
             return redirect()->route('sectionaltitling.index')->with('error', 'Record not found');
         }

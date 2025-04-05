@@ -202,7 +202,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
-    <div class="container mx-auto mt-4 p-4">
+    <div class="container mx-auto mt-4 p-4" id="main-container" data-application-id="">
 
         <div class="container">
 
@@ -279,7 +279,13 @@
                             </thead>
                             <tbody>
                                 @foreach ($Main_application as $application)
-                                    <tr>
+                                    <tr data-id="{{ $application->id }}" 
+                                        data-plot-no="{{ $application->plot_plot_no ?? $application->property_plot_no ?? '' }}"
+                                        data-street-name="{{ $application->plot_street_name ?? $application->property_street_name ?? '' }}"
+                                        data-district="{{ $application->plot_district ?? $application->property_district ?? '' }}"
+                                        data-lga="{{ $application->property_lga ?? '' }}"
+                                        data-state="{{ $application->property_state ?? 'Kano State' }}"
+                                        onclick="document.getElementById('current-application-id').value = '{{ $application->id }}'">
                                         
                                         
                                         <td><a href="{{ route('sectionaltitling.sub_applications') }}?main_application_id={{ $application->id }}">STM-2025-000-0{{ $application->id }} </a></td>
@@ -387,14 +393,14 @@
                                                         <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-id="{{ $application->id }}" data-bs-toggle="modal" data-bs-target="#OtherApprovals">
                                                             <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
-                                                            <span>Other Approvals</span>
+                                                            <span>Other Departments</span>
                                                         </button>
                                                     </li>
                                                     <li>
                                                         <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
                                                             data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="{{ $application->id }}">
                                                             <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
-                                                            <span>E-Registry</span>
+                                                            <span>Lands & E-Registry</span>
                                                         </button>
                                                     </li>
                                                     <li>
@@ -850,7 +856,7 @@
                 <div class="modal-dialog modal-dialog-centered" style="max-width:230px;">
                 <div class="modal-content">
                     <div class="modal-header" style="height: 30px;">
-                    <h5 class="modal-title" id="actionsModalLabel">Other Approvals</h5>
+                    <h5 class="modal-title" id="actionsModalLabel">Other Departments</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
                     </div>
                     <div class="modal-body" style="background-color: #f1f1f1;">
@@ -858,10 +864,7 @@
                     <div>
                         <div class="button-grid">
                         <!-- Row 1 -->
-                        <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#landsModal">
-                            Lands
-                            <i class="material-icons" style="color: #9C27B0;">landscape</i>
-                        </button>
+                       
 
                         <button class="bttn pink-shadow" onclick="showDepartmentConfirmation('survey')">
                             Survey
@@ -881,50 +884,7 @@
 
             
 
-                        <!-- Lands Modal -->
-                        <div class="modal fade" id="landsModal" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Lands</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="landsForm">
-                                            <div class="mb-3">
-                                                <label for="landsFileNo" class="form-label">File No</label>
-                                                <input type="text" class="form-control" id="landsFileNo" name="landsFileNo" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="landsFileName" class="form-label">File Name</label>
-                                                <input type="text" class="form-control" id="landsFileName" name="landsFileName" required>
-                                            </div>
-                                            <div class="modal-footer" style="background-color: #f1f1f1;">
-                                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
-                                                    <button type="button" class="bttn green-shadow" 
-                                                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" onclick="showDepartmentConfirmation('ok')">
-                                                        OK
-                                                        <i class="material-icons" style="color: #4CAF50; font-size: 16px;">check_circle</i>
-                                                    </button>
-                                                    <button type="button" class="bttn gray-shadow" 
-                                                        style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" onclick="openFile()">
-                                                        EDMS
-                                                        <i class="material-icons" style="color: #2196F3; font-size: 16px;">folder_open</i>
-                                                    </button>
-                                                    <button type="submit" class="bttn green-shadow"
-                                                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                                        Submit
-                                                        <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-         <!-- Deeds Modal -->
+    
          @include('sectionaltitling.partials.deeds')
 
             <!-- Initial Bill Approval Modals -->
@@ -932,150 +892,7 @@
          
 
 
-             
-            <div class="modal fade" id="surveyModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Survey Department Approval</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="surveyForm">
-                                <div class="row g-3">
-                                    <!-- First row -->
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Survey By</label>
-                                            <input type="text" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Date</label>
-                                            <input type="date" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <!-- Second row - Drawn By -->
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Drawn By</label>
-                                            <input type="text" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Date</label>
-                                            <input type="date" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <!-- Third row - Checked By -->
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Checked By</label>
-                                            <input type="text" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Date</label>
-                                            <input type="date" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <!-- Fourth row - Approved By -->
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Approved By</label>
-                                            <input type="text" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Date</label>
-                                            <input type="date" class="form-control" required>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#viewSurveyPlanModal">
-                                        <i class="material-icons" style="font-size: 16px; vertical-align: middle;">map</i> View Survey Plan
-                                    </button>
-
-                                </div>
-
-                                <div class="modal-footer" style="background-color: #f1f1f1;">
-                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
-                                        <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" 
-                                            style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                            OK
-                                            <i class="material-icons" style="color: #4CAF50; font-size: 16px;">check_circle</i>
-                                        </button>
-                                        <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')"
-                                            style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                            Edit
-                                            <i class="material-icons" style="color: #9E9E9E; font-size: 16px;">edit</i>
-                                        </button>
-                                        <button type="submit" class="bttn green-shadow"
-                                            style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                            Submit
-                                            <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
  
-
-         
-                                    <!-- View Survey Plan Modal -->
-                                    <div class="modal fade" id="viewSurveyPlanModal" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Survey Plan</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <!-- Dummy image for demonstration -->
-                                                    <div class="text-center">
-                                                        <img src="{{ asset(Storage::url('uploads')).'/survey.jpeg' }}" alt="Survey Plan" class="img-fluid">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
-                                                    <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
-                                                        Close
-                                                        <i class="material-icons" style="color: #9E9E9E;">close</i>
-                                                    </button>
-                                                    <button type="button" class="bttn blue-shadow" onclick="printSurveyPlan()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                                                        Print Survey Plan
-                                                        <i class="material-icons" style="color: #3F51B5;">print</i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <script>
-                                        function printSurveyPlan() {
-                                            // Create a new window with just the image content
-                                            const printWindow = window.open('', '_blank');
-                                            printWindow.document.write('<html><head><title>Survey Plan</title></head><body>');
-                                            printWindow.document.write('<img src="{{ asset('storage/uploads/survey.jpeg') }}" style="width: 100%;">');
-                                            printWindow.document.write('</body></html>');
-                                            printWindow.document.close();
-                                            printWindow.focus();
-                                            printWindow.print();
-                                            printWindow.close();
-                                        }
-                                    </script>
 
             <!-- Generate Bill Modal -->
             <div class="modal fade" id="generateBillModal" aria-hidden="true">
@@ -1193,7 +1010,7 @@
                         </div>
                         <div>
                             <label class="form-label">....</label>
-                            <select class="form-select" required onchange="handleSelectChange(this.value)">
+                            <select class="form-select"  onchange="handleSelectChange(this.value)">
                                 <option value="" disabled selected>Select</option>
                                 <option value="architectural">Architectural Design</option>
                                 <option value="planningRec">Planning Recommendation</option>
@@ -1212,7 +1029,7 @@
                                 <i class="material-icons" style="color: #f44336; font-size: 16px;">cancel</i>
                             </button>
                             <button type="submit" class="bttn green-shadow"
-                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 120px;" onclick="showPrintModal(); return false;">
+                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 120px;">
                                 Submit
                                 <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
                             </button>
@@ -1240,7 +1057,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <div id="genDocumentContent" style="min-height: 300px; padding: 20px; border: 1px solid #ddd;">
+                                    {{-- <div id="genDocumentContent" style="min-height: 300px; padding: 20px; border: 1px solid #ddd;">
                                         <h4 class="text-center mb-4">PLANNING RECOMMENDATION DOCUMENT</h4>
                                         <p>This is a sample generated document for the planning recommendation.</p>
                                         <p>Application ID: <strong>STM-2025-000-0X</strong></p>
@@ -1258,7 +1075,7 @@
                                                 <p>Director</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
                                     <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
@@ -1429,19 +1246,29 @@
             </div>
             <div class="modal-body">
                 <div id="printContent">
-                    <!-- Content from the screenshot goes here -->
+                    <div class="flex justify-between items-center mb-4 relative z-10">
+                        <img src="{{ asset('assets/logo/logo1.jpg') }}" alt="Kano State Coat of Arms" class="w-16 h-16 object-contain">
+                        <div class="text-center mt-20">
+                        <h1 class="text-lg font-bold">KANO STATE
+                            MINISTRY OF LAND AND PHYSICAL PLANNING</h1>
+                       
+                        <h3 class="text-sm font-semibold mt-1"><strong>PERMANENT SECRETARY</strong></h3>
+                        </div>
+                        <img src="{{ asset('assets/logo/logo3.jpeg') }}" alt="KANGIS Logo" class="w-16 h-16 object-contain">
+                    </div>
+            
                     <div class="print-section">
-                        <p><strong>PERMANENT SECRETARY</strong></p>
-                        <p>Kindly find Page 01 in an application for sectional titling in respect of a property (plaza) covered by Certificate of Occupancy No. COM/2025/0001 situated at Kantin Kwari market in the name of <strong>ABDULLAHI USMAN ADAMU</strong></p>
+                       
+                        <p>Kindly find Page 01 in an application for sectional titling in respect of a property (plaza) covered by Certificate of Occupancy No. <span id="printModalFileNo">{{ $application->fileno ?? 'N/A' }}</span> situated at <span id="printModalLocation"></span> in the name of <strong id="printModalOwnerName"></strong></p>
                         <p>As well as change of name to various shop owners as per attached on the application.</p>
                         <p>The application was referred to Physical Planning Department for planning, engineering as well as architectural views. Subsequently, the planners at page 01 recommended the application, because the application is feasible, and the shops meet the minimum requirements for commercial titles. Moreover, the proposals as submitted and conforms with the existing commercial development in the area.</p>
                         <p>However, the recommendation is based on the recommended site plan at page 01 and architectural design at page 01 and back cover with the following measurements:</p>
                         <p>Meanwhile, the title was granted for commercial purposes for a term of 40 years commencing from 01/01/2025 and has a residual term of 20 to expire.</p>
                         <p>In view of the above, you may kindly wish to recommend the following for approval of the Honorable Commissioner:</p>
                         <ol>
-                            <li>Consider and approve the application for Sectional Titling over plot 01 situated at Kantin Kwari covered by Certificate of Occupancy No. COM/2025/0001 in favor of <strong>ABDULLAHI USMAN ADAMU</strong></li>
+                            <li>Consider and approve the application for Sectional Titling over plot 01 situated at Kantin Kwari covered by Certificate of Occupancy No. <span id="printModalFileNoRepeat">{{ $application->fileno ?? 'N/A' }}</span> in favor of <strong id="printModalOwnerNameRepeat"></strong></li>
                             <li>Consider and approve the change of name of various shop owners as per provisions of the Bill.</li>
-                            <li>Consider and approve the Revocation of old Certificate of Occupancy COM/2025/0001 to pave the way for new Sectional Titles to the new owners.</li>
+                            <li>Consider and approve the Revocation of old Certificate of Occupancy {{ $application->fileno ?? 'N/A' }} to pave the way for new Sectional Titles to the new owners.</li>
                         </ol>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
                             <div>
@@ -1782,6 +1609,43 @@ document.addEventListener("click", function (event) {
     }
 
     function showPrintModal() {
+        const applicationId = document.getElementById('current-application-id').value;
+        if (!applicationId) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No application selected. Please select an application first.'
+            });
+            return;
+        }
+
+        // Find the selected row data
+        const row = document.querySelector(`#recordsTable tr[data-id="${applicationId}"]`);
+        if (row) {
+            const fileNo = row.cells[1].textContent.trim();
+            let ownerName = row.cells[2].textContent.trim().split(/\s*\(/)[0].trim();
+            
+            // Get property location from data attributes
+            const plotNo = row.getAttribute('data-plot-no') || '';
+            const streetName = row.getAttribute('data-street-name') || '';
+            const district = row.getAttribute('data-district') || '';
+            const lga = row.getAttribute('data-lga') || '';
+            const state = row.getAttribute('data-state') || 'Kano State';
+            
+            // Assemble the address components that we have
+            const addressParts = [plotNo, streetName, district, lga, state].filter(Boolean);
+            
+            // Create the location string from address parts or use default text
+            let location = addressParts.length > 0 ? addressParts.join(', ') : "the property location";
+            
+            // Update the modal content with dynamic data
+            document.getElementById('printModalFileNo').textContent = fileNo;
+            document.getElementById('printModalFileNoRepeat').textContent = fileNo;
+            document.getElementById('printModalOwnerName').textContent = ownerName;
+            document.getElementById('printModalOwnerNameRepeat').textContent = ownerName;
+            document.getElementById('printModalLocation').textContent = location;
+        }
+        
         $('#printModal').modal('show');
     }
 
@@ -1819,9 +1683,49 @@ document.addEventListener("click", function (event) {
             const decision = $('input[name="decision"]:checked').val();
             const approval_date = $('#approvalDate').val();
             const comments = $('#declineReason').val();
-            // Add your AJAX call here to submit the form data
-            $('#planningRecommendationModal').modal('hide');
-            Swal.fire('Success', 'Planning recommendation submitted successfully!', 'success');
+            
+            // Get the current application ID from the hidden field
+            const applicationId = $('#current-application-id').val();
+            
+            if (!applicationId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No application selected. Please select an application first.'
+                });
+                return;
+            }
+            
+            // Make AJAX call to update planning recommendation
+            $.ajax({
+                url: "{{ route('sectionaltitling.planningRecommendation') }}",
+                type: 'POST',
+                data: {
+                    id: applicationId,
+                    decision: decision,
+                    approval_date: approval_date,
+                    comments: comments,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    $('#planningRecommendationModal').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: (decision == 'approve' ? 'Approved' : 'Declined'),
+                        text: 'Planning recommendation ' + (decision == 'approve' ? 'approved' : 'declined') + ' successfully!'
+                    }).then(() => {
+                        location.reload(); // Reload the page to see the updated status
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'An error occurred while updating the planning recommendation.'
+                    });
+                }
+            });
         });
     });
  
@@ -1962,6 +1866,19 @@ document.addEventListener("click", function (event) {
             
             // Close the modal
             $('#eRegistryModal').modal('hide');
+        });
+    });
+
+
+    function updateContainerId(id) {
+    document.getElementById('main-container').dataset.applicationId = id;
+}
+ 
+    // Update the current application ID when clicking on a table row
+    document.querySelectorAll('#recordsTable tbody tr').forEach(row => {
+        row.addEventListener('click', function() {
+            const applicationId = this.getAttribute('data-id'); // Use the data-id attribute for the database ID
+            document.getElementById('current-application-id').value = applicationId;
         });
     });
 </script>
