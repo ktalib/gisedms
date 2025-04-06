@@ -320,7 +320,7 @@ Property Records Assistant
                                             </svg>
                                         </button>
 
-                                        <button type="button" id="refreshButton" class="p-0.5 border rounded flex items-center space-x-1 w-20 bg-red-600 text-white justify-center">
+                                        <button type="button" id="refreshButton" class="p-0.5 border rounded flex items-center space-x-1 w-20 bg-teal-900 text-white justify-center">
                                             <span class="text-[10px]">Refresh</span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v6h6M20 20v-6h-6M20 4l-8 8M12 12l-8 8" />

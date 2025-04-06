@@ -103,6 +103,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="printRecordBtn">Print Record</button>
                         </div>
                     </div>
                 </div>
@@ -298,12 +299,12 @@
         function showRecordDetails(recordId) {
             // Set loading state
             $('#recordDetails').html(
-                '<div class="col-12 text-center">' +
-                    '<div class="spinner-border text-primary" role="status">' +
-                        '<span class="visually-hidden">Loading...</span>' +
-                    '</div>' +
-                    '<p>Loading record details...</p>' +
-                '</div>'
+            '<div class="col-12 text-center">' +
+                '<div class="spinner-border text-primary" role="status">' +
+                '<span class="visually-hidden">Loading...</span>' +
+                '</div>' +
+                '<p>Loading record details...</p>' +
+            '</div>'
             );
             
             // Show the modal
@@ -311,62 +312,133 @@
             
             // Fetch record details from server
             $.ajax({
-                url: '{{ route("propertycard.getRecordDetails") }}',
-                method: 'GET',
-                data: { id: recordId },
-                success: function(response) {
-                    if (response.success) {
-                        const record = response.data;
-                        let detailsHtml = '';
-                        
-                        // Generate HTML for record details
-                        detailsHtml += '<div class="col-md-4"><strong>MLSF No:</strong> ' + (record.mlsfNo || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Kangis File No:</strong> ' + (record.kangisFileNo || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Plot No:</strong> ' + (record.plotNo || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-4"><strong>Block No:</strong> ' + (record.blockNo || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Approved Plan No:</strong> ' + (record.approvedPlanNo || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>TP Plan No:</strong> ' + (record.tpPlanNo || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-4"><strong>Surveyed By:</strong> ' + (record.surveyedBy || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Layout Name:</strong> ' + (record.layoutName || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>District:</strong> ' + (record.districtName || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-4"><strong>LGA:</strong> ' + (record.lgaName || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Title Serial No:</strong> ' + (record.oldTitleSerialNo || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Title Page No:</strong> ' + (record.oldTitlePageNo || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-4"><strong>Title Volume No:</strong> ' + (record.oldTitleVolumeNo || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Deeds Date:</strong> ' + (record.deedsDate || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Certificate Date:</strong> ' + (record.certificateDate || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-6"><strong>Original Allottee:</strong> ' + (record.originalAllottee || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-6"><strong>Address:</strong> ' + (record.addressOfOriginalAllottee || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-4"><strong>Title Issued Year:</strong> ' + (record.titleIssuedYear || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Change of Ownership:</strong> ' + (record.changeOfOwnership || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Reason for Change:</strong> ' + (record.reasonForChange || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-6"><strong>Current Allottee:</strong> ' + (record.currentAllottee || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-6"><strong>Current Address:</strong> ' + (record.addressOfCurrentAllottee || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-4"><strong>Current Title:</strong> ' + (record.titleOfCurrentAllottee || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Year Owned:</strong> ' + (record.currentYearTitleOwned || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Phone:</strong> ' + (record.phoneNo || 'N/A') + '</div>';
-                        
-                        detailsHtml += '<div class="col-md-4"><strong>Land Use:</strong> ' + (record.landUse || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Specific Use:</strong> ' + (record.specifically || 'N/A') + '</div>';
-                        detailsHtml += '<div class="col-md-4"><strong>Area (Hectares):</strong> ' + (record.areaInHectares || 'N/A') + '</div>';
-                        
-                        $('#recordDetails').html(detailsHtml);
-                    } else {
-                        $('#recordDetails').html('<div class="col-12 text-center text-danger">Error loading record: ' + response.message + '</div>');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    $('#recordDetails').html('<div class="col-12 text-center text-danger">Error loading record: ' + error + '</div>');
-                    console.error('Failed to load record details:', error);
+            url: '{{ route("propertycard.getRecordDetails") }}',
+            method: 'GET',
+            data: { id: recordId },
+            success: function(response) {
+                if (response.success) {
+                const record = response.data;
+                let detailsHtml = '';
+
+                // Enhanced UI using Bootstrap Cards
+                detailsHtml += '<style>';
+                detailsHtml += '.detail-card { margin-bottom: 1rem; }';
+                detailsHtml += '.detail-card .card-header { background-color: #06002065; color: white; font-size: 1.1rem; padding: 0.25rem 0.75rem; }';
+                detailsHtml += '.detail-card .card-body { background-color: #f8f9fc; }';
+                detailsHtml += '</style>';
+
+                // Property Details Group
+                detailsHtml += '<div class="card detail-card">';
+                detailsHtml +=   '<div class="card-header">Property Details</div>';
+                detailsHtml +=   '<div class="card-body"><div class="row">';
+                detailsHtml +=     '<div class="col-md-4"><strong>MLSF No:</strong> ' + (record.mlsfNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Kangis File No:</strong> ' + (record.kangisFileNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Plot No:</strong> ' + (record.plotNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Area (Hectares):</strong> ' + (record.areaInHectares || 'N/A') + '</div>';
+                detailsHtml +=   '</div></div>';
+                detailsHtml += '</div>';
+
+
+
+                      // Title Information Group
+                      detailsHtml += '<div class="card detail-card">';
+                detailsHtml +=   '<div class="card-header">Title Information</div>';
+                detailsHtml +=   '<div class="card-body"><div class="row">';
+                detailsHtml +=     '<div class="col-md-4"><strong>Title Serial No:</strong> ' + (record.oldTitleSerialNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Title Page No:</strong> ' + (record.oldTitlePageNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Title Volume No:</strong> ' + (record.oldTitleVolumeNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4 mt-2"><strong>Deeds Date:</strong> ' + (record.deedsDate || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4 mt-2"><strong>Certificate Date:</strong> ' + (record.certificateDate || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4 mt-2"><strong>Title Issued Year:</strong> ' + (record.titleIssuedYear || 'N/A') + '</div>';
+
+                detailsHtml +=     '<div class="col-md-12"><strong>Reg Particulars:</strong> ' 
+                           + (record.oldTitleSerialNo ? record.oldTitleSerialNo : 'N/A') + '/' 
+                           + (record.oldTitlePageNo ? record.oldTitlePageNo : 'N/A') + '/' 
+                           + (record.oldTitleVolumeNo ? record.oldTitleVolumeNo : 'N/A') + '</div>';
+                detailsHtml +=   '</div></div>';
+                detailsHtml += '</div>';
+
+                // Plan Details Group
+                detailsHtml += '<div class="card detail-card">';
+                detailsHtml +=   '<div class="card-header">Plan Details</div>';
+                detailsHtml +=   '<div class="card-body"><div class="row">';
+                detailsHtml +=     '<div class="col-md-4"><strong>Block No:</strong> ' + (record.blockNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Approved Plan No:</strong> ' + (record.approvedPlanNo || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>TP Plan No:</strong> ' + (record.tpPlanNo || 'N/A') + '</div>';
+                detailsHtml +=   '</div></div>';
+                detailsHtml += '</div>';
+
+                // Survey & Location Group
+                detailsHtml += '<div class="card detail-card">';
+                detailsHtml +=   '<div class="card-header">Survey & Location</div>';
+                detailsHtml +=   '<div class="card-body"><div class="row">';
+                detailsHtml +=     '<div class="col-md-4"><strong>Surveyed By:</strong> ' + (record.surveyedBy || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Layout Name:</strong> ' + (record.layoutName || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>District:</strong> ' + (record.districtName || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4 mt-2"><strong>LGA:</strong> ' + (record.lgaName || 'N/A') + '</div>';
+                detailsHtml +=   '</div></div>';
+                detailsHtml += '</div>';
+
+          
+                // Ownership History Group
+                detailsHtml += '<div class="card detail-card">';
+                detailsHtml +=   '<div class="card-header">Ownership History</div>';
+                detailsHtml +=   '<div class="card-body"><div class="row">';
+                detailsHtml +=     '<div class="col-md-6"><strong>Original Allottee:</strong> ' + (record.originalAllottee || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-6"><strong>Original Address:</strong> ' + (record.addressOfOriginalAllottee || 'N/A') + '</div>';
+                detailsHtml +=   '</div></div>';
+                detailsHtml += '</div>';
+
+                // Current Ownership Group
+                detailsHtml += '<div class="card detail-card">';
+                detailsHtml +=   '<div class="card-header">Current Ownership</div>';
+                detailsHtml +=   '<div class="card-body"><div class="row">';
+                detailsHtml +=     '<div class="col-md-4"><strong>Current Allottee:</strong> ' + (record.currentAllottee || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Current Address:</strong> ' + (record.addressOfCurrentAllottee || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Current Title:</strong> ' + (record.titleOfCurrentAllottee || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4 mt-2"><strong>Year Owned:</strong> ' + (record.currentYearTitleOwned || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4 mt-2"><strong>Phone:</strong> ' + (record.phoneNo || 'N/A') + '</div>';
+                detailsHtml +=   '</div></div>';
+                detailsHtml += '</div>';
+
+                // Land Use Group
+                detailsHtml += '<div class="card detail-card">';
+                detailsHtml +=   '<div class="card-header">Land Use</div>';
+                detailsHtml +=   '<div class="card-body"><div class="row">';
+                detailsHtml +=     '<div class="col-md-4"><strong>Land Use:</strong> ' + (record.landUse || 'N/A') + '</div>';
+                detailsHtml +=     '<div class="col-md-4"><strong>Specific Use:</strong> ' + (record.specifically || 'N/A') + '</div>';
+                detailsHtml +=   '</div></div>';
+                detailsHtml += '</div>';
+
+                // Append a Print Record button
+               
+
+                $('#recordDetails').html(detailsHtml);
+                
+                // Attach the print functionality
+                $('#printRecordBtn').on('click', function() {
+                    // Capture the record details and open a new window for printing
+                    var printContents = document.getElementById('recordDetails').innerHTML;
+                    var printWindow = window.open('', '', 'height=600,width=800');
+                    printWindow.document.write('<html><head><title>Print Record</title>');
+                    // Optional: include any required styles for printing
+                    printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">');
+                    printWindow.document.write('</head><body>');
+                    printWindow.document.write(printContents);
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+                    printWindow.focus();
+                    printWindow.print();
+                    printWindow.close();
+                });
+                } else {
+                $('#recordDetails').html('<div class="text-center text-danger">Error loading record: ' + response.message + '</div>');
                 }
+            },
+            error: function(xhr, status, error) {
+                $('#recordDetails').html('<div class="text-center text-danger">Error loading record: ' + error + '</div>');
+                console.error('Failed to load record details:', error);
+            }
             });
         }
         

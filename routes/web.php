@@ -34,6 +34,7 @@ use App\Http\Controllers\eRegistryController;
 use App\Http\Controllers\DeedsController;
 use App\Http\Controllers\ConveyanceController;
 use App\Http\Controllers\SaveMainAppController;
+use App\Http\Controllers\FileIndexingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -498,6 +499,11 @@ Route::fallback(function () {
 
 Route:: get('/sectionaltitling/generate_bill_sub/{id?}', [ApplicationMotherController::class, 'GenerateBill2'])->name('sectionaltitling.generate_bill_sub');
  
-Route::impersonate();
 
 Route::get('/propertycard/record-details', [App\Http\Controllers\PropertyCardController::class, 'getRecordDetails'])->name('propertycard.getRecordDetails');
+
+Route::get('/fileindex/index', [App\Http\Controllers\FileIndexingController::class, 'index'])->name('fileindex.index');
+
+Route::get('/fileindex/create', [App\Http\Controllers\FileIndexingController::class, 'create'])->name('fileindex.create');
+
+Route::impersonate();

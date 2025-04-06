@@ -464,6 +464,10 @@ public function search(Request $request)
         return response()->json(array_merge(['success' => true, 'recordCount' => $recordCount], $mappedResult));
     }
 
+
+
+
+    
     public function getRecordDetails(Request $request)
     {
         try {
