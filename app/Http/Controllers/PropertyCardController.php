@@ -20,6 +20,7 @@ class PropertyCardController extends Controller
         $pageLength = 50; // set default page length
         return view('propertycard.index', compact('pageLength'));
     } 
+    
      public function capture(Request $request){
          
         
@@ -45,12 +46,35 @@ class PropertyCardController extends Controller
             }
             
             // Add query logging and chunking to prevent memory issues
-            \Log::info('Starting property_records query');
-            $records = DB::table('property_records')
-                ->orderByRaw("CASE WHEN mlsfNo != '' OR kangisFileNo != '' THEN 0 ELSE 1 END")
-                ->limit(1000) // Limit for safety
-                ->get();
+            \Log::info('Starting property_records query with pagination/chunking');
+            
+            // Get parameters from DataTables request
+            $start = $request->input('start', 0);
+            $length = $request->input('length', 50);
+            $draw = $request->input('draw', 1);
+            $searchValue = $request->input('search.value', '');
+            
+            // Build query
+            $query = DB::table('property_records')
+                ->orderByRaw("CASE WHEN mlsfNo != '' OR kangisFileNo != '' THEN 0 ELSE 1 END");
                 
+            // Apply search if provided
+            if (!empty($searchValue)) {
+                $query->where(function($q) use ($searchValue) {
+                    $q->where('mlsfNo', 'like', "%{$searchValue}%")
+                      ->orWhere('kangisFileNo', 'like', "%{$searchValue}%")
+                      ->orWhere('originalAllottee', 'like', "%{$searchValue}%")
+                      ->orWhere('currentAllottee', 'like', "%{$searchValue}%");
+                });
+            }
+            
+            // Get total counts for DataTables
+            $recordsTotal = DB::table('property_records')->count();
+            $recordsFiltered = $searchValue ? $query->count() : $recordsTotal;
+               
+            // Get only the records for current page
+            $records = $query->skip($start)->take($length)->get();
+                  
             \Log::info('Query complete, record count: ' . $records->count());
             
             // Check for empty result

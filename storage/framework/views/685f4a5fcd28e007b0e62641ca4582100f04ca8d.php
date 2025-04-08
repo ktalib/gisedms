@@ -68,7 +68,7 @@
         
     <!-- [ Sidebar Menu ] start -->
     <?php echo $__env->make('admin.menu', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-    <!-- [ Sidebar Menu ] end -->
+    <!-- [ Sidebar Menu ] end --> 
     <!-- [ Header Topbar ] start -->
     <?php echo $__env->make('admin.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <!-- [ Header ] end -->

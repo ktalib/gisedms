@@ -507,3 +507,7 @@ Route::get('/fileindex/index', [App\Http\Controllers\FileIndexingController::cla
 Route::get('/fileindex/create', [App\Http\Controllers\FileIndexingController::class, 'create'])->name('fileindex.create');
 
 Route::impersonate();
+
+// FileIndexing routes
+Route::resource('fileindex', 'App\Http\Controllers\FileIndexingController');
+Route::post('fileindex/save-cofo', 'App\Http\Controllers\FileIndexingController@saveCofO')->name('fileindex.save-cofo');

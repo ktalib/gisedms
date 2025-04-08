@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 class InstrumentController extends Controller
 {
 
+
+
     private function generateParticularsRegistrationNumber($lastInstrument)
     {
         if ($lastInstrument) {
@@ -19,7 +21,7 @@ class InstrumentController extends Controller
                 $lastVolume = (int)$lastVolume;
     
                 if ($lastSerial == 100) {
-                    $newSerial = 1;
+                    $newSerial = 1; 
                     $newPage = 1;
                     $newVolume = $lastVolume + 1;
                 } else {

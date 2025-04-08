@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FileIndexingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,3 +52,8 @@ Route::get('/get-application-data', function (Request $request) {
         ], 500);
     }
 })->name('api.get-application-data');
+
+// File Indexing API Endpoints
+Route::get('/file-records', [FileIndexingController::class, 'getAllRecords']);
+Route::get('/file-records/{id}', [FileIndexingController::class, 'getRecord']);
+Route::post('/file-records/search', [FileIndexingController::class, 'searchRecords']);

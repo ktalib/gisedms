@@ -1058,25 +1058,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <div id="genDocumentContent" style="min-height: 300px; padding: 20px; border: 1px solid #ddd;">
-                                        <h4 class="text-center mb-4">PLANNING RECOMMENDATION DOCUMENT</h4>
-                                        <p>This is a sample generated document for the planning recommendation.</p>
-                                        <p>Application ID: <strong>STM-2025-000-0X</strong></p>
-                                        <p>Applicant: <strong>SAMPLE APPLICANT NAME</strong></p>
-                                        <p>File No: <strong>SAMPLE-FILE-NO</strong></p>
-                                        <p>Date: <strong><?php echo e(date('Y-m-d')); ?></strong></p>
-                                        <p class="mt-4">The application has been reviewed and is recommended for approval.</p>
-                                        <div class="row mt-5">
-                                            <div class="col-6">
-                                                <p>_________________________</p>
-                                                <p>Planning Officer</p>
-                                            </div>
-                                            <div class="col-6 text-end">
-                                                <p>_________________________</p>
-                                                <p>Director</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
                                     <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">

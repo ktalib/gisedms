@@ -10,18 +10,35 @@ use Illuminate\Support\Arr;
 
 class ApplicationMotherController extends Controller
 {
-    public function landuse()
+
+ 
+
+     public function AssignRole()
     {
-        return view('sectionaltitling.landuse');
+        $user = Auth::user();
+        $role = $user->assign_role;
+
+        if ($role == 'owner') {
+            return 'owner';
+        } elseif (strpos($role, 'Programmes -') !== false) {
+            return 'programmes';
+        } else {
+            return 'access denied';
+        }
     }
 
     public function index()
     {
+        $role = $this->AssignRole();
+        
+        if ($role == 'access denied') {
+            return redirect('/')->with('error', 'You do not have permission to access this resource.');
+        }
+        
         $Main_application = DB::connection('sqlsrv')->table('dbo.mother_applications')->get();
 
-        return view('sectionaltitling.index', compact('Main_application'));
+        return view('sectionaltitling.index', compact('Main_application', 'role'));
     }
-    
     public function subApplication()
     {
         // Get the land use type from the request
@@ -63,6 +80,11 @@ class ApplicationMotherController extends Controller
 
     public function create()
     {
+        $role = $this->AssignRole();
+        
+        if ($role == 'access denied') {
+            return redirect('/')->with('error', 'You do not have permission to access this resource.');
+        }
         return view('sectionaltitling.create');
     }
 
