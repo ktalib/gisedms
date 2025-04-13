@@ -7,9 +7,8 @@
     <li class="breadcrumb-item" aria-current="page"> {{ __(' File Indexing Assistant') }}</li>
 @endsection
 @push('script-page')
- 
     <script>
-           tailwind.config = {
+        tailwind.config = {
             theme: {
                 extend: {
                     colors: {
@@ -24,23 +23,23 @@
 
 @section('content')
     <style>
-body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-        }
-        .form-input, .form-select {
+        /* .form-input,
+        .form-select {
             border: 1px solid #cbd5e1;
             background-color: #fff;
-            height: 2rem;
+            height: 2.5rem;
             font-size: 0.875rem;
             border-radius: 0.25rem;
             padding: 0 0.5rem;
         }
-        .form-input:focus, .form-select:focus {
+
+        .form-input:focus,
+        .form-select:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
+
         .nav-button {
             border: 1px solid #cbd5e1;
             background-color: #f8fafc;
@@ -52,9 +51,11 @@ body {
             justify-content: center;
             transition: all 0.2s;
         }
+
         .nav-button:hover {
             background-color: #e2e8f0;
         }
+
         .table-header {
             background-color: #f1f5f9;
             font-weight: 500;
@@ -62,706 +63,548 @@ body {
             padding: 0.5rem;
             border: 1px solid #cbd5e1;
         }
+
         .table-cell {
             border: 1px solid #e2e8f0;
             padding: 0.5rem;
         }
+
         .highlighted-row {
             background-color: #3b82f6;
             color: white;
         }
+
         .material-icons {
             font-size: 18px;
-        }
+        } */
     </style>
 
     <div class="container mx-auto mt-4 p-4">
 
-        <div class="container">
-            <form id="fileIndexForm">
-                @csrf
-                <div class="max-w-6xl mx-auto bg-white border border-gray-200 shadow-lg rounded-md overflow-hidden">
-                    <!-- Header -->
-                    <div class="flex items-center bg-gradient-to-r from-primary to-blue-400 p-2 text-white shadow-md">
-                        <div class="flex items-center">
-                            <span class="material-icons mr-2">description</span>
-                            <span class="text-sm font-bold">File Indexing Assistant</span>
+
+
+
+
+
+        <div class="bg-white rounded-lg shadow-lg w-full   overflow-hidden">
+            <!-- Progress Bar -->
+            <div class="px-8 pt-8">
+                <div class="flex justify-between mb-6">
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold step-indicator" data-step="1">1</div>
+                        <span class="text-sm mt-2">Indexing</span>
+                    </div>
+                    <div class="flex-1 flex items-center mx-4">
+                        <div class="h-1 w-full bg-gray-200 step-line">
+                            <div class="h-1 bg-emerald-500 step-line-progress" style="width: 0%"></div>
                         </div>
-                        <div class="ml-auto">
-                            <button class="text-white hover:bg-blue-600 p-1 rounded">
-                                <span class="material-icons">close</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold step-indicator" data-step="2">2</div>
+                        <span class="text-sm mt-2">Certificate of Occupancy</span>
+                    </div>
+                    <div class="flex-1 flex items-center mx-4">
+                        <div class="h-1 w-full bg-gray-200 step-line">
+                            <div class="h-1 bg-emerald-500 step-line-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold step-indicator" data-step="3">3</div>
+                        <span class="text-sm mt-2">Property Transaction</span>
+                    </div>
+                    <div class="flex-1 flex items-center mx-4">
+                        <div class="h-1 w-full bg-gray-200 step-line">
+                            <div class="h-1 bg-emerald-500 step-line-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold step-indicator" data-step="4">4</div>
+                        <span class="text-sm mt-2">Search and Filter</span>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Form Steps -->
+            <form id="wizard-form" class="p-8">
+                <!-- Step 1: Personal Information -->
+                <div class="step-content" data-step="1">
+                    <h2 class="text-2xl font-bold mb-6">File Indexing Details</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <!-- Row 1 -->
+                        <div>
+                            <label for="fileTitle" class="block text-sm font-medium text-gray-700 mb-1">File Title</label>
+                            <input type="text" id="fileTitle" name="fileTitle" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label for="locationTitle" class="block text-sm font-medium text-gray-700 mb-1">Location Title</label>
+                            <select id="locationTitle" name="locationTitle" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option>Select Location Title</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="otherFileNo" class="block text-sm font-medium text-gray-700 mb-1">Other File No</label>
+                            <input type="text" id="otherFileNo" name="otherFileNo" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        
+                        <!-- Row 2 -->
+                        <div>
+                            <label for="otherFileNo1" class="block text-sm font-medium text-gray-700 mb-1">Other File No (Additional)</label>
+                            <input type="text" id="otherFileNo1" name="otherFileNo1" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label for="batchNo" class="block text-sm font-medium text-gray-700 mb-1">Batch No</label>
+                            <input type="text" id="batchNo" name="batchNo" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Batch No">
+                        </div>
+                        <div>
+                            <label for="plotNo" class="block text-sm font-medium text-gray-700 mb-1">Plot No</label>
+                            <input type="text" id="plotNo" name="plotNo" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Plot No">
+                        </div>
+                  
+                           
+                        
+                        <div>
+                            <label for="fileCategory" class="block text-sm font-medium text-gray-700 mb-1">File Category</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="fileCategoryCheckbox" name="fileCategoryCheckbox" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded ">
+                                <select id="fileCategorySelect" name="fileCategorySelect" class="ml-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    <option>Select File Category</option>
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div>
+                            <label for="fileSubCategory" class="block text-sm font-medium text-gray-700 mb-1">Sub-Category</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="fileSubCategoryCheckbox" name="fileSubCategoryCheckbox" class="text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded">
+                                <select id="fileSubCategorySelect" name="fileSubCategorySelect" class="ml-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    <option>Select Sub-Category</option>
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div>
+                            <label for="fileLease" class="block text-sm font-medium text-gray-700 mb-1">File Lease</label>
+                            <input type="text" id="fileLease" name="fileLease" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        
+                        <!-- Row 3 - File Category and Sub-Category -->
+                        <div>
+                            <div class="flex items-center mb-1"></div>
+                        </div>
+                        <div>
+                            <!-- Empty field for future use -->
+                        </div>
+                        <div>
+                            <!-- Empty field for future use -->
+                        </div>
+                    </div>
+    
+              
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="fileCoOwned" name="fileCoOwned" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded mr-2">
+                            <label for="fileCoOwned" class="text-sm text-gray-700">File Co-Owned</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="fileHasTransaction" name="fileHasTransaction" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded mr-2">
+                            <label for="fileHasTransaction" class="text-sm text-gray-700">File Has Transaction</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="fileHasCertificateOfOccupancy" name="fileHasCertificateOfOccupancy" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded mr-2" checked>
+                            <label for="fileHasCertificateOfOccupancy" class="text-sm text-gray-700">File Has Certificate of Occupancy</label>
+                        </div>
+       
+                        <div class="flex items-center">
+                            <input type="checkbox" id="fileMerged" name="fileMerged" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded mr-2">
+                            <label for="fileMerged" class="text-sm text-gray-700">File Merged</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="fileSubdivided" name="fileSubdivided" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded mr-2">
+                            <label for="fileSubdivided" class="text-sm text-gray-700">File Subdivided</label>
+                        </div>
+                    </div>
+    
+            
+                </div>
+    
+                <!-- Step 2: Contact Details -->
+                <div class="step-content hidden" data-step="2">
+                    <h2 class="text-2xl font-bold mb-6">Certificate of Occupancy</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <!-- File Lease -->
+                        
+    
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Certificate of Occupancy</label>
+                            <div class="flex items-center">
+                                <input type="radio" name="occupancy" value="Yes" checked class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded mr-2">
+                                <span class="text-sm mr-4">Yes</span>
+                                <input type="radio" name="occupancy" value="No" class="w-4 h-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded mr-2">
+                                <span class="text-sm">No</span>
+                            </div>
+                        </div>
+    
+                        <div>
+                            <label for="fileLease" class="block text-sm font-medium text-gray-700">File Lease</label>
+                            <input type="text" id="fileLease" name="fileLease" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div></div>
+                      
+                        <div>
+                            <label for="oldTitleSerialNo" class="block text-sm font-medium text-gray-700 mb-1">Serial No</label>
+                            <input type="text" id="oldTitleSerialNo" name="oldTitleSerialNo" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                       
+    
+                        <div>
+                            <label for="oldTitlePageNo" class="block text-sm font-medium text-gray-700 mb-1">Page No</label>
+                            <input type="text" id="oldTitlePageNo" name="oldTitlePageNo" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label for="oldTitleVolumeNo" class="block text-sm font-medium text-gray-700 mb-1">Vol No</label>
+                            <input type="text" id="oldTitleVolumeNo" name="oldTitleVolumeNo" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label for="landUse" class="block text-sm font-medium text-gray-700 mb-1">Landuse Type</label>
+                            <input type="text" id="landUse" name="landUse" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input type="text" id="title" name="title" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        
+    
+                        <div>
+                            <label for="plotDescription" class="block text-sm font-medium text-gray-700 mb-1">Plot Description</label>
+                            <input type="text" id="plotDescription" name="plotDescription" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <div>
+                            <label for="groundRent" class="block text-sm font-medium text-gray-700 mb-1">Ground Rent</label>
+                            <input type="text" id="groundRent" name="groundRent" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <div>
+                            <label for="deedsDate" class="block text-sm font-medium text-gray-700 mb-1">Reg. Date</label>
+                            <input type="text" id="deedsDate" name="deedsDate" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <div>
+                            <label for="tenancy" class="block text-sm font-medium text-gray-700 mb-1">Tenancy</label>
+                            <input type="text" id="tenancy" name="tenancy" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <div class="col-span-3 text-center">
+                            <button type="button" id="saveCofOBtn" class="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                <span class="material-icons mr-1" style="font-size: 14px;">save</span>
+                                Save CofO
                             </button>
                         </div>
                     </div>
-            
-                    <!-- Navigation Buttons -->
-                    <div class="flex p-2 bg-white border-b border-gray-200 shadow-sm">
-                        <button class="nav-button mr-1" title="Previous">
-                            <span class="material-icons">arrow_back</span>
-                        </button>
-                        <button class="nav-button mr-1" title="Next">
-                            <span class="material-icons">arrow_forward</span>
-                        </button>
-                       <!--  <button class="nav-button mr-1" title="Up">
-                            <span class="material-icons">arrow_upward</span>
-                        </button>
-                        <button class="nav-button mr-1" title="Down">
-                            <span class="material-icons">arrow_downward</span>
-                        </button> -->
-                        <button class="nav-button mr-1" title="Refresh">
-                            <span class="material-icons">refresh</span>
-                        </button>
-                        <button class="nav-button mr-1" title="Save">
-                            <span class="material-icons">check</span>
-                        </button>
-                        <button class="nav-button mr-1" title="Cancel">
-                            <span class="material-icons">close</span>
-                        </button>
-                        <button class="nav-button mr-1" title="Settings">
-                            <span class="material-icons">settings</span>
-                        </button>
-                    </div>
-            
-                    <!-- Main Content -->
-                    <div class="flex">
-                        <!-- Left Column -->
-                        <div class="w-1/2 p-2">
-                            <!-- File Registry Details -->
-                            <div class="mb-4 bg-white p-3 rounded-md shadow-sm">
-                                <div class="text-sm font-bold mb-2 text-gray-700">File Registry Details</div>
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">FileNo:</div>
-                                    <div class="w-3/4 grid grid-cols-3 gap-1">
-                                        <select class="form-select p-2" id="fileNoPrefix" name="fileNoPrefix">
-                                            <option value="">Select File Prefix</option>
-                                            @foreach(['KNML', 'MNKL', 'KN', 'CON-COM', 'CON-RES', 'RES', 'MLKN', 'CON-AG', 'KNGP', 'CON-IND'] as $prefix)
-                                                <option value="{{ $prefix }}" {{ (isset($result) && isset($result->fileNoPrefix) && $result->fileNoPrefix == $prefix) ? 'selected' : '' }}>
-                                                    {{ $prefix }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <input type="text" class="form-input p-2" id="fileNumber" name="fileNumber" 
-                                              placeholder="Format example" 
-                                              value="{{ isset($result) ? ($result->fileNumber ?: '') : '' }}">
-                                        <input type="text" class="form-input p-2" id="Previewflenumber" name="Previewflenumber" value="{{ isset($result) ? ($result->kangisFileNo ?: '') : '' }}" readonly>
-                                    </div>
-                                </div>
-                                                             
-                               
-
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">File Title:</div>
-                                    <input type="text" name="fileTitle" value="INTERSTATE COMMERCE CENTER" class="form-input w-3/4 p-2">
-                                </div>
-                              
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Location Title:</div>
-                                    <select name="locationTitle" class="form-select w-3/4 p-2">
-                                        <option>Masterfile</option>
-                                    </select>
-                                </div>
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Other FileNo:</div>
-                                    <div class="w-3/4 flex">
-                                        <input type="text" name="otherFileNo"  class="form-input w-1/2 p-2">
-                                    </div>
-                                </div>
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Other FileNo:</div>
-                                    <div class="w-3/4 flex">
-                                        <input type="text" name="otherFileNo1" value="9852" class="form-input w-1/4 mx-1 p-2">
-                                        <input type="text" name="otherFileNo2" value="9852" class="form-input w-1/4 mx-1 p-2">
-                                       
-                                    </div>
-                                </div> 
-                                
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Batch No:</div>
-                                    <div class="w-3/4 flex">
-                                        <input type="text" name="batchNo" class="form-input w-1/4 mx-1 p-2">
-                                        <input type="text" name="plotNo" class="form-input w-1/4 mx-1 p-2" placeholder="Plot No:">
-                                       
-                                    </div>
-                                </div>
-                                
-                            </div>
-            
-                            <!-- Checkboxes -->
-                            <div class="grid grid-cols-2 gap-1 mb-2">
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="fileCoOwned" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                    <span class="text-xs">File Co-Owned</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="fileHasTransaction" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                    <span class="text-xs">File Has Transaction</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="checkbox" checked name="fileHasCertificateOfOccupancy" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                    <span class="text-xs">File Has Certificate of Occupancy</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="fileCategory" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                    <span class="text-xs">File Category</span>
-                                    <select name="fileCategorySelect" class="form-select ml-1 w-1/2 p-2">
-                                        <option>TAL</option>
-                                    </select>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="fileSubCategory" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                    <span class="text-xs">File Sub-Category</span>
-                                    <select name="fileSubCategorySelect" class="form-select ml-1 w-1/2 p-2">
-                                        <option>Corporate North</option>
-                                    </select>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="fileMerged" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                    <span class="text-xs">File Merged</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <input type="checkbox" name="fileSubdivided" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                    <span class="text-xs">File Subdivided</span>
-                                </div>
-                            </div>
-             
-            
-                            <!-- File Lease -->
-                            <div class="mb-2">
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">File Lease:</div>
-                                    <input type="text" name="fileLease"   class="form-input w-3/4 p-2" readonly>
-                                </div>
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Certificate of Occupancy:</div>
-                                    <div class="w-3/4 flex items-center">
-                                        <input type="radio" name="occupancy" value="Yes" checked class="w-4 h-4 text-primary focus:ring-primary mr-2">
-                                        <span class="text-sm mr-4">Yes</span>
-                                        <input type="radio" name="occupancy" value="No" class="w-4 h-4 text-primary focus:ring-primary mr-2">
-                                        <span class="text-sm">No</span>
-                                    </div>
-                                </div>
-                            </div>
-            
-                            <!-- Registry Info -->
-                            <div class="mb-2">
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Serial No:</div>
-                                    <input type="text" name="serialNo" class="form-input w-1/4 p-2">
-                                    <div class="w-1/4 text-xs pl-4">Title:</div>
-                                    <input type="text" name="title" class="form-input w-1/4 p-2">
-                                </div>
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Reg. Page:</div>
-                                    <input type="text" name="regPage" class="form-input w-1/4 p-2">
-                                    <div class="w-1/4 text-xs pl-4">Landuse Type:</div>
-                                    <input type="text" name="landuseType" class="form-input w-1/4 p-2">
-                                </div>
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Covenant:</div>
-                                    <input type="text" name="covenant" class="form-input w-1/4 p-2">
-                                    <div class="w-1/4 text-xs pl-4">Plot Description:</div>
-                                    <input type="text" name="plotDescription" class="form-input w-1/4 p-2">
-                                </div>
-                                <div class="flex mb-1">
-                                    <div class="w-1/4 text-xs">Lease Period:</div>
-                                    <input type="text" name="leasePeriod" class="form-input w-1/4 p-2">
-                                    <div class="flex items-center w-1/4 pl-4">
-                                        <span class="text-xs mr-2">year(s)</span>
-                                        <span class="text-xs">Reg. Date:</span>
-                                    </div>
-                                    <input type="text" name="regDate" class="form-input w-1/4 p-2">
-                                </div>
-                                
-                                <div >
-                                    <button type="button" id="saveCofOBtn" class="bg-primary text-white px-3 py-1 rounded text-xs flex items-center">
-                                        <span class="material-icons mr-1" style="font-size: 14px;">save</span>
-                                        Save CofO
-                                    </button>
-                                </div>
+                </div>
+    
+                <!-- Step 3: Property Transaction -->
+                <div class="step-content hidden" data-step="3">
+                    <h2 class="text-2xl font-bold mb-6">Property Transaction</h2>
+                    <div class="grid grid-cols-4 gap-4">
+                        <!-- Row 1 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
+                            <div class="flex">
+                                <input type="checkbox" name="customer" value="Customer" class="mr-2">
+                                <span>Customer</span>
                             </div>
                         </div>
-            
-                        <!-- Right Column -->
-            
-                        
-                        <div class="w-1/2 p-2">
-                            <!-- Property Tabs/Search -->
-                             
-                            <div class="grid grid-cols-2 gap-3 mb-4">
-            
-                                <div>
-                                     
-                                    <div class="flex items-center mt-1">
-                                        <input type="checkbox" name="customer" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs">Customer</span>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    
-                                    <div class="flex items-center mt-1">
-                                        <input type="checkbox" name="statutory" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs">Statutory</span>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <div class="text-xs font-bold">Property Transation</div>
-                                    <div class="flex items-center mt-1">
-                                        <input type="checkbox" checked name="grantLease" class="w-4 h-4 text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs">Grant/Lease</span>
-                                    </div>
-                                </div>
-            
-            
-                                <div>
-                                    <div class="text-xs font-bold">Search Filter</div>
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="grantor" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Grantor</span>
-                                    </div>
-                                    <input type="text" name="grantorText" class="form-input w-1/2 p-2">
-                                </div>
-                                
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="titleType" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">TitleType</span>
-                                    </div>
-                                    <input type="text" name="titleTypeText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                      
-                                        <span class="text-xs w-24">Grantee</span>
-                                    </div>
-                                    <input type="text" name="grantee" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="landUseType" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Land use Type</span>
-                                    </div>
-                                    <input type="text" name="landUseTypeText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="assignment" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Assignment</span>
-                                    </div>
-                                    <input type="text" name="assignmentText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="lga" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">LGA</span>
-                                    </div>
-                                    <input type="text" name="lgaText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                              
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="categoryCode" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Category Code</span>
-                                    </div>
-                                    <input type="text" name="categoryCodeText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        
-                                        <span class="text-xs w-24">Assignor</span>
-                                    </div>
-                                    <input type="text" name="assignor" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="newKANGISFileNo" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">NewKANGISFileNo</span>
-                                    </div>
-                                    <input type="text" name="newKANGISFileNoText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        
-                                        <span class="text-xs w-24">Assignee</span>
-                                    </div>
-                                    <input type="text" name="assignee" class="form-input w-1/2 p-2">
-                                </div>
-                                
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="kagisFileNo" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">KAGISFileNO</span>
-                                    </div>
-                                    <input type="text" name="kagisFileNoText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="mortgage" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Mortgage</span>
-                                    </div>
-                                    <input type="text" name="mortgageText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="mlsFileNo" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">MLSFileNo</span>
-                                    </div>
-                                    <input type="text" name="mlsFileNoText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                       
-                                        <span class="text-xs w-24">Mortgagor</span>
-                                    </div>
-                                    <input type="text" name="mortgagor" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="batchNumber" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Batch #</span>
-                                    </div>
-                                    <input type="text" name="batchNumberText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        
-                                        <span class="text-xs w-24">Mortgagee</span>
-                                    </div>
-                                    <input type="text" name="mortgagee" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="plotNum" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Plot No</span>
-                                    </div>
-                                    <input type="text" name="plotNumText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                       
-                                        <span class="text-xs w-24">Third Party</span>
-                                    </div>
-                                    <input type="text" name="thirdParty" class="form-input w-1/2 p-2">
-                                </div>  
-                                
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="typeForm" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Type Form</span>
-                                    </div>
-                                    <input type="text" name="typeFormText" class="form-input w-1/2 p-2">
-                                </div>
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="surrenderor" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Surrenderor</span>
-                                    </div>
-                                    <input type="text" name="surrenderorText" class="form-input w-1/2 p-2">
-                                </div> 
-                                
-                                 
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                      
-                                        <span class="text-xs w-24">Surrenderee</span>
-                                    </div>
-                                    <input type="text" name="surrenderee" class="form-input w-1/2 p-2">
-                                </div>
-                                
-                             
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                        <input type="checkbox" name="subLease" class="text-primary focus:ring-primary rounded mr-2">
-                                        <span class="text-xs w-24">Sub-Lease</span>
-                                    </div>
-                                    <input type="text" name="subLeaseText" class="form-input w-1/2 p-2">
-                                </div>
-                                
-                            
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                       
-                                        <span class="text-xs w-24">Lessor</span>
-                                    </div>
-                                    <input type="text" name="lessor" class="form-input w-1/2 p-2">
-                                </div>
-                                
-                                 
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                       
-                                        <span class="text-xs w-24">Instrument</span>
-                                    </div>
-                                    <input type="text" name="instrument" class="form-input w-1/2 p-2">
-                                </div>
-                                
-                                
-                                 
-                                <div class="flex items-center">
-                                    <div class="flex items-center w-1/2">
-                                      
-                                        <span class="text-xs w-24">Period</span>
-                                    </div>
-                                    <div class="flex w-1/2">
-                                        <input type="text" name="periodStart" class="form-input w-1/3 p-2 mr-1">
-                                        <input type="text" name="periodEnd" class="form-input w-1/3 p-2 mr-1">
-                                        <input type="text" name="periodDuration" class="form-input w-1/3 p-2">
-                                    </div>
-                                </div>
-            
-                                <div >
-                                     
-                                </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Statutory</label>
+                            <div class="flex">
+                                <input type="checkbox" name="statutory" value="Statutory" class="mr-2">
+                                <span>Statutory</span>
                             </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Grant/Lease</label>
+                            <div class="flex">
+                                <input type="checkbox" checked name="grantLease" value="grantLease" class="mr-2">
+                                <span>Grant/Lease</span>
+                            </div>
+                        </div>
+                    <dvi></dvi>
+                        <!-- Row 2 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Grantor</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="enableGrantor" onchange="toggleInput(this, 'grantor')" class="mr-2">
+                                <input type="text" name="grantor" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+    
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Grantee</label>
+                            <input type="text" name="grantee" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
                       
-                            
-            
-            
-                            <!-- Bottom Buttons -->
-                            <div class="flex justify-between mt-4">
-                                
-                                <div class="flex">
-                                     
-                                    <button type="button" id="saveFormBtn" class="bg-primary text-white border border-primary p-2 rounded-md shadow-sm hover:bg-blue-600 flex items-center">
-                                        <span class="material-icons mr-1">save</span>
-                                        <span class="text-xs">Save</span>
-                                    </button>
-                                </div>
-                            </div>
-            
-                            <!-- Bottom Icons -->
-                            <div class="flex justify-end mt-2">
-                                <button class="bg-white border border-gray-200 p-2 rounded-md shadow-sm hover:bg-gray-50 mx-1">
-                                    <span class="material-icons text-red-500">picture_as_pdf</span>
-                                </button>
-                                <button class="bg-white border border-gray-200 p-2 rounded-md shadow-sm hover:bg-gray-50 mx-1">
-                                    <span class="material-icons text-gray-700">settings</span>
-                                </button>
-                                <button class="bg-white border border-gray-200 p-2 rounded-md shadow-sm hover:bg-gray-50 mx-1">
-                                    <span class="material-icons text-gray-700">print</span>
-                                </button>
-                                <button class="bg-white border border-gray-200 p-2 rounded-md shadow-sm hover:bg-gray-50 mx-1" title="Find File Cabin">
-                                    <span class="material-icons text-blue-500">file_present</span>
-                                </button>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="enableAssignment" onchange="toggleInput(this, 'assignment')" class="mr-2">
+                                <input type="text" name="assignment" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             </div>
                         </div>
-            
-            
-            
+    
+    
+    
+    
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reg Particulars</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="enableAssignment" onchange="toggleInput(this, 'assignment')" class="mr-2">
+                                <input type="text" name="assignment" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+    
+                        <!-- Row 3 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Assignment</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="enableAssignment" onchange="toggleInput(this, 'assignment')" class="mr-2">
+                                <input type="text" name="assignment" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+    
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="text" name="assignmentDate" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reg Particulars</label>
+                            <input type="text" name="assignmentRegParticulars" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Assignor</label>
+                            <input type="text" name="assignorName" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <!-- Row 4 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+                            <input type="text" name="assignee" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div></div> <div></div> <div></div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mortgage</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="enableMortgage" onchange="toggleInput(this, 'mortgage')" class="mr-2">
+                                <input type="text" name="mortgage" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="text" name="mortgageDate" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <!-- Row 5 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reg Particulars</label>
+                            <input type="text" name="mortgageRegParticulars" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mortgagor</label>
+                            <input type="text" name="mortgagor" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mortgagee</label>
+                            <input type="text" name="mortgagee" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <!-- Row 6 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Third Party</label>
+                            <input type="text" name="thirdParty" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <div></div><div></div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Surrender</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="enableSurrenderor" onchange="toggleInput(this, 'surrenderor')" class="mr-2">
+                                <input type="text" name="surrenderor" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="text" name="surrenderDate" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <!-- Row 7 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reg Particulars</label>
+                            <input type="text" name="surrenderRegParticulars" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Surrenderor</label>
+                            <input type="text" name="surrenderor" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Surrenderee</label>
+                            <input type="text" name="surrenderee" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div></div> <div></div> <div></div>
+                        <!-- Row 8 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sub-Lease</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" name="enableSubLease" onchange="toggleInput(this, 'subLease')" class="mr-2">
+                                <input type="text" name="subLease" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="text" name="subLeaseDate" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reg Particulars</label>
+                            <input type="text" name="subLeaseRegParticulars" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <!-- Row 9 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Lessor</label>
+                            <input type="text" name="lessor" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Lessee</label>
+                            <input type="text" name="lessor" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Instrument</label>
+                            <input type="text" name="instrument" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+    
+                        <!-- Row 10 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Period</label>
+                            <div class="flex">
+                                <input type="text" name="Period[]" class="w-1/3 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <input type="text" name="Period[]" class="w-1/3 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <input type="text" name="Period[]" class="w-1/3 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+                        <div></div>
+                        <div></div>
                     </div>
-            
-                   
-                   
+    
+                    <!-- <div class="text-center mt-4">
+                        <button type="button" id="savePropertyTransactionBtn" class="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            <span>save</span>
+                            Save Transaction
+                        </button>
+                    </div> -->
+                </div>
+    
+                <!-- Step 4: search and filrter -->
+                <div class="step-content hidden" data-step="4">
+                    <h2 class="text-2xl font-bold mb-6">Search and Filter</h2>
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label for="titleType" class="block text-sm font-medium text-gray-700 mb-1">Title Type</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableTitleType" onchange="toggleInput(this, 'titleType')" class="mr-2">
+                                    <input type="text" id="titleType" name="titleType" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Title Type">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="landUseType" class="block text-sm font-medium text-gray-700 mb-1">Land Use Type</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableLandUseType" onchange="toggleInput(this, 'landUseType')" class="mr-2">
+                                    <input type="text" id="landUseType" name="landUseType" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Land Use Type">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="lga" class="block text-sm font-medium text-gray-700 mb-1">LGA</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableLGA" onchange="toggleInput(this, 'lga')" class="mr-2">
+                                    <input type="text" id="lga" name="lga" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="LGA">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="categoryCode" class="block text-sm font-medium text-gray-700 mb-1">Category Code</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableCategoryCode" onchange="toggleInput(this, 'categoryCode')" class="mr-2">
+                                    <input type="text" id="categoryCode" name="categoryCode" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Category Code">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="newKANGISFileNo" class="block text-sm font-medium text-gray-700 mb-1">New KANGIS File No</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableNewKANGISFileNo" onchange="toggleInput(this, 'newKANGISFileNo')" class="mr-2">
+                                    <input type="text" id="newKANGISFileNo" name="newKANGISFileNo" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="New KANGIS File No">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="kagisFileNo" class="block text-sm font-medium text-gray-700 mb-1">KAGIS File No</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableKAGISFileNo" onchange="toggleInput(this, 'kagisFileNo')" class="mr-2">
+                                    <input type="text" id="kagisFileNo" name="kagisFileNo" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="KAGIS File No">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="mlsFileNo" class="block text-sm font-medium text-gray-700 mb-1">MLS File No</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableMLSFileNo" onchange="toggleInput(this, 'mlsFileNo')" class="mr-2">
+                                    <input type="text" id="mlsFileNo" name="mlsFileNo" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="MLS File No">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="batchNo2" class="block text-sm font-medium text-gray-700 mb-1">Batch No</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableBatchNumber" onchange="toggleInput(this, 'batchNo2')" class="mr-2">
+                                    <input type="text" id="batchNo2" name="batchNo2" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Batch No">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="plotNo2" class="block text-sm font-medium text-gray-700 mb-1">Plot No</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enablePlotNum" onchange="toggleInput(this, 'plotNo2')" class="mr-2">
+                                    <input type="text" id="plotNo2" name="plotNo2" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Plot No">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="typeForm2" class="block text-sm font-medium text-gray-700 mb-1">Type Form</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="enableTypeForm" onchange="toggleInput(this, 'typeForm2')" class="mr-2">
+                                    <input type="text" id="typeForm2" name="typeForm2" disabled class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Type Form">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-8">
+                    <button type="button" id="prevBtn" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 hidden">Previous</button>
+                    <div class="flex-1"></div>
+                    <button type="button" id="nextBtn" class="px-6 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">Next Step</button>
+                    <button type="submit" id="submitBtn" class="px-6 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 hidden">Submit</button>
                 </div>
             </form>
         </div>
-    </div>
+
+
+
+
+
+
+
+
 
 
     </div>
 
-    <script>
-        // File number preview update functionality
-        function updateFileNumberPreview() {
-            const prefixEl = document.getElementById('fileNoPrefix');
-            const numberEl = document.getElementById('fileNumber');
-            const previewEl = document.getElementById('Previewflenumber');
-
-            const prefix = prefixEl.value;
-            let number = numberEl.value.trim();
-            
-            // Set placeholder based on selected prefix
-            if (prefix) {
-                if (['KNML', 'MNKL', 'MLKN', 'KNGP'].includes(prefix)) {
-                    numberEl.placeholder = "e.g. 00001";
-                } else if (prefix === "KN") {
-                    numberEl.placeholder = "e.g. 0001";
-                } else if (['CON-COM', 'CON-RES', 'CON-AG', 'CON-IND', 'RES'].includes(prefix)) {
-                    numberEl.placeholder = "e.g. 01";
-                } else {
-                    numberEl.placeholder = "Format example";
-                }
-            }
-            
-            // Format the number based on the prefix
-            if (prefix && number) {
-                if (['KNML', 'MNKL', 'MLKN', 'KNGP'].includes(prefix)) {
-                    // Ensure 5-digit format with leading zeros
-                    number = number.padStart(5, '0');
-                    numberEl.value = number;
-                    previewEl.value = prefix + ' ' + number;
-                } else if (prefix === "KN") {
-                    previewEl.value = prefix + number;
-                } else if (['CON-COM', 'CON-RES', 'CON-AG', 'CON-IND', 'RES'].includes(prefix)) {
-                    previewEl.value = prefix + '-' + number;
-                } else {
-                    previewEl.value = prefix + '/' + number;
-                }
-            } else if (prefix) {
-                previewEl.value = prefix;
-            } else if (number) {
-                previewEl.value = number;
-            } else {
-                previewEl.value = '';
-            }
-            
-            // Validation based on prefix
-            let isValid = true;
-            if (prefix === "KN") {
-                isValid = /^\d+$/.test(number);
-            } else if (["KNML", "MNKL", "MLKN", "KNGP"].includes(prefix)) {
-                isValid = /^\d{5}$/.test(number);
-            } else if (['CON-COM', 'CON-RES', 'CON-AG', 'CON-IND', 'RES'].includes(prefix)) {
-                isValid = /^\d+$/.test(number);
-            }
-
-            if (prefix && number && isValid) {
-                prefixEl.style.color = 'red';
-                numberEl.style.color = 'red';
-                previewEl.style.color = 'red';
-            } else {
-                prefixEl.style.color = '';
-                numberEl.style.color = '';
-                previewEl.style.color = '';
-            }
-        }
-
-        // AJAX form submissions
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize file number preview
-            updateFileNumberPreview();
-            
-            // Add event listeners for file number preview updates
-            document.getElementById('fileNoPrefix').addEventListener('change', updateFileNumberPreview);
-            document.getElementById('fileNumber').addEventListener('input', updateFileNumberPreview);
-            
-            // Save CofO button click handler
-            document.getElementById('saveCofOBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(document.getElementById('fileIndexForm'));
-                
-                // Display loading indicator
-                Swal.fire({
-                    title: 'Saving...',
-                    text: 'Please wait while we save the Certificate of Occupancy data',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                
-                // Send AJAX request
-                fetch('{{ route("fileindex.save-cofo") }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: data.message,
-                            confirmButtonColor: '#3b82f6'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: data.message,
-                            confirmButtonColor: '#3b82f6'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'An unexpected error occurred. Please try again.',
-                        confirmButtonColor: '#3b82f6'
-                    });
-                });
-            });
-            
-            // Main Save button click handler
-            document.getElementById('saveFormBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(document.getElementById('fileIndexForm'));
-                
-                // Display loading indicator
-                Swal.fire({
-                    title: 'Saving...',
-                    text: 'Please wait while we save the form data',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                
-                // Send AJAX request
-                fetch('{{ route("fileindex.store") }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: data.message,
-                            confirmButtonColor: '#3b82f6'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: data.message,
-                            confirmButtonColor: '#3b82f6'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'An unexpected error occurred. Please try again.',
-                        confirmButtonColor: '#3b82f6'
-                    });
-                });
-            });
-        });
-    </script>
-
+    @include('fileindex.ajax');
 @endsection

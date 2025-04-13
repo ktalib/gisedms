@@ -10,6 +10,9 @@
 <!-- [Head] end -->
 <!-- [Body] Start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<head>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+</head>
 <body data-pc-preset="<?php echo e($settings['accent_color']); ?>" data-pc-sidebar-theme="light"
     data-pc-sidebar-caption="<?php echo e($settings['sidebar_caption']); ?>" data-pc-direction="<?php echo e($settings['theme_layout']); ?>"
     data-pc-theme="<?php echo e($settings['theme_mode']); ?>">

@@ -195,11 +195,11 @@
                         <li class="pc-item pc-hasmenu">
                             <a href="#" class="pc-link">{{ __('Scanning') }}<span class="pc-arrow"><i class="fas fa-chevron-right"></i></span></a>
                             <ul class="pc-submenu">
-                                <li class="pc-item"><a href="#" class="pc-link">{{ __('Upload') }}</a></li>
+                                <li class="pc-item"><a href="{{ route('filescanning.create') }}" class="pc-link">{{ __('Upload') }}</a></li>
                                 <li class="pc-item"><a href="#" class="pc-link">{{ __('Download') }}</a></li>
                             </ul>
                         </li>
-                        <li class="pc-item"><a href="#" class="pc-link">{{ __('PageTyping') }}</a></li>
+                        <li class="pc-item"><a href="{{ route('pagetyping.create') }}" class="pc-link">{{ __('PageTyping') }}</a></li>
                     </ul>
                 </li>
                 @endif

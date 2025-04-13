@@ -35,6 +35,9 @@ use App\Http\Controllers\DeedsController;
 use App\Http\Controllers\ConveyanceController;
 use App\Http\Controllers\SaveMainAppController;
 use App\Http\Controllers\FileIndexingController;
+use App\Http\Controllers\FileScanningController;
+use App\Http\Controllers\ScannerController;
+use App\Http\Controllers\PageTypingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -502,12 +505,32 @@ Route:: get('/sectionaltitling/generate_bill_sub/{id?}', [ApplicationMotherContr
 
 Route::get('/propertycard/record-details', [App\Http\Controllers\PropertyCardController::class, 'getRecordDetails'])->name('propertycard.getRecordDetails');
 
+
+// FileIndexing routes
+
 Route::get('/fileindex/index', [App\Http\Controllers\FileIndexingController::class, 'index'])->name('fileindex.index');
 
 Route::get('/fileindex/create', [App\Http\Controllers\FileIndexingController::class, 'create'])->name('fileindex.create');
 
 Route::impersonate();
 
-// FileIndexing routes
+
 Route::resource('fileindex', 'App\Http\Controllers\FileIndexingController');
 Route::post('fileindex/save-cofo', 'App\Http\Controllers\FileIndexingController@saveCofO')->name('fileindex.save-cofo');
+ 
+Route::post('fileindex/save-transaction', [FileIndexingController::class, 'savePropertyTransaction'])->name('fileindex.save-transaction');
+ 
+
+
+// File Scanning
+
+Route::get('/filescanning/index', [FileScanningController::class, 'index'])->name('filescanning.index');
+Route::get('/filescanning/create', [FileScanningController::class, 'create'])->name('filescanning.create');
+
+Route::get('/scanners', [ScannerController::class, 'getScanners'])->name('scanners.list');
+Route::post('/scan', [ScannerController::class, 'scan'])->name('scanners.scan');
+Route::post('/webcam-capture', [ScannerController::class, 'captureFromWebcam'])->name('scanners.webcam');
+
+Route::get('/pagetyping/index', [PageTypingController::class, 'index'])->name('pagetyping.index');
+Route::get('/pagetyping/create', [PageTypingController::class, 'create'])->name('pagetyping.create');
+Route::post('/pagetyping/store', [PageTypingController::class, 'store'])->name('pagetyping.store');

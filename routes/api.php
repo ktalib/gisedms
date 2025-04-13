@@ -57,3 +57,7 @@ Route::get('/get-application-data', function (Request $request) {
 Route::get('/file-records', [FileIndexingController::class, 'getAllRecords']);
 Route::get('/file-records/{id}', [FileIndexingController::class, 'getRecord']);
 Route::post('/file-records/search', [FileIndexingController::class, 'searchRecords']);
+
+// New API endpoints for CofO and Property Transaction data
+Route::get('/cofo-record/{fileNo}', [FileIndexingController::class, 'getCofORecord']);
+Route::get('/property-transaction', [FileIndexingController::class, 'getPropertyTransactionRecord']);

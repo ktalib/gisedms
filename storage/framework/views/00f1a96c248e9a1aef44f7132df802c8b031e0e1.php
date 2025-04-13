@@ -195,11 +195,11 @@
                         <li class="pc-item pc-hasmenu">
                             <a href="#" class="pc-link"><?php echo e(__('Scanning')); ?><span class="pc-arrow"><i class="fas fa-chevron-right"></i></span></a>
                             <ul class="pc-submenu">
-                                <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('Upload')); ?></a></li>
+                                <li class="pc-item"><a href="<?php echo e(route('filescanning.create')); ?>" class="pc-link"><?php echo e(__('Upload')); ?></a></li>
                                 <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('Download')); ?></a></li>
                             </ul>
                         </li>
-                        <li class="pc-item"><a href="#" class="pc-link"><?php echo e(__('PageTyping')); ?></a></li>
+                        <li class="pc-item"><a href="<?php echo e(route('pagetyping.create')); ?>" class="pc-link"><?php echo e(__('PageTyping')); ?></a></li>
                     </ul>
                 </li>
                 <?php endif; ?>

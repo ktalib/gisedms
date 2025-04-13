@@ -10,6 +10,9 @@
 <!-- [Head] end -->
 <!-- [Body] Start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
 <body data-pc-preset="{{ $settings['accent_color'] }}" data-pc-sidebar-theme="light"
     data-pc-sidebar-caption="{{ $settings['sidebar_caption'] }}" data-pc-direction="{{ $settings['theme_layout'] }}"
     data-pc-theme="{{ $settings['theme_mode'] }}">
