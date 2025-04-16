@@ -1,1869 +1,506 @@
 
-
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('APPLICATION FOR SECTIONAL TITLING  MODULE')); ?>
 
 <?php $__env->stopSection(); ?>
-<?php $__env->startSection('breadcrumb'); ?>
-    <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
-    <li class="breadcrumb-item" aria-current="page"> <?php echo e(__('APPLICATION FOR SECTIONAL TITLING  MODULE')); ?></li>
-<?php $__env->stopSection(); ?>
-<?php $__env->startPush('script-page'); ?>
-    <script src="<?php echo e(asset('assets/js/plugins/ckeditor/classic/ckeditor.js')); ?>"></script>
-
-    <script>
-        if ($('#classic-editor').length > 0) {
-            ClassicEditor.create(document.querySelector('#classic-editor')).catch((error) => {
-                console.error(error);
-            });
-        }
-        setTimeout(() => {
-            feather.replace();
-        }, 500);
-    </script>
-<?php $__env->stopPush(); ?>
-
-
-
+ 
+<?php echo $__env->make('sectionaltitling.partials.assets.css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>  
 <?php $__env->startSection('content'); ?>
-    <!-- ...existing head code... -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-icons@1.13.14/iconfont/material-icons.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-
-    
-    <style>
-        body {
-            zoom: 88%;
-
-        
-        }
-
-        .record-group {
-            border: 1px solid #dee2e6;
-            border-radius: 0.375rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .record-group h3 {
-            font-size: 1.125rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-dialog-scrollable .modal-content {
-            max-height: 90vh;
-        }
-
-        .modal-xl {
-            max-width: 1140px;
-        }
-
-        .modal-backdrop {
-            background-color: transparent;
-        }
-
-        /* Add this line */
-
-        input,
-        textarea,
-        select {
-            text-transform: uppercase;
-        }
-       
- 
-        .button-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    justify-content: center;
-    width: fit-content;
-    margin: 0 auto;
-}
-
-.bttn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    color: #4a5568;
-    background-color: white;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 10px;
-    border: none;
-    cursor: pointer;
-    width: 180px;
-    height: 40px;
-    text-align: left;
-}
-
-.bttn i {
-    margin-left: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-}
-
-/* Hover effects with icon-specific glows */
-.bttn:hover {
-    transform: translateY(-2px);
-}
-
-.bttn:hover[onclick*="finance"] {
-    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-}
-
-.bttn:hover[onclick*="planning"] {
-    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
-}
-
-.bttn:hover[onclick*="survey"] {
-    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
-}
-
-.bttn:hover[onclick*="lands"] {
-    box-shadow: 0 4px 8px rgba(156, 39, 176, 0.3);
-}
-
-.bttn:hover[onclick*="generateBettermentBill"] {
-    box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
-}
-
-.bttn:hover[onclick*="generateBill"] {
-    box-shadow: 0 4px 8px rgba(63, 81, 181, 0.3);
-}
    
-      .button-grid .bttn {
-                    padding: 6px 12px;
-                    font-size: 10px;
-                    white-space: nowrap;
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: space-between;
-                    width: 100%;
-                    height: 40px;
-                    }
-
-                    .button-grid {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 10px;
-                    justify-content: center;
-                    }    
-                    
-                    .payments .bttn {
-                    padding: 6px 12px;
-                    font-size: 10px;
-                    white-space: nowrap;
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: space-between;
-                    width: 100%;
-                    height: 40px;
-                    }
-
-                    .payments-grid {
-                    display: grid;
-                    grid-template-columns: repeat(1, 1fr);
-                    gap: 10px;
-                    justify-content: center;
-                    }
-
-                    .bttn i {
-                    margin-left: 8px;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    }
-                    th {
-                        font-size: bold;
-                    }
-       </style>
-    <!-- External JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
-    <div class="container mx-auto mt-4 p-4" id="main-container" data-application-id="">
-
-        <div class="container">
-
-
-            <div class="d-flex justify-content-between mb-3">
-                
-                <div class="d-flex">
-                    <a href="#" class="btn btn-success me-2" id="createAppBtn">
-                        <i class="fa fa-plus"></i> Create Application
-                    </a>
-                    
-                    <div class="dropdown d-none ms-2" id="select-landuse-dropdown">
-                        <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-plus"></i> Select Landuse Type
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="<?php echo e(route('sectionaltitling.create')); ?>?landuse=Residential">
-                                    <i class="fas fa-home me-2" style="color: blue;"></i> Residential
-                                </a>
-                                <a class="dropdown-item" href="<?php echo e(route('sectionaltitling.create')); ?>?landuse=Commercial">
-                                    <i class="fas fa-building me-2" style="color: green;"></i> Commercial
-                                </a>
-                                <a class="dropdown-item" href="<?php echo e(route('sectionaltitling.create')); ?>?landuse=Industrial">
-                                    <i class="fas fa-industry me-2" style="color: orange;"></i> Industrial
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const createAppBtn = document.getElementById('createAppBtn');
-                        const selectLanduseDropdown = document.getElementById('select-landuse-dropdown');
-                        
-                        createAppBtn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            selectLanduseDropdown.classList.remove('d-none');
-                            selectLanduseDropdown.classList.add('d-inline-block');
-                        });
-                    });
-                </script>
-
-<div class="btn-group" role="group">
-    <a href="#" class="btn me-2" id="importFieldDataBtn" style="background-color: orange; border-color: orange; color: white;">
-        <i class="fa fa-upload"></i> Import Field Data
-    </a>
-    <a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>" class="btn btn-secondary">
-        <i class="fa fa-list"></i> View Sub Applications
-    </a>
-</div>
-            </div>
-            <div>
-                <div class="card shadow-sm" style="width:100%">
-
-
-
-                    <div class="card-body">
-                        <h5 class="card-title">Sectional Titling Applications</h5>
-                        <table id="recordsTable" class="table table-striped dt-responsive nowrap" style="width:100%">
-                            <thead >
-                                <tr>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Application ID</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">File No</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Owner</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Date</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Planning Rec.</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Application Status</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Landuse</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Phone</th>
-                                    <th style="text-transform: none; color: #005f16; text-align: center;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $__currentLoopData = $Main_application; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $application): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <tr data-id="<?php echo e($application->id); ?>" 
-                                        data-plot-no="<?php echo e($application->plot_plot_no ?? $application->property_plot_no ?? ''); ?>"
-                                        data-street-name="<?php echo e($application->plot_street_name ?? $application->property_street_name ?? ''); ?>"
-                                        data-district="<?php echo e($application->plot_district ?? $application->property_district ?? ''); ?>"
-                                        data-lga="<?php echo e($application->property_lga ?? ''); ?>"
-                                        data-state="<?php echo e($application->property_state ?? 'Kano State'); ?>"
-                                        onclick="document.getElementById('current-application-id').value = '<?php echo e($application->id); ?>'">
-                                        
-                                        
-                                        <td><a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>?main_application_id=<?php echo e($application->id); ?>">STM-2025-000-0<?php echo e($application->id); ?> </a></td>
-                                       
-                                        <td><?php echo e($application->fileno); ?></td>
-                                        <td>
-                                            <?php
-                                                $multipleOwners = $application->multiple_owners_names;
-                                                $names = [];
-
-                                                // Try to decode JSON; if it fails, split on commas.
-                                                $decoded = json_decode($multipleOwners, true);
-                                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                                                    $names = $decoded;
-                                                } elseif (!empty($multipleOwners)) {
-                                                    $names = explode(',', $multipleOwners);
-                                                } elseif ($application->corporate_name) {
-                                                    $names = [$application->corporate_name];
-                                                } else {
-                                                    $names = [trim($application->first_name . ' ' . $application->middle_name . ' ' . $application->surname)];
-                                                }
-
-                                                // Clean up extra quotes/spaces
-                                                $formattedNames = array_map(function($name) {
-                                                    return preg_replace('/\s+/', ' ', trim($name, "\" \t\n\r\0\x0B"));
-                                                }, $names);
-                                            ?>
-
-                                            <?php if(count($formattedNames) > 1): ?>
-                                                <span><?php echo e($formattedNames[0]); ?></span>
-                                                <i class="fas fa-info-circle text-primary"
-                                                   style="cursor: pointer;"
-                                                   data-bs-toggle="tooltip"
-                                                   title="Click to view all names"
-                                                   onclick="showNames('<?php echo e(implode(', ', $formattedNames)); ?>')">
-                                                </i>
-                                            <?php else: ?>
-                                                <span><?php echo e($formattedNames[0]); ?></span>
-                                            <?php endif; ?>
-                                        </td>
-
-                                        <script>
-                                            function showNames(names) {
-                                                Swal.fire({
-                                                    title: 'All Multiple Owner Names',
-                                                    html: names.split(',').map(name => `<p>${name.trim().replace(/\s+/g, ' ')}</p>`).join(''),
-                                                    icon: 'info',
-                                                    confirmButtonText: 'Close'
-                                                });
-                                            }
-                                        </script>
-                                        <td><?php echo e(\Carbon\Carbon::parse($application->created_at)->format('Y-m-d')); ?></td>
-                                         <td><?php echo e($application->planning_recommendation_status); ?></td>
-                                         <td><?php echo e($application->application_status); ?></td>
-                                        <td><?php echo e($application->land_use); ?></td>
-                                        <td>
-                                            <?php
-                                                $phoneNumbers = explode(',', $application->phone_number);
-                                                $formattedPhoneNumbers = array_map(function($phone) {
-                                                    return preg_replace('/(\d{3})(\d{3})(\d{4})/', '$1-$2-$3', preg_replace('/[^0-9]/', '', $phone));
-                                                }, $phoneNumbers);
-                                            ?>
-                                            <?php if(count($formattedPhoneNumbers) > 1): ?>
-                                                <span><?php echo e($formattedPhoneNumbers[0]); ?></span>
-                                                <i class="fas fa-info-circle text-primary" style="cursor: pointer;" data-bs-toggle="tooltip" title="Click to view all phone numbers" onclick="showPhoneNumbers('<?php echo e(implode(', ', $formattedPhoneNumbers)); ?>')"></i>
-                                            <?php else: ?>
-                                                <span><?php echo e($formattedPhoneNumbers[0]); ?></span>
-                                            <?php endif; ?>
-                                        </td>
-
-                                        <script>
-                                            function showPhoneNumbers(phoneNumbers) {
-                                                Swal.fire({
-                                                    title: 'Phone Numbers',
-                                                    html: phoneNumbers.split(',').map(phone => `<p>${phone.trim()}</p>`).join(''),
-                                                    icon: 'info',
-                                                    confirmButtonText: 'Close'
-                                                });
-                                            }
-                                        </script>
-                                        <td class="relative">
-                                            <div class="relative inline-block dropdown-container">
-                                                <!-- Dropdown Toggle Button -->
-                                                <button type="button" class="dropdown-toggle p-2 bg-gray-200 hover:bg-gray-300 focus:outline-none border-2 border-gray-400" onclick="toggleDropdown(this, event)">
-                                                  <i class="material-icons">more_vert</i>
-                                               </button>
-                                                </button>
-                                            
-                                                <!-- Dropdown Menu -->
-                                                <ul class="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg hidden action-menu z-50">
-                                                    <li>
-                                             <a href="<?php echo e(route('sectionaltitling.viewrecorddetail')); ?>?id=<?php echo e($application->id); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                                            <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
-                                                            <span>View Record Details</span>
-                                                </a>
-                                            </li>
-                                                    <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#actionsModal" onclick="setSelectedApplicationId(<?php echo e($application->id); ?>)">
-                                                            <i class="material-icons text-green-500" style="font-size: 18px;">payments</i>
-                                                            <span>Payments</span>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            data-id="<?php echo e($application->id); ?>" data-bs-toggle="modal" data-bs-target="#OtherApprovals">
-                                                            <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
-                                                            <span>Other Departments</span>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            data-bs-toggle="modal" data-bs-target="#eRegistryModal" data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-th-large text-red-500" style="width: 18px;"></i>
-                                                            <span>Lands & E-Registry</span>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-                                                            onclick="showDepartmentConfirmation('planningRec')"
-                                                            data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-clipboard-check text-blue-500" style="width: 18px;"></i>
-                                                            <span>Planning Recommendation</span>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2 decision-mother-btn"
-                                                            data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-check-circle text-green-500" style="width: 18px;"></i>
-                                                            <span>Director's Approval</span>
-                                                        </button>
-                                                    </li>
-                                                     <li>
-                                                        <button type="button" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2" data-bs-toggle="modal" data-bs-target="#finalConveyanceModal" data-id="<?php echo e($application->id); ?>">
-                                                            <i class="fas fa-file-invoice-dollar text-orange-500" style="width: 18px;"></i>
-                                                            <span>Final Conveyance</span>
-                                                        </button>
-
-                                                   
-                                                    <li>
-                                                        
-                                                    </li>
-                                                    <?php if($application->application_status == 'Approved'): ?>
-                                                        <li>
-                                                            <a href="<?php echo e(route('sectionaltitling.sub_application', [
-                                                                'application_id' => $application->id,
-                                                                'owner_name' => $application->corporate_name
-                                                                    ? $application->corporate_name
-                                                                    : ($application->multiple_owners_names
-                                                                        ? $application->multiple_owners_names
-                                                                        : $application->first_name . ' ' . $application->middle_name . ' ' . $application->surname),
-                                                                'fileno' => $application->fileno,
-                                                                 'passport' => $application->passport,
-                                                                'formID' => $application->id,
-                                                                'NoOfUnits' => $application->NoOfUnits ?? 0,
-                                                                'land_use' => $application->land_use,
-                                                                'address' => $application->address,
-                                                                'plot_house_no' => $application->plot_house_no,
-                                                                'plot_plot_no' => $application->plot_plot_no,
-                                                                'plot_street_name' => $application->plot_street_name,
-                                                                'plot_district' => $application->plot_district,
-                                                                'property_location' =>
-                                                                    $application->plot_district . ' ' . $application->plot_street_name . ' ' . $application->plot_plot_no,
-                                                            ])); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                                                <i class="fas fa-plus-square text-green-500" style="width: 18px;"></i>
-                                                                <span>Create ST Record</span>
-                                                            </a>
-                                                        </li>
-                                                    <?php else: ?>
-                                                        <li class="opacity-50 cursor-not-allowed">
-                                                            <a href="#" class="block w-full text-left px-4 py-2 flex items-center space-x-2">
-                                                                <i class="fas fa-plus-square text-gray-500" style="width: 18px;"></i>
-                                                                <span>Create ST Record (Disabled)</span>
-                                                            </a>
-                                                        </li>
-                                                    <?php endif; ?>
-
-
-                                                    <li>
-                                                        <a href="<?php echo e(route('sectionaltitling.sub_applications')); ?>?main_application_id=<?php echo e($application->id); ?>" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                                        <i class="material-icons text-blue-600" style="font-size: 18px;">visibility</i>
-                                                                <span>Sub-Applications</span>
-                                                           </a>
-                                                       </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                      
-                                    </tr>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <!-- Actions Modal -->
-           <!-- MODAL -->
-
-        <!-- Final Conveyance Modal -->
-        <div class="modal fade" id="finalConveyanceModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 500px;">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title">Final Conveyance</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                <form id="finalConveyanceForm">
-                    <!-- Hidden field for application id -->
-                    <input type="hidden" name="application_id" id="finalConveyanceApplicationId" value="">
-                    <div id="conveyanceInputsContainer">
-                    <!-- Input fields will be generated here -->
-                    </div>
-                    <button type="button" class="btn btn-primary" id="addConveyanceInputButton">
-                    Add More
-                    <i class="material-icons" style="color: #3F51B5;">add</i>
-                    </button>
-                    <hr>
-                    <br>
-                    <div class="modal-footer" style="background-color: #f1f1f1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px 20px;">
-                   
-                        <button type="submit" class="bttn green-shadow" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px;">
-                            Submit
-                            <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                        </button>
-                        <button type="button" class="bttn blue-shadow" data-bs-toggle="modal" data-bs-target="#buyersListModal" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3); font-size: 12px; padding: 6px 12px;">
-                            Buyers List
-                            <i class="material-icons" style="color: #3F51B5; font-size: 16px;">group</i>
-                        </button>
-
-                     
-                    </div>
-                </form>
-
-                <script>
-                    $(document).ready(function() {
-                        $('#finalConveyanceModal').on('show.bs.modal', function(event) {
-                            const button = $(event.relatedTarget);
-                            const applicationId = button.data('id');
-                            $('#finalConveyanceApplicationId').val(applicationId);
-                            console.log('Setting application ID to:', applicationId);
-                            
-                            // Clear existing inputs first
-                            $('#conveyanceInputsContainer').empty();
-                            
-                            // Fetch existing conveyance data
-                            fetch(`<?php echo e(url('/')); ?>/sectionaltitling/get-conveyance-data/${applicationId}`)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(`HTTP error! Status: ${response.status}`);
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    console.log('Fetched conveyance data:', data);
-                                    
-                                    let buyers = [];
-                                    
-                                    // Handle different formats of conveyance data
-                                    if (data && data.conveyance) {
-                                        try {
-                                            const conveyanceData = typeof data.conveyance === 'string' 
-                                                ? JSON.parse(data.conveyance) 
-                                                : data.conveyance;
-                                            
-                                            // Format 1: {buyerName: "...", sectionNo: "..."}
-                                            if (conveyanceData.buyerName && conveyanceData.sectionNo) {
-                                                buyers.push({
-                                                    buyerName: conveyanceData.buyerName,
-                                                    sectionNo: conveyanceData.sectionNo
-                                                });
-                                            }
-                                            // Format 2: {records: [{buyerName: "...", sectionNo: "..."}, ...]}
-                                            else if (conveyanceData.records && Array.isArray(conveyanceData.records)) {
-                                                buyers = conveyanceData.records;
-                                            }
-                                        } catch (e) {
-                                            console.error('Error parsing conveyance data:', e);
-                                        }
-                                    }
-                                    
-                                    // If no buyers found, add one empty input group
-                                    if (buyers.length === 0) {
-                                        addConveyanceInputGroup();
-                                    } else {
-                                        // Add input groups for each buyer
-                                        buyers.forEach(buyer => {
-                                            addConveyanceInputGroup(buyer.buyerName, buyer.sectionNo);
-                                        });
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error fetching conveyance data:', error);
-                                    // Add one empty input group on error
-                                    addConveyanceInputGroup();
-                                });
-                        });
-                    });
-
-                    // Function to add conveyance input group with optional values
-                    function addConveyanceInputGroup(buyerName = '', sectionNo = '') {
-                        const container = document.getElementById('conveyanceInputsContainer');
-                        const inputCount = container.querySelectorAll('.conveyance-input-group').length + 1;
-                        
-                        const newInputGroup = document.createElement('div');
-                        newInputGroup.classList.add('conveyance-input-group', 'mb-3', 'grid', 'grid-cols-2', 'gap-4');
-                        
-                        newInputGroup.innerHTML = `
-                            <div>
-                            <label for="buyerName${inputCount}" class="form-label">Buyer Name</label>
-                            <input type="text" class="form-control" id="buyerName${inputCount}" name="buyerName[]" value="${buyerName}" required>
-                            </div>
-                            <div>
-                            <label for="sectionNo${inputCount}" class="form-label">Section No.</label>
-                            <input type="text" class="form-control" id="sectionNo${inputCount}" name="sectionNo[]" value="${sectionNo}" required>
-                            </div>
-                        `;
-                        
-                        container.appendChild(newInputGroup);
-                    }
-
-                    // Add conveyance input button event
-                    document.getElementById('addConveyanceInputButton').addEventListener('click', function() {
-                        addConveyanceInputGroup();
-                    });
-
-                    document.getElementById('finalConveyanceForm').addEventListener('submit', function(e){
-                        e.preventDefault();
-                        const appId = document.getElementById('finalConveyanceApplicationId').value;
-                        
-                        if (!appId) {
-                            alert('Application ID is missing. Please try again.');
-                            return;
-                        }
-                        
-                        const buyerNames = document.querySelectorAll('input[name="buyerName[]"]');
-                        const sectionNos = document.querySelectorAll('input[name="sectionNo[]"]');
-                        
-                        // Create an array of all conveyance records
-                        const records = [];
-                        for (let i = 0; i < buyerNames.length; i++) {
-                            if (buyerNames[i].value && sectionNos[i].value) {
-                                records.push({
-                                    buyerName: buyerNames[i].value,
-                                    sectionNo: sectionNos[i].value
-                                });
-                            }
-                        }
-                        
-                        // Send all records as a single object
-                        const requestData = {
-                            application_id: parseInt(appId),
-                            conveyance: {
-                                records: records
-                            }
-                        };
-                        
-                        console.log('Sending conveyance data:', requestData);
-                        
-                        fetch("<?php echo e(route('conveyance.update')); ?>", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': "<?php echo e(csrf_token()); ?>"
-                            },
-                            body: JSON.stringify(requestData)
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.text().then(text => { 
-                                    try {
-                                        const jsonError = JSON.parse(text);
-                                        throw new Error(jsonError.message || text);
-                                    } catch (e) {
-                                        throw new Error(text);
-                                    }
-                                });
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: data.message
-                            });
-                            $('#finalConveyanceModal').modal('hide');
-                            // Optionally, refresh the page or update the UI to reflect the changes
-                            location.reload(); // Uncomment this line to refresh the page
-                        })
-                        .catch(err => {
-                            console.error('Error:', err);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: err.message || 'An error occurred while saving the conveyance data.'
-                            });
-                            
-                        });
-                    });
-                </script>
-                </div>
-            </div>
-            </div>
+<div class="flex-1 overflow-auto">
+    <!-- Header -->
+    <div class="p-6 bg-white border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold">Sectional Titling Module (STM)</h1>
+          <p class="text-gray-500">Process CofO for individually owned sections of multi-unit developments</p>
         </div>
-
-
-
-<!-- Buyers List Modal -->
-<div class="modal fade" id="buyersListModal" tabindex="-1" aria-hidden="true">
- <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content">
-            <div class="modal-header">
-                 <h5 class="modal-title">Buyers List</h5>
-                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php echo $__env->make('sectionaltitling.partials.buyers_list', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>  
-            </div>
-            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between;">
-                 <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
-                      Close
-                      <i class="material-icons" style="color: #5a0000;">close</i>
-                 </button>
-                 <button type="button" class="bttn blue-shadow" onclick="printBuyersList()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                      Print Buyers List
-                      <i class="material-icons" style="color: #3F51B5;">print</i>
-                 </button>
-            </div>
-      </div>
- </div>
-</div>
-
-<script>
- function printBuyersList() {
-      const modalContent = document.querySelector('#buyersListModal .modal-body').innerHTML;
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
-            <html>
-                 <head>
-                      <title>Buyers List</title>
-                      <style>
-                            body { font-family: Arial, sans-serif; margin: 20px; }
-                            h5 { text-align: center; margin-bottom: 20px; }
-                      </style>
-                 </head>
-                 <body>
-                      <h5>Buyers List</h5>
-                      ${modalContent}
-                 </body>
-            </html>
-      `);
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
-      printWindow.close();
- }
-</script>
-
-        <div class="modal fade" id="actionsModal" tabindex="-1" aria-labelledby="actionsModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width:210px;">
-            <div class="modal-content">
-                <div class="modal-header" style="height: 30px;">
-                <h5 class="modal-title" id="actionsModalLabel">Payments</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                </div>
-                <div class="modal-body" style="background-color: #f1f1f1;">
-          
-                <div>
-                    <div class="payments-grid">
-                    <!-- Row 1 -->
-                    <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#financeModal"
-                        onclick="loadBillingData(selectedApplicationId)" id="initialBillButton">
-                        Initial Bill
-                        <i class="material-icons" style="color: #4CAF50;">account_balance</i>
-                    </button>
-                  
-                    <button class="bttn pink-shadow" id="bettermentFeeButton"
-                        onclick="showDepartmentConfirmation('generateBettermentBill')">
-                        GEN BETTERMENT FEE
-                        <i class="material-icons" style="color: #E91E63;">receipt_long</i>
-                    </button>
-                    <button class="bttn blue-shadow" onclick="showDepartmentConfirmation('generateBill')">
-                        Generate Final Bill
-                        <i class="material-icons" style="color: #3F51B5;">receipt</i>
-                    </button>
-                    </div>
-                </div>
-                </div>
-            </div>
-            </div>
-        </div>
-
-
-
-  
- 
-<div class="modal fade" id="generateBettermentBillModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Generate Betterment Fee Bill</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between;">
-                <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
-                    Close
-                    <i class="material-icons" style="color: #9E9E9E;">close</i>
-                </button>
-                <button type="button" class="bttn blue-shadow" onclick="printBettermentBill()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                    Print Betterment Bill
-                    <i class="material-icons" style="color: #3F51B5;">print</i>
-                </button>
-                <button type="button" class="bttn green-shadow" onclick="launchArcGIS()" style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);">
-                    Launch ArcGIS
-                    <i class="material-icons" style="color: #4CAF50;">map</i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function launchArcGIS() {
-        window.open('https://www.arcgis.com', '_blank');
-    }
-</script>
-
-            <!-- View Actions Modal -->
-            <div class="modal fade" id="viewActionsModal" tabindex="-1" aria-labelledby="viewActionsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
-                <div class="modal-content">
-                    <div class="modal-header" style="height: 30px;">
-                    <h5 class="modal-title" id="actionsModalLabel">View Receipts and Plans</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                    </div>
-                    <div class="modal-body" style="background-color: #f1f1f1;">
-            <div>
-                <div class="button-grid">
-                <!-- Row 1 -->
-                <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#viewSurveyPlanModal">
-                    View Survey Plan
-                    <i class="material-icons" style="color: #4CAF50;">map</i>
-                </button>
-                
-                <button class="bttn" data-bs-toggle="modal" data-bs-target="#architecturalModal">
-                    View Architectural Design
-                    <i class="material-icons" style="color: #2196F3;">architecture</i>
-                </button>
-                <button class="bttn pink-shadow" data-bs-toggle="modal" data-bs-target="#viewReceiptModal">
-                    View Receipt
-                    <i class="material-icons" style="color: #FF9800;">receipt</i>
-                </button>
-                <button class="bttn purple-shadow" data-bs-toggle="modal" data-bs-target="#viewLandModal">
-                    View Scanned File
-                    <i class="material-icons" style="color: #9C27B0;">description</i>
-                </button>
-                
-                </div>
-            </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-    
-
-            <div class="modal fade" id="OtherApprovals" tabindex="-1" aria-labelledby="actionsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width:230px;">
-                <div class="modal-content">
-                    <div class="modal-header" style="height: 30px;">
-                    <h5 class="modal-title" id="actionsModalLabel">Other Departments</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                    </div>
-                    <div class="modal-body" style="background-color: #f1f1f1;">
-              
-                    <div>
-                        <div class="button-grid">
-                        <!-- Row 1 -->
-                       
-
-                        <button class="bttn pink-shadow" onclick="showDepartmentConfirmation('survey')">
-                            Survey
-                            <i class="material-icons" style="color: #FF9800;">map</i>
-                        </button>
-                        
-                        <button class="bttn purple-shadow" onclick="showDepartmentConfirmation('deeds')">
-                            Deeds
-                            <i class="material-icons" style="color: #15af2f;">gavel</i>
-                        </button>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-
-            
-
-    
-         <?php echo $__env->make('sectionaltitling.partials.deeds', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-
-            <!-- Initial Bill Approval Modals -->
-       <?php echo $__env->make('sectionaltitling.partials.initailbill', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-         
-
-
- 
-
-            <!-- Generate Bill Modal -->
-            <div class="modal fade" id="generateBillModal" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Generate Final  Bill</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="billContent">
-                                <iframe src="<?php echo e(route('sectionaltitling.generate_bill')); ?>" style="width: 100%; height: 600px;" id="billFrame"></iframe>
-                            </div>
-                        </div>
-                        <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
-                            <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
-                                Close
-                                <i class="material-icons" style="color: #9E9E9E;">close</i>
-                            </button>
-                            <button type="button" class="bttn blue-shadow" onclick="printBill()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                                Print Bill
-                                <i class="material-icons" style="color: #3F51B5;">print</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Add E-Registry Modal -->
-        <?php echo $__env->make('sectionaltitling.partials.eRegistry', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-            <!-- Add Architectural Modal -->
-
-
-    </div>    
- </div>
- </div>
- </div>
-
- <div class="modal fade" id="decisionModalMother" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form id="decisionFormMother">
-                <div class="modal-header">
-                    <h5 class="modal-title">Director's Approval</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="decisionMotherId">
-                    <div class="mb-3">
-                        <label class="form-label">Decision</label><br>
-                        <input type="radio" name="decision" value="approve" id="dmmApprove" checked>
-                        <label for="dmmApprove">Approve</label>
-                        <input type="radio" name="decision" value="decline" id="dmmDecline" class="ms-3">
-                        <label for="dmmDecline">Decline</label>
-
-
-                        <input type="radio" name="decision" value="Pedding" id="dmmDecline" class="ms-3">
-                        <label for="dmmDecline">Pedding</label>
-                    </div>
-                    <div class="mb-3" id="declineReasonMotherGroup" style="display:none;">
-                        <label for="declineReasonMother" class="form-label">Reason For Decline</label>
-                        <textarea class="form-control" id="declineReasonMother" name="comments"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="approvalDateMother" class="form-label">Approval Date</label>
-                        <input type="datetime-local" class="form-control" id="approvalDateMother" name="approval_date" required>
-                    </div>
-                </div>
-                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: space-between; padding: 0 20px;">
-                    <button type="button" class="bttn green-shadow" 
-                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;" data-bs-dismiss="modal">
-                        Cancel
-                        <i class="material-icons" style="color: #d80000; font-size: 16px;">cancel</i>
-                    </button>
-                    <button type="submit" class="bttn green-shadow"
-                        style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                        Submit
-                        <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                    </button>
-                    <button type="button" class="bttn blue-shadow" onclick="$('#decisionModalMother').modal('hide'); $('#generateBillModal').modal('show')"
-                        style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                        Final Bill
-                        <i class="material-icons" style="color: #3F51B5; font-size: 16px;">receipt</i>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- Planning Recommendation Modal -->
-<div class="modal fade" id="planningRecommendationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">  
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Planning Recommendation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="planningRecommendationForm">
-                    <div class="mb-3">
-                        <label class="form-label">Decision</label><br>
-                        <input type="radio" name="decision" value="approve" id="prApprove" checked>
-                        <label for="prApprove">Approve</label>
-                        <input type="radio" name="decision" value="decline" id="prDecline" class="ms-3">
-                        <label for="prDecline">Decline</label>
-                    </div>
-                    <div class="mb-3" id="declineReasonGroup" style="display:none;">
-                        <label for="declineReason" class="form-label">Reason For Decline</label>
-                        <textarea class="form-control" id="declineReason" name="comments"></textarea>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="approvalDate" class="form-label">Approval/Decline Date</label>
-                            <input type="datetime-local" class="form-control" id="approvalDate" name="approval_date" required>
-                        </div>
-                        <div>
-                            <label class="form-label">....</label>
-                            <select class="form-select"  onchange="handleSelectChange(this.value)">
-                                <option value="" disabled selected>Select</option>
-                                <option value="architectural">Architectural Design</option>
-                                <option value="planningRec">Planning Recommendation</option>
-                            </select>
-                        </div>
-                        <!-- Empty cells to complete a 2x2 grid -->
-                        <div></div>
-                        <div></div>
-                    </div>
-
-                    <div class="modal-footer" style="background-color: #f1f1f1;">
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%;">
-                            <button type="button" class="bttn green-shadow" 
-                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 120px;" data-bs-dismiss="modal">
-                                Cancel
-                                <i class="material-icons" style="color: #f44336; font-size: 16px;">cancel</i>
-                            </button>
-                            <button type="submit" class="bttn green-shadow"
-                                style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 6px 12px; width: 120px;">
-                                Submit
-                                <i class="material-icons" style="color: #4CAF50; font-size: 16px;">send</i>
-                            </button>
-                            <button type="button" class="bttn gray-shadow" 
-                                style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 6px 12px; width: 140px;" onclick="showGenDocumentModal(); return false;">
-                                Gen & Print Bill
-                                <i class="material-icons" style="color: #2196F3; font-size: 16px;">description</i>
-                            </button>
-                           
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-   <!-- Dummy Modals for Gen & Print and Gen & Print Bill -->
-                    <!-- Generated Document Modal -->
-                    <div class="modal fade" id="genDocumentModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Generated Document</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    
-                                </div>
-                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
-                                    <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
-                                        Close
-                                        <i class="material-icons" style="color: #9E9E9E;">close</i>
-                                    </button>
-                                    <button type="button" class="bttn blue-shadow" onclick="printGenDocument()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                                        Print Document
-                                        <i class="material-icons" style="color: #3F51B5;">print</i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Generated Bill Modal -->
-                    <div class="modal fade" id="genBillModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Generated Bill</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="genBillContent" style="min-height: 300px; padding: 20px; border: 1px solid #ddd;">
-                                        <h4 class="text-center mb-4">BILL FOR PAYMENT</h4>
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <p><strong>Bill No:</strong> BILL-2025-001</p>
-                                                <p><strong>Date:</strong> <?php echo e(date('Y-m-d')); ?></p>
-                                                <p><strong>File No:</strong> SAMPLE-FILE-NO</p>
-                                            </div>
-                                            <div class="col-6">
-                                                <p><strong>Applicant:</strong> SAMPLE APPLICANT NAME</p>
-                                                <p><strong>Application Type:</strong> Sectional Titling</p>
-                                                <p><strong>Status:</strong> Pending Payment</p>
-                                            </div>
-                                        </div>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Item</th>
-                                                    <th>Description</th>
-                                                    <th class="text-end">Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>Application Fee</td>
-                                                    <td class="text-end">₦ 10,000.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>Processing Fee</td>
-                                                    <td class="text-end">₦ 25,000.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>Document Fee</td>
-                                                    <td class="text-end">₦ 5,000.00</td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2" class="text-end"><strong>Total</strong></td>
-                                                    <td class="text-end"><strong>₦ 40,000.00</strong></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <div class="mt-4">
-                                            <p>Please make payment within 14 days from the date of this bill.</p>
-                                            <p>Payment should be made to the Accounts Department.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
-                                    <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
-                                        Close
-                                        <i class="material-icons" style="color: #9E9E9E;">close</i>
-                                    </button>
-                                    <button type="button" class="bttn blue-shadow" onclick="printGenBill()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                                        Print Bill
-                                        <i class="material-icons" style="color: #3F51B5;">print</i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <script>
-                        function showGenDocumentModal() {
-                            $('#planningRecommendationModal').modal('hide');
-                            $('#genDocumentModal').modal('show');
-                        }
-                        
-                        function showGenBillModal() {
-                            $('#planningRecommendationModal').modal('hide');
-                            $('#genBillModal').modal('show');
-                        }
-                        
-                        function printGenDocument() {
-                            const content = document.getElementById('genDocumentContent').innerHTML;
-                            const printWindow = window.open('', '_blank');
-                            printWindow.document.write(`
-                                <html>
-                                    <head>
-                                        <title>Planning Recommendation Document</title>
-                                        <style>
-                                            body { font-family: Arial, sans-serif; margin: 20px; }
-                                            h4 { text-align: center; margin-bottom: 20px; }
-                                            .row { display: flex; }
-                                            .col-6 { width: 50%; }
-                                            .text-end { text-align: right; }
-                                            .mt-4, .mt-5 { margin-top: 2rem; }
-                                        </style>
-                                    </head>
-                                    <body>
-                                        ${content}
-                                    </body>
-                                </html>
-                            `);
-                            printWindow.document.close();
-                            printWindow.focus();
-                            setTimeout(() => {
-                                printWindow.print();
-                                printWindow.close();
-                            }, 500);
-                        }
-                        
-                        function printGenBill() {
-                            const content = document.getElementById('genBillContent').innerHTML;
-                            const printWindow = window.open('', '_blank');
-                            printWindow.document.write(`
-                                <html>
-                                    <head>
-                                        <title>Bill for Payment</title>
-                                        <style>
-                                            body { font-family: Arial, sans-serif; margin: 20px; }
-                                            h4 { text-align: center; margin-bottom: 20px; }
-                                            .row { display: flex; }
-                                            .col-6 { width: 50%; }
-                                            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                                            table, th, td { border: 1px solid #ddd; }
-                                            th, td { padding: 8px; text-align: left; }
-                                            .text-end { text-align: right; }
-                                            .mt-4 { margin-top: 2rem; }
-                                        </style>
-                                    </head>
-                                    <body>
-                                        ${content}
-                                    </body>
-                                </html>
-                            `);
-                            printWindow.document.close();
-                            printWindow.focus();
-                            setTimeout(() => {
-                                printWindow.print();
-                                printWindow.close();
-                            }, 500);
-                        }
-                    </script>
-<!-- Print Modal -->
-<div class="modal fade" id="printModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Planning Recommendation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="printContent">
-                    <div class="flex justify-between items-center mb-4 relative z-10">
-                        <img src="<?php echo e(asset('assets/logo/logo1.jpg')); ?>" alt="Kano State Coat of Arms" class="w-16 h-16 object-contain">
-                        <div class="text-center mt-20">
-                        <h1 class="text-lg font-bold">KANO STATE
-                            MINISTRY OF LAND AND PHYSICAL PLANNING</h1>
-                       
-                        <h3 class="text-sm font-semibold mt-1"><strong>PERMANENT SECRETARY</strong></h3>
-                        </div>
-                        <img src="<?php echo e(asset('assets/logo/logo3.jpeg')); ?>" alt="KANGIS Logo" class="w-16 h-16 object-contain">
-                    </div>
-            
-                    <div class="print-section">
-                       
-                        <p>Kindly find Page 01 in an application for sectional titling in respect of a property (plaza) covered by Certificate of Occupancy No. <span id="printModalFileNo"><?php echo e($application->fileno ?? 'N/A'); ?></span> situated at <span id="printModalLocation"></span> in the name of <strong id="printModalOwnerName"></strong></p>
-                        <p>As well as change of name to various shop owners as per attached on the application.</p>
-                        <p>The application was referred to Physical Planning Department for planning, engineering as well as architectural views. Subsequently, the planners at page 01 recommended the application, because the application is feasible, and the shops meet the minimum requirements for commercial titles. Moreover, the proposals as submitted and conforms with the existing commercial development in the area.</p>
-                        <p>However, the recommendation is based on the recommended site plan at page 01 and architectural design at page 01 and back cover with the following measurements:</p>
-                        <p>Meanwhile, the title was granted for commercial purposes for a term of 40 years commencing from 01/01/2025 and has a residual term of 20 to expire.</p>
-                        <p>In view of the above, you may kindly wish to recommend the following for approval of the Honorable Commissioner:</p>
-                        <ol>
-                            <li>Consider and approve the application for Sectional Titling over plot 01 situated at Kantin Kwari covered by Certificate of Occupancy No. <span id="printModalFileNoRepeat"><?php echo e($application->fileno ?? 'N/A'); ?></span> in favor of <strong id="printModalOwnerNameRepeat"></strong></li>
-                            <li>Consider and approve the change of name of various shop owners as per provisions of the Bill.</li>
-                            <li>Consider and approve the Revocation of old Certificate of Occupancy <?php echo e($application->fileno ?? 'N/A'); ?> to pave the way for new Sectional Titles to the new owners.</li>
-                        </ol>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
-                            <div>
-                                <p>Name:___________________________</p>
-                                <p>Rank: ___________________________</p>
-                                <p>Sign: ___________________________</p>
-                                <p>Date: ___________________________</p>
-                            </div>
-                            <div>
-                                <p>Counter Sign: ___________________________</p>
-                                <p style="white-space: pre-line;">                  <strong>Director Section Titling</strong></p>
-                                <p>Date: ___________________________</p>
-                            </div>
-                        </div>
-                        <div style="margin-top: 20px;">
-                            <p><strong>HONOURABLE COMMISSIONER</strong></p>
-                            <hr style="width: 100%; text-align: left; margin-left: 0;">
-                            <p>The application is hereby recommended for your kind approval, please.</p>
-                            <br>
-                            <p>Date: ______2025.</p>
-                        </div>
-                        <div style=" justify-content: end;">
-                            <div style="text-align: right;">
-                                <p>___________________________</p>
-                                <p><strong>Permanent Secretary</strong></p>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 20px;">
-                            <p><strong>PERMANENT SECRETARY</strong></p>
-                            <hr style="width: 100%; text-align: left; margin-left: 0;">
-                            <p>The application is hereby APPROVED/NOT APPROVED.</p>
-                            <p>Date: __________________2025.</p>
-                            <div style="text-align: right;">
-                                <p>___________________________</p>
-                                <p><strong>HONOURABLE COMMISSIONER. </strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer" style="background-color: #f1f1f1; display: flex; justify-content: center;">
-                <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal" style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3);">
-                    Close
-                    <i class="material-icons" style="color: #9E9E9E;">close</i>
-                </button>
-                <button type="button" class="bttn blue-shadow" onclick="printContent()" style="box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);">
-                    Print Bill
-                    <i class="material-icons" style="color: #3F51B5;">print</i>
-                </button>
-            </div>
-             
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="architecturalModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Architectural Design Approval</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="architecturalForm">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label">Submit architectural design?</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="submit_design" id="submit_yes" value="yes" required>
-                                <label class="form-check-label" for="submit_yes">Yes</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="submit_design" id="submit_no" value="no">
-                                <label class="form-check-label" for="submit_no">No</label>
-                            </div>
-                        </div>
-
-                        <div id="designFields" style="display: none;">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Drawn By</label>
-                                    <input type="text" class="form-control" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Date</label>
-                                    <input type="date" class="form-control" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Approved By</label>
-                                    <input type="text" class="form-control" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Date</label>
-                                    <input type="date" class="form-control" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer" style="background-color: #f1f1f1;">
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 100%;">
-                                <button type="button" class="bttn green-shadow" onclick="showDepartmentConfirmation('ok')" 
-                                    style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                    OK
-                                    <i class="material-icons" style="color: #4CAF50; font-size: 16px;">check_circle</i>
-                                </button>
-                                <button type="button" class="bttn gray-shadow" onclick="showDepartmentConfirmation('edit')"
-                                    style="box-shadow: 0 4px 8px rgba(158, 158, 158, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                    Edit
-                                    <i class="material-icons" style="color: #9E9E9E; font-size: 16px;">edit</i>
-                                </button>
-                                <button type="submit" class="bttn green-shadow"
-                                    style="box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3); font-size: 12px; padding: 4px 8px; width: 120px;">
-                                    Submit
-                                    <i class="material-icons" style="color: #eeeeee; font-size: 16px;">send</i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </form>
-                 
-               
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- New Modal for View Record Details -->
-<div class="modal fade" id="viewRecordDetailModal" tabindex="-1" aria-labelledby="viewRecordDetailModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="viewRecordDetailModalLabel">Record Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="recordDetailContent">
-        <!-- Content will be loaded via AJAX -->
-        <div class="text-center">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+            <input
+              type="text"
+              placeholder="Search applications..."
+              class="pl-10 pr-4 py-2 border border-gray-200 rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div class="relative">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              2
+            </span>
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="bttn gray-shadow" data-bs-dismiss="modal">
-          Close
-          <i class="material-icons" style="color: #9E9E9E;">close</i>
-        </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="p-6">
+      <!-- Stats Cards - Screenshot 122 -->
+   <?php echo $__env->make('sectionaltitling.partials.statistic.statistic_card', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+      <!-- Tabs -->
+    <?php echo $__env->make('sectionaltitling.partials.tabs', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+      <!-- Sectional Titling Mandate - Screenshot 122 -->
+      <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6 mb-8">
+        <h2 class="text-xl font-bold mb-2">Sectional Titling Mandate</h2>
+        <p class="text-gray-500 text-sm mb-4">Department overview and responsibilities</p>
+        
+        <p class="text-gray-700 mb-4">
+          The Sectional Titling Department is responsible for processing Certificates of Occupancy (CofO) for individually owned sections of multi-unit developments (e.g., plazas, story buildings, offices, apartments) in both 2D/3D formats, ensuring the capture of ownership rights over individual units and common property governed by a Body Corporate.
+        </p>
+      </div>
+
+      <!-- Service Areas - Screenshot 123 -->
+      <div class="grid grid-cols-4 gap-4 mb-8">
+        <div class="service-card">
+          <div class="flex flex-col items-center mb-4">
+            <i data-lucide="users" class="w-10 h-10 text-gray-700 mb-2"></i>
+            <h3 class="text-lg font-medium">Customer Care</h3>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Receive applications</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Process payments</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Collect documents</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Digital archiving</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="flex flex-col items-center mb-4">
+            <i data-lucide="layout-grid" class="w-10 h-10 text-gray-700 mb-2"></i>
+            <h3 class="text-lg font-medium">Planning</h3>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Field validations</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Compliance checks</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Architectural reviews</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Plan approvals</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="flex flex-col items-center mb-4">
+            <i data-lucide="map-pin" class="w-10 h-10 text-gray-700 mb-2"></i>
+            <h3 class="text-lg font-medium">Survey</h3>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Field mapping</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Plan digitization</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Reference numbers</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>3D coordinates</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <div class="flex flex-col items-center mb-4">
+            <i data-lucide="settings" class="w-10 h-10 text-gray-700 mb-2"></i>
+            <h3 class="text-lg font-medium">Operations</h3>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Process applications</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Generate CofO</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>3D modeling</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Deed registration</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Application Flow - Screenshot 124 -->
+      <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6 mb-8">
+        <h2 class="text-xl font-bold mb-2">Application Flow</h2>
+        <p class="text-gray-500 text-sm mb-6">Sectional titling application process</p>
+        
+        <div class="grid grid-cols-2 gap-6">
+          <!-- Primary Application -->
+          <div class="bg-white rounded-md border border-gray-200 p-6">
+            <div class="flex items-center mb-4">
+              <i data-lucide="file-text" class="w-6 h-6 text-gray-700 mr-2"></i>
+              <h3 class="text-lg font-medium">Primary Application</h3>
+            </div>
+            
+            <p class="text-gray-600 mb-4">
+              Submitted by the original property owner or developer to initiate sectional titling for the entire property.
+            </p>
+            
+            <ul class="space-y-3 mb-6">
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Property details and documentation</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Proposed unit layout and floor plans</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Define unit details and common property</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Generate participation quota</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Submit for departmental review</span>
+              </li>
+            </ul>
+            
+            <button class="w-full bg-gray-900 text-white py-3 rounded-md flex items-center justify-center">
+              <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
+              Create Primary Application
+            </button>
+          </div>
+          
+          <!-- Secondary Application -->
+          <div class="bg-white rounded-md border border-gray-200 p-6">
+            <div class="flex items-center mb-4">
+              <i data-lucide="home" class="w-6 h-6 text-gray-700 mr-2"></i>
+              <h3 class="text-lg font-medium">Secondary Application</h3>
+            </div>
+            
+            <p class="text-gray-600 mb-4">
+              Submitted by individual unit buyers to claim ownership of specific sections within the property.
+            </p>
+            
+            <ul class="space-y-3 mb-6">
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Applicant information</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Select/confirm specific unit</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Upload proof of purchase</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Submit identity and supporting documents</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check-circle" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5"></i>
+                <span>Generate individual CofO upon approval</span>
+              </li>
+            </ul>
+            
+            <button class="w-full bg-gray-900 text-white py-3 rounded-md flex items-center justify-center">
+              <i data-lucide="home" class="w-5 h-5 mr-2"></i>
+              Create Secondary Application
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Applications and Workflow Status - Screenshot 125 -->
+      <div class="grid grid-cols-3 gap-6 mb-8">
+        <!-- Recent Applications -->
+        <div class="col-span-2 bg-white rounded-md shadow-sm border border-gray-200 p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 class="text-xl font-bold">Recent Applications</h2>
+              <p class="text-gray-500 text-sm">Latest sectional title applications</p>
+            </div>
+            <button class="flex items-center space-x-1 px-3 py-1.5 border border-gray-200 rounded-md text-sm">
+              <i data-lucide="filter" class="w-4 h-4"></i>
+              <span>Filter</span>
+            </button>
+          </div>
+
+          <div class="overflow-hidden rounded-md border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th class="table-header">FileNo</th>
+                  <th class="table-header">Type</th>
+                  <th class="table-header">Property/Unit</th>
+                  <th class="table-header">Applicant</th>
+                  <th class="table-header">Status</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <?php $__currentLoopData = $Primary; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $primary): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <tr>
+                  <td class="table-cell text-green-700"><?php echo e($primary->fileno); ?></td>
+                  <td class="table-cell">
+                    <span class="badge badge-primary">Primary</span>
+                  </td>
+                  <td class="table-cell"><?php echo e($primary->NoOfUnits); ?> Units</td>
+                  <td class="table-cell">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                        <i data-lucide="user" class="w-4 h-4 text-gray-500"></i>
+                      </div>
+                      <div>
+                        <?php if(!empty($primary->applicant_title) && !empty($primary->first_name) && !empty($primary->surname)): ?>
+                          <?php echo e($primary->applicant_title); ?> <?php echo e($primary->first_name); ?> <?php echo e($primary->surname); ?>
+
+                        <?php elseif(!empty($primary->corporate_name)): ?>
+                          <?php echo e($primary->corporate_name); ?>
+
+                        <?php elseif(!empty($primary->multiple_owners_names)): ?>
+                          <?php
+                            $names = is_string($primary->multiple_owners_names) ? json_decode($primary->multiple_owners_names, true) : $primary->multiple_owners_names;
+                          ?>
+                          <?php if(is_array($names) && count($names) > 0): ?>
+                            <?php echo e($names[0]); ?>
+
+                            <button 
+                              class="text-blue-500 underline text-sm" 
+                              onclick="showFullNames(<?php echo e(json_encode($names)); ?>)"
+                            >
+                              <i data-lucide="info" class="w-4 h-4 inline"></i>
+                            </button>
+                          <?php else: ?>
+                            N/A
+                          <?php endif; ?>
+                        <?php else: ?>
+                          N/A
+                        <?php endif; ?>
+                      </div>
+
+                      <script>
+                        function showFullNames(names) {
+                          Swal.fire({
+                            title: 'Full Names of Multiple Owners',
+                            text: 'The following names are associated with this application:',
+                            html: '<ul>' + names.map(name => `<li>${name}</li>`).join('') + '</ul>',
+                            icon: 'info',
+                            confirmButtonText: 'Close'
+                          });
+                        }
+                      </script>
+                    </div>
+                  </td>
+                  <td class="table-cell">
+                    <span class="badge badge-<?php echo e(strtolower($primary->application_status)); ?>">
+                      <?php echo e($primary->application_status); ?>
+
+                    </span>
+                  </td>
+                </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                
+                <?php $__currentLoopData = $Secondary; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $secondary): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <tr>
+                  <td class="table-cell text-green-700"><?php echo e($secondary->fileno); ?></td>
+                  <td class="table-cell">
+                    <span class="badge badge-primary">Secondary</span>
+                  </td>
+                  <td class="table-cell">Unit <?php echo e($secondary->unit_number); ?></td>
+                  <td class="table-cell">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                            <i data-lucide="user" class="w-4 h-4 text-gray-500"></i>
+                          </div>
+                      <div class="flex items-center">
+                        <?php if(!empty($secondary->applicant_title) && !empty($secondary->first_name) && !empty($secondary->surname)): ?>
+                          <?php echo e($secondary->applicant_title); ?> <?php echo e($secondary->first_name); ?> <?php echo e($secondary->surname); ?>
+
+                        <?php elseif(!empty($secondary->corporate_name)): ?>
+                          <?php echo e($secondary->corporate_name); ?>
+
+                        <?php elseif(!empty($secondary->multiple_owners_names)): ?>
+                          <?php
+                            $names = is_string($secondary->multiple_owners_names) ? explode(',', str_replace('"', '', $secondary->multiple_owners_names)) : $secondary->multiple_owners_names;
+                          ?>
+                          <?php if(is_array($names) && count($names) > 0): ?>
+                            <?php echo e($names[0]); ?>
+
+                            <button 
+                              class="text-blue-500 underline text-sm ml-2" 
+                              onclick="showFullNames(<?php echo e(json_encode($names)); ?>)"
+                            >
+                              <i data-lucide="info" class="w-4 h-4 inline"></i>
+                            </button>
+                          <?php else: ?>
+                            N/A
+                          <?php endif; ?>
+                        <?php else: ?>
+                          N/A
+                        <?php endif; ?>
+                      </div>
+
+                      <script>
+                        function showFullNames(names) {
+                          Swal.fire({
+                            title: 'Full Names of Multiple Owners',
+                            html: '<ul>' + names.map(name => `<li>${name}</li>`).join('') + '</ul>',
+                            icon: 'info',
+                            confirmButtonText: 'Close'
+                          });
+                        }
+                      </script>
+                    </div>
+                  </td>
+                  <td class="table-cell">
+                    <span class="badge badge-<?php echo e(strtolower($secondary->application_status)); ?>">
+                      <?php echo e($secondary->application_status); ?>
+
+                    </span>
+                  </td>
+                </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-4 text-center">
+            <button class="text-blue-600 flex items-center mx-auto">
+              <span>View All Applications</span>
+              <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Workflow Status -->
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-bold mb-2">Workflow Status</h2>
+          <p class="text-gray-500 text-sm mb-6">Current status of applications by unit</p>
+          
+          <!-- Customer Care -->
+          <div class="mb-4">
+            <div class="flex justify-between mb-1">
+              <div class="flex items-center">
+                <i data-lucide="users" class="w-4 h-4 mr-2 text-gray-500"></i>
+                <span>Customer Care</span>
+              </div>
+              <span class="font-medium">42 applications</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill progress-bar-blue" style="width: 42%"></div>
+            </div>
+          </div>
+          
+          <!-- Planning -->
+          <div class="mb-4">
+            <div class="flex justify-between mb-1">
+              <div class="flex items-center">
+                <i data-lucide="layout-grid" class="w-4 h-4 mr-2 text-gray-500"></i>
+                <span>Planning</span>
+              </div>
+              <span class="font-medium">28 applications</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill progress-bar-blue" style="width: 28%"></div>
+            </div>
+          </div>
+          
+          <!-- Survey -->
+          <div class="mb-4">
+            <div class="flex justify-between mb-1">
+              <div class="flex items-center">
+                <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-gray-500"></i>
+                <span>Survey</span>
+              </div>
+              <span class="font-medium">15 applications</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill progress-bar-blue" style="width: 15%"></div>
+            </div>
+          </div>
+          
+          <!-- Operations -->
+          <div class="mb-6">
+            <div class="flex justify-between mb-1">
+              <div class="flex items-center">
+                <i data-lucide="settings" class="w-4 h-4 mr-2 text-gray-500"></i>
+                <span>Operations</span>
+              </div>
+              <span class="font-medium">15 applications</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill progress-bar-blue" style="width: 15%"></div>
+            </div>
+          </div>
+          
+          <!-- Processing Time -->
+          <h3 class="font-medium mb-2">Processing Time</h3>
+          
+          <div class="mb-2">
+            <div class="flex justify-between mb-1">
+              <span class="text-gray-600">Average</span>
+              <span class="font-medium">14 days</span>
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <div class="flex justify-between mb-1">
+              <span class="text-gray-600">Fastest</span>
+              <span class="font-medium">3 days</span>
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <div class="flex justify-between mb-1">
+              <span class="text-gray-600">Slowest</span>
+              <span class="font-medium">45 days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500 mt-auto">
+      <div>© 2025 Land Admin System. All rights reserved.</div>
+      <div class="flex items-center">
+        <span class="mr-2">LAAD-Sys</span>
+        <div class="bg-green-500 text-white px-2 py-1 rounded text-xs flex items-center">
+          <span class="mr-1">Land Admin System</span>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- JavaScript to load record details -->
-<script>
-function loadRecordDetails(id) {
-  fetch(`<?php echo e(url('record/details')); ?>/${id}`)
-    .then(response => response.text())
-    .then(html => {
-      document.getElementById('recordDetailContent').innerHTML = html;
-    })
-    .catch(error => {
-      console.error('Error loading record details:', error);
-      document.getElementById('recordDetailContent').innerHTML = '<p class="text-danger">Failed to load details.</p>';
-    });
-}
-</script>
-
-      <!-- jQuery and DataTables JS -->
-      <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-      <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-      <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-      <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
-      <!-- Bootstrap JS -->
-       
-      <!-- SweetAlert2 -->
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script>
-          function printBill() {
-              const iframe = document.getElementById('billFrame');
-              iframe.contentWindow.focus();
-              iframe.contentWindow.print();
-          }
-
-          $(document).ready(function() {
-              $('#recordsTable').DataTable({
-                  responsive: true,
-                  pageLength: 30,
-                  lengthMenu: [5, 10, 30, 50, 100],
-                  columnDefs: [{
-                          responsivePriority: 1,
-                          targets: [0, 3, 4]
-                      },
-                      {
-                          responsivePriority: 2,
-                          targets: [1, 2]
-                      }
-                  ]
-              });
-
-          
-              $('.generate-bill').on('click', function() {
-                  const applicationId = $(this).data('id');
-                  const fileno = $(this).data('fileno');
-                  const applicantTitle = $(this).data('applicant_title');
-                  const ownerName = $(this).data('owner-name');
-                  const plotHouseNo = $(this).data('plot-house-no');
-                  const plotStreetName = $(this).data('plot-street-name');
-                  const ownerDistrict = $(this).data('owner-district');
-                  const address = $(this).data('address');
-                  const approvalDate = $(this).data('approval-date');
-                  const plotSize = $(this).data('plot_size');
-                  const landUse = $(this).data('land_use');
-
-                  // Use the route with ID parameter
-                  const url = "<?php echo e(route('sectionaltitling.generate_bill', '')); ?>/" + applicationId;
-                  $('#billFrame').attr('src', url);
-                  $('#generateBillModal').modal('show');
-              });
-
-              // Add this inside the existing document.ready function
-              $('input[name="submit_design"]').change(function() {
-                  $('#architecturalSubmitBtn').prop('disabled', this.value === 'no');
-              });
-
-          });
-
-          function showDepartmentConfirmation(department) {
-              if (department === 'planningRec') {
-                  $('#planningRecommendationModal').modal('show');
-                  return;
-              }
-              if (department === 'generateBill') {
-                  // Get the selected application ID for the bill
-                  const url = "<?php echo e(route('sectionaltitling.generate_bill', '')); ?>/" + selectedApplicationId;
-                  $('#billFrame').attr('src', url);
-                  $('#generateBillModal').modal('show');
-                  return;
-              }
-              $(`#${department}Modal`).modal('show'); // Ensure the modal ID matches
-          }
-
-          
-
-
-          function toggleDropdown(button) {
-let menu = button.nextElementSibling;
-document.querySelectorAll(".action-menu").forEach(m => {
-  if (m !== menu) m.classList.add("hidden");
-});
-menu.classList.toggle("hidden");
-
-// Close dropdown when clicking outside
-document.addEventListener("click", function (event) {
-  if (!button.contains(event.target) && !menu.contains(event.target)) {
-      menu.classList.add("hidden");
-  }
-});
-}
-
-   
-          $(document).ready(function() {
-              // Show/hide for main application modal
-              $('input[name="decision"]').change(function() {
-                  if ($(this).val() === 'decline') {
-                      $('#declineReasonMotherGroup').show();
-                  } else {
-                      $('#declineReasonMotherGroup').hide();
-                  }
-              });
-              // Open decision modal for main application when decision-mother-btn is clicked
-              $('.decision-mother-btn').on('click', function() {
-                  const id = $(this).data('id');
-                  $('#decisionMotherId').val(id);
-                  $('#dmmApprove').prop('checked', true);
-                  $('#declineReasonMotherGroup').hide();
-                  const now = new Date().toISOString().slice(0,16);
-                  $('#approvalDateMother').val(now);
-                  $('#decisionModalMother').modal('show');
-              });
-              // Submit decision for main application via AJAX
-              $('#decisionFormMother').on('submit', function(e) {
-                  e.preventDefault();
-                  const id = $('#decisionMotherId').val();
-                  const decision = $('input[name="decision"]:checked').val();
-                  const approval_date = $('#approvalDateMother').val();
-                  const comments = $('#declineReasonMother').val();
-                  $.ajax({
-                      url: "<?php echo e(route('sectionaltitling.decisionMotherApplication')); ?>",
-                      type: 'POST',
-                      data: {
-                          id: id,
-                          decision: decision,
-                          approval_date: approval_date,
-                          comments: comments,
-                          _token: "<?php echo e(csrf_token()); ?>"
-                      },
-                      success: function(response) {
-                          $('#decisionModalMother').modal('hide');
-                          Swal.fire({
-                              icon: 'success',
-                              title: (decision=='approve' ? 'Approved' : 'Declined'),
-                              text: response.message
-                          }).then(() => { location.reload(); });
-                      },
-                      error: function(xhr) {
-                          Swal.fire({
-                              icon: 'error',
-                              title: 'Error',
-                              text: xhr.responseJSON.message || 'An error occurred.'
-                          });
-                      }
-                  });
-              });
-          });
-    
-    function handleSelectChange(value) {
-        if(value === 'architectural') {
-            $('#architecturalModal').modal('show');
-        } else if(value === 'planningRec') {
-            Swal.fire({
-                title: "Approve Application?",
-                text: "Do you want to generate the planning recommendation document?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes, approve it!",
-                cancelButtonText: "No, cancel"
-            }).then((result) => {
-                if(result.isConfirmed) {
-                    // Generate the planning recommendation document.
-                    showPrintModal();
-                }
-            });
-        }
-    }
-
-    function showPrintModal() {
-        const applicationId = document.getElementById('current-application-id').value;
-        if (!applicationId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No application selected. Please select an application first.'
-            });
-            return;
-        }
-
-        // Find the selected row data
-        const row = document.querySelector(`#recordsTable tr[data-id="${applicationId}"]`);
-        if (row) {
-            const fileNo = row.cells[1].textContent.trim();
-            let ownerName = row.cells[2].textContent.trim().split(/\s*\(/)[0].trim();
-            
-            // Get property location from data attributes
-            const plotNo = row.getAttribute('data-plot-no') || '';
-            const streetName = row.getAttribute('data-street-name') || '';
-            const district = row.getAttribute('data-district') || '';
-            const lga = row.getAttribute('data-lga') || '';
-            const state = row.getAttribute('data-state') || 'Kano State';
-            
-            // Assemble the address components that we have
-            const addressParts = [plotNo, streetName, district, lga, state].filter(Boolean);
-            
-            // Create the location string from address parts or use default text
-            let location = addressParts.length > 0 ? addressParts.join(', ') : "the property location";
-            
-            // Update the modal content with dynamic data
-            document.getElementById('printModalFileNo').textContent = fileNo;
-            document.getElementById('printModalFileNoRepeat').textContent = fileNo;
-            document.getElementById('printModalOwnerName').textContent = ownerName;
-            document.getElementById('printModalOwnerNameRepeat').textContent = ownerName;
-            document.getElementById('printModalLocation').textContent = location;
-        }
-        
-        $('#printModal').modal('show');
-    }
-
-    function printContent() {
-        var printContents = document.getElementById('printContent').innerHTML;
-        var originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        location.reload();
-    }
-</script>
-
-<script>
-    $(document).ready(function() {
-        // Show/hide for planning recommendation modal
-        $('input[name="decision"]').change(function() {
-            if ($(this).val() === 'decline') {
-                $('#declineReasonGroup').show();
-            } else {
-                $('#declineReasonGroup').hide();
-            }
-        });
-
-        // Open planning recommendation modal
-        $('.planning-recommendation-btn').on('click', function() {
-            const now = new Date().toISOString().slice(0,16);
-            $('#approvalDate').val(now);
-            $('#planningRecommendationModal').modal('show');
-        });
-
-        // Submit planning recommendation form via AJAX
-        $('#planningRecommendationForm').on('submit', function(e) {
-            e.preventDefault();
-            const decision = $('input[name="decision"]:checked').val();
-            const approval_date = $('#approvalDate').val();
-            const comments = $('#declineReason').val();
-            
-            // Get the current application ID from the hidden field
-            const applicationId = $('#current-application-id').val();
-            
-            if (!applicationId) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No application selected. Please select an application first.'
-                });
-                return;
-            }
-            
-            // Make AJAX call to update planning recommendation
-            $.ajax({
-                url: "<?php echo e(route('sectionaltitling.planningRecommendation')); ?>",
-                type: 'POST',
-                data: {
-                    id: applicationId,
-                    decision: decision,
-                    approval_date: approval_date,
-                    comments: comments,
-                    _token: "<?php echo e(csrf_token()); ?>"
-                },
-                success: function(response) {
-                    $('#planningRecommendationModal').modal('hide');
-                    Swal.fire({
-                        icon: 'success',
-                        title: (decision == 'approve' ? 'Approved' : 'Declined'),
-                        text: 'Planning recommendation ' + (decision == 'approve' ? 'approved' : 'declined') + ' successfully!'
-                    }).then(() => {
-                        location.reload(); // Reload the page to see the updated status
-                    });
-                },
-                error: function(xhr) {
-                    console.error('Error:', xhr);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: xhr.responseJSON?.message || 'An error occurred while updating the planning recommendation.'
-                    });
-                }
-            });
-        });
-    });
- 
-
-                  document.querySelectorAll('input[name="submit_design"]').forEach(radio => {
-                                radio.addEventListener('change', function() {
-                                    const designFields = document.getElementById('designFields');
-                                    designFields.style.display = this.value === 'yes' ? 'block' : 'none';
-                                    
-                                    // Toggle required attribute on inputs
-                                    designFields.querySelectorAll('input').forEach(input => {
-                                        input.required = this.value === 'yes';
-                                    });
-                                });
-                            });
-</script>
-
-<script>
-    // Global variable to store the selected application ID
-    var selectedApplicationId = null;
-
-    // Function to set the selected application ID
-    function setSelectedApplicationId(id) {
-        console.log('Setting selected application ID to:', id);
-        selectedApplicationId = id;
-        
-        // You can also update any other attributes that need the application ID
-        const bettermentFeeButton = document.getElementById('bettermentFeeButton');
-        if (bettermentFeeButton) {
-            bettermentFeeButton.setAttribute('data-id', id);
-        }
-    }
-
-    // Make sure the loadBillingData function uses the correct ID
-    function loadBillingData(applicationId) {
-        console.log('Loading billing data for application ID:', applicationId);
-        if (!applicationId) {
-            console.error('No application ID provided!');
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No application ID selected. Please try again.'
-            });
-            return;
-        }
-        
-        document.getElementById('application_id').value = applicationId;
-        
-        // Show loading state
-        const inputs = document.querySelectorAll('#financeForm input:not([type="hidden"]):not([name="_token"])');
-        inputs.forEach(input => {
-            input.value = 'Loading...';
-            if (input.type === 'number') input.value = '';
-        });
-        
-        // Use relative URL with the route name
-        fetch(`<?php echo e(url('/')); ?>/sectionaltitling/get-billing-data/${applicationId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Received billing data:', data);
-                // Populate form fields with the retrieved data
-                document.getElementById('receipt_number').value = data.receipt_number || '';
-                document.getElementById('payment_date').value = data.payment_date ? new Date(data.payment_date).toISOString().split('T')[0] : '';
-                document.getElementById('application_fee').value = data.application_fee || '';
-                document.getElementById('processing_fee').value = data.processing_fee || '';
-                document.getElementById('site_plan_fee').value = data.site_plan_fee || '';
-                calculateTotal();
-            })
-            .catch(error => {
-                console.error('Error fetching billing data:', error);
-                // Clear loading state
-                inputs.forEach(input => {
-                    input.value = '';
-                });
-                
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: `Failed to load billing data. Error: ${error.message}`
-                });
-            });
-    }
-</script>
-
-<script>
-    // Handle E-Registry modal
-    $(document).ready(function() {
-        // When E-Registry modal is about to be shown, populate it with data
-        $('#eRegistryModal').on('show.bs.modal', function(event) {
-            const button = $(event.relatedTarget); // Button that triggered the modal
-            const applicationId = button.data('id'); // Extract application ID from data-id attribute
-            
-            // Find the corresponding application row in the table
-            const row = button.closest('tr');
-            
-            // Extract data from the row
-            const fileNo = row.find('td:eq(1)').text().trim(); // File Number is in the second column
-            
-            // Get the owner name
-            let ownerName = row.find('td:eq(2)').text().trim(); // Owner Name is in the third column
-            // Remove any tooltip indicators or extra content
-            ownerName = ownerName.replace(/\s*\(.*?\)\s*/g, '').trim();
-            
-            // Set values in the modal
-            $('#eRegistryId').val(applicationId);
-            $('#eRegistryFileName').val(ownerName);
-            $('#eRegistryFileNo').val(fileNo);
-            
-            // Set current date as default for commissioning date
-            const today = new Date().toISOString().split('T')[0];
-            $('#eRegistryCommissionDate').val(today);
-        });
-        
-        // Handle form submission
-        $('#eRegistryForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const registryData = {
-                application_id: $('#eRegistryId').val(),
-                file_location: $('#eRegistryFileLocation').val(),
-                commission_date: $('#eRegistryCommissionDate').val(),
-                decommission_date: $('#eRegistryDecommissionDate').val()
-            };
-            
-            // Here you would normally send this data to the server
-            // For now, just show a success message
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'E-Registry information saved successfully!'
-            });
-            
-            // Close the modal
-            $('#eRegistryModal').modal('hide');
-        });
-    });
-
-
-    function updateContainerId(id) {
-    document.getElementById('main-container').dataset.applicationId = id;
-}
- 
-    // Update the current application ID when clicking on a table row
-    document.querySelectorAll('#recordsTable tbody tr').forEach(row => {
-        row.addEventListener('click', function() {
-            const applicationId = this.getAttribute('data-id'); // Use the data-id attribute for the database ID
-            document.getElementById('current-application-id').value = applicationId;
-        });
-    });
-</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\wamp64\www\gisedms\resources\views/sectionaltitling/index.blade.php ENDPATH**/ ?>

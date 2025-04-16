@@ -22,6 +22,8 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $PageTitle = 'Dashboard';
+        $PageDescription = 'Welcome to KLAS - Kano State Land Admin System.';
         if (\Auth::check()) {
             if (\Auth::user()->type == 'super admin') {
                 $result['totalOrganization'] = User::where('type', 'owner')->count();
@@ -50,7 +52,7 @@ class HomeController extends Controller
                 $result['settings']=settings();
 
 
-                return view('dashboard.index', compact('result'));
+                return view('dashboard.index', compact('result', 'PageTitle', 'PageDescription'));
             }
         } else {
             if (!file_exists(setup())) {

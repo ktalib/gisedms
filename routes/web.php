@@ -534,3 +534,7 @@ Route::post('/webcam-capture', [ScannerController::class, 'captureFromWebcam'])-
 Route::get('/pagetyping/index', [PageTypingController::class, 'index'])->name('pagetyping.index');
 Route::get('/pagetyping/create', [PageTypingController::class, 'create'])->name('pagetyping.create');
 Route::post('/pagetyping/store', [PageTypingController::class, 'store'])->name('pagetyping.store');
+
+Route::get('/sectionaltitling', [\App\Http\Controllers\SectionalTitlingController::class, 'index'])->name('sectionaltitling.index');
+Route::get('/sectionaltitling/primary', [\App\Http\Controllers\SectionalTitlingController::class, 'Primary'])->name('sectionaltitling.primary');
+Route::get('/sectionaltitling/secondary', [\App\Http\Controllers\SectionalTitlingController::class, 'Secondary'])->name('sectionaltitling.secondary');
