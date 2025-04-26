@@ -1,0 +1,772 @@
+<!-- Add date filter controls at the top -->
+<div class="bg-white rounded-md shadow-sm border border-gray-200 p-4 mb-6">
+    <div class="flex flex-wrap items-center justify-between">
+        <h3 class="text-md font-medium text-gray-700 mb-2 sm:mb-0">Report Date Filter</h3>
+        <div class="flex flex-wrap items-center space-x-2">
+            <select id="date-range-preset" class="pl-4 pr-8 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                <option value="all" selected>All Time</option>
+                <option value="7days">Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="custom">Custom Range</option>
+            </select>
+            
+            <div id="custom-date-range" class="hidden flex items-center space-x-2">
+                <input type="date" id="date-from" class="pl-4 pr-8 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <span>to</span>
+                <input type="date" id="date-to" class="pl-4 pr-8 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="apply-custom-range" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="stat-card bg-white rounded-md shadow-sm border border-gray-200 p-4">
+        <h3 class="text-sm font-medium text-gray-500">Total Applications</h3>
+        <div class="mt-2 flex justify-between items-end">
+            <p class="text-3xl font-bold text-gray-800">{{ $totalApplications ?? 0 }}</p>
+            <div class="flex items-center text-green-600">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="stat-card bg-white rounded-md shadow-sm border border-gray-200 p-4">
+        <h3 class="text-sm font-medium text-gray-500">Planning Recommendation</h3>
+        <div class="mt-2 flex justify-between items-end">
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+                    <span class="text-sm text-gray-600">Approved: {{ $approvedPlanningRecommendations ?? 0 }}</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-yellow-500"></span>
+                    <span class="text-sm text-gray-600">Pending: {{ $pendingPlanningRecommendations ?? 0 }}</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-red-500"></span>
+                    <span class="text-sm text-gray-600">Declined: {{ $DeclinedPlanningRecommendations ?? 0 }}</span>
+                </div>
+            </div>
+            <div class="flex items-center text-purple-600">
+                <i data-lucide="clipboard-check" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+
+
+        
+    <div class="stat-card bg-white rounded-md shadow-sm border border-gray-200 p-4">
+        <h3 class="text-sm font-medium text-gray-500">Director's Approval</h3>
+        <div class="mt-2 flex justify-between items-end">
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+                    <span class="text-sm text-gray-600">Approved: {{ $approvedApplications ?? 0 }}</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-yellow-500"></span>
+                    <span class="text-sm text-gray-600">Pending: {{ $pendingApplications ?? 0 }}</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-red-500"></span>
+                    <span class="text-sm text-gray-600">Declined: {{ $DeclinedApplications ?? 0 }}</span>
+                </div>
+            </div>
+            <div class="flex items-center text-blue-600">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="grid grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+        <h3 class="text-md font-medium text-gray-700 mb-4">Application Status</h3>
+        <div id="application-status-chart" style="height: 250px;"></div>
+    </div>
+    
+    <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+        <h3 class="text-md font-medium text-gray-700 mb-4">Monthly Applications</h3>
+        <div id="monthly-trend-chart" style="height: 250px;"></div>
+    </div>
+</div>
+
+<!-- Applicant Type & Land Use Charts (New) -->
+<div class="grid grid-cols-2 gap-4 mb-6">
+    <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+        <h3 class="text-md font-medium text-gray-700 mb-4">Applications by Applicant Type</h3>
+        <div id="applicant-type-chart" style="height: 250px;"></div>
+    </div>
+    
+    <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+        <h3 class="text-md font-medium text-gray-700 mb-4">Applications by Land Use</h3>
+        <div id="land-use-chart" style="height: 250px;"></div>
+    </div>
+</div>
+
+<!-- Building Unit Metrics - New Section -->
+<div class="mb-6">
+    <h3 class="text-lg font-medium text-gray-700 mb-4">Unit Metrics</h3>
+    
+    <!-- Progress Bar Cards -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+            <h4 class="text-sm font-medium text-gray-500">Units Progress</h4>
+            @php
+                $totalUnits = collect($primaryApplications ?? [])->sum('NoOfUnits');
+                $registeredUnits = collect($unitApplications ?? [])->count();
+                $remainingUnits = max(0, $totalUnits - $registeredUnits);
+                $unitPercentage = $totalUnits > 0 ? round(($registeredUnits / $totalUnits) * 100) : 0;
+            @endphp
+            <div class="mt-2">
+                <span class="text-lg font-bold text-gray-800">{{ $registeredUnits }} / {{ $totalUnits }}</span>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $unitPercentage }}%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>{{ $unitPercentage }}% Registered</span>
+                    <span>{{ $remainingUnits }} Remaining</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+            <h4 class="text-sm font-medium text-gray-500">Blocks Progress</h4>
+            @php
+                $totalBlocks = collect($primaryApplications ?? [])->sum('NoOfBlocks');
+                $registeredBlocks = collect($unitApplications ?? [])->pluck('block_number')->unique()->count();
+                $remainingBlocks = max(0, $totalBlocks - $registeredBlocks);
+                $blockPercentage = $totalBlocks > 0 ? round(($registeredBlocks / $totalBlocks) * 100) : 0;
+            @endphp
+            <div class="mt-2">
+                <span class="text-lg font-bold text-gray-800">{{ $registeredBlocks }} / {{ $totalBlocks }}</span>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                    <div class="bg-green-600 h-2.5 rounded-full" style="width: {{ $blockPercentage }}%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>{{ $blockPercentage }}% Registered</span>
+                    <span>{{ $remainingBlocks }} Remaining</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+            <h4 class="text-sm font-medium text-gray-500">Floors Progress</h4>
+            @php
+                $totalFloors = collect($primaryApplications ?? [])->sum('NoOfSections');
+                $registeredFloors = collect($unitApplications ?? [])->pluck('floor_number')->unique()->count();
+                $remainingFloors = max(0, $totalFloors - $registeredFloors);
+                $floorPercentage = $totalFloors > 0 ? round(($registeredFloors / $totalFloors) * 100) : 0;
+            @endphp
+            <div class="mt-2">
+                <span class="text-lg font-bold text-gray-800">{{ $registeredFloors }} / {{ $totalFloors }}</span>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                    <div class="bg-purple-600 h-2.5 rounded-full" style="width: {{ $floorPercentage }}%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>{{ $floorPercentage }}% Registered</span>
+                    <span>{{ $remainingFloors }} Remaining</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Building Units Visualization Charts -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+            <h4 class="text-md font-medium text-gray-700 mb-4">Units Registration Status</h4>
+            <div id="building-units-pie-chart" style="height: 300px;"></div>
+        </div>
+        
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 p-4">
+            <h4 class="text-md font-medium text-gray-700 mb-4">Units, Block, Sections (Floors)
+                Comparison</h4>
+            <div id="building-components-chart" style="height: 300px;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Primary Applications Tab -->
+<div id="primary-content" class="p-6">
+    <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">Primary Application Report</h2>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <select id="primary-filter" class="pl-4 pr-8 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                        <option value="all">All Applications</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                        <option value="Declined">Declined</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                </div>
+                
+                {{-- <button id="print-primary-btn" class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
+                    <i data-lucide="printer" class="w-4 h-4 text-gray-600"></i>
+                    <span>Print</span>
+                </button>
+                
+                <button id="export-primary-btn" class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
+                    <i data-lucide="download" class="w-4 h-4 text-gray-600"></i>
+                    <span>Export</span>
+                </button> --}}
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table id="primary-applications-table" class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="table-header">File No</th>
+                        <th class="table-header">Owner</th>
+                        <th class="table-header">LGA</th>
+                        
+                        <th class="table-header">Planning Recommendation Approval</th>
+                        <th class="table-header">Director's Approval</th>
+                        <th class="table-header">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @if(isset($primaryApplications) && count($primaryApplications) > 0)
+                        @foreach($primaryApplications as $application)
+                            <tr>
+                                <td class="table-cell">{{ $application->fileno }}</td>
+                                <td class="table-cell">{{ $application->owner_name }}</td>
+                                <td class="table-cell">{{ $application->property_lga }}</td>
+                                <td class="table-cell">
+                                    @if($application->planning_recommendation_status == 'Approved')
+                                        <span class="badge badge-approved">Approved</span>
+                                    @elseif($application->planning_recommendation_status == 'Declined')
+                                        <span class="badge badge-declined">Declined</span>
+                                    @else
+                                        <span class="badge badge-pending">Pending</span>
+                                    @endif
+                                </td>
+                                <td class="table-cell">
+                                    @if($application->application_status == 'Approved')
+                                        <span class="badge badge-approved">Approved</span>
+                                    @elseif($application->application_status == 'Declined')
+                                        <span class="badge badge-declined">Declined</span>
+                                    @else
+                                        <span class="badge badge-pending">Pending</span>
+                                    @endif
+                                </td>
+                              
+                                <td class="table-cell">{{ $application->created_at ? \Carbon\Carbon::parse($application->created_at)->format('d M, Y') : 'N/A' }}</td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="6" class="table-cell text-center py-4">No primary applications found</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+ 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Store the original data for filtering
+        const originalApplications = {!! json_encode($primaryApplications ?? []) !!};
+        let filteredApplications = [...originalApplications];
+        
+        // Date range filter functionality
+        const dateRangePreset = document.getElementById('date-range-preset');
+        const customDateRange = document.getElementById('custom-date-range');
+        const dateFrom = document.getElementById('date-from');
+        const dateTo = document.getElementById('date-to');
+        const applyCustomRange = document.getElementById('apply-custom-range');
+        
+        // References to charts for updating
+        let statusChart, monthlyTrendChart, applicantTypeChart, landUseChart, buildingUnitsPieChart, buildingComponentsChart;
+        
+        // Set default dates for the custom range
+        const today = new Date();
+        dateTo.valueAsDate = today;
+        
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        dateFrom.valueAsDate = thirtyDaysAgo;
+        
+        // Show/hide custom date range inputs based on selection
+        dateRangePreset.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDateRange.classList.remove('hidden');
+            } else {
+                customDateRange.classList.add('hidden');
+                applyDateFilter(this.value);
+            }
+        });
+        
+        // Apply custom date range filter
+        applyCustomRange.addEventListener('click', function() {
+            applyDateFilter('custom');
+        });
+        
+        // Function to apply date filter to all report elements
+        function applyDateFilter(filterType) {
+            let startDate, endDate;
+            const today = new Date();
+            
+            // Set the date range based on filter type
+            switch(filterType) {
+                case '7days':
+                    startDate = new Date();
+                    startDate.setDate(today.getDate() - 7);
+                    endDate = today;
+                    break;
+                case '30days':
+                    startDate = new Date();
+                    startDate.setDate(today.getDate() - 30);
+                    endDate = today;
+                    break;
+                case 'custom':
+                    startDate = new Date(dateFrom.value);
+                    endDate = new Date(dateTo.value);
+                    // Add 1 day to end date to include the end date in the range
+                    endDate.setDate(endDate.getDate() + 1);
+                    break;
+                default: // 'all'
+                    // Reset to original data
+                    filteredApplications = [...originalApplications];
+                    updateAllReportElements();
+                    
+                    // Reset the DataTable filter if it exists
+                    if ($.fn.DataTable.isDataTable('#primary-applications-table')) {
+                        const table = $('#primary-applications-table').DataTable();
+                        table.search('').columns().search('').draw();
+                    }
+                    return;
+            }
+            
+            // Filter the applications based on date range
+            filteredApplications = originalApplications.filter(app => {
+                if (!app.created_at) return false;
+                
+                const appDate = new Date(app.created_at);
+                return appDate >= startDate && appDate <= endDate;
+            });
+            
+            // Update all report elements with filtered data
+            updateAllReportElements();
+            
+            // Apply filter to DataTable if it exists
+            if ($.fn.DataTable.isDataTable('#primary-applications-table')) {
+                const table = $('#primary-applications-table').DataTable();
+                
+                // Clear any existing search/filter
+                table.search('').columns().search('').draw();
+                
+                // Create array of filtered IDs for more reliable filtering
+                const filteredIds = filteredApplications.map(app => app.id);
+                
+                // Re-draw the table with only visible rows that match our filtered IDs
+                table.rows().every(function() {
+                    const rowData = this.data();
+                    const fileNo = rowData[0]; // Assuming file number is in the first column
+                    
+                    // Find if this row's application exists in our filtered data
+                    const matchingApp = filteredApplications.find(app => app.fileno === fileNo);
+                    
+                    // Show/hide row based on match
+                    if (matchingApp) {
+                        this.nodes().to$().show();
+                    } else {
+                        this.nodes().to$().hide();
+                    }
+                });
+                
+                // Update DataTable info display
+                table.draw(false); // false to keep current pagination
+            }
+        }
+        
+        // Update all report elements with filtered data
+        function updateAllReportElements() {
+            updateStatCards();
+            updateCharts();
+        }
+        
+        // Update statistical cards
+        function updateStatCards() {
+            // Calculate updated statistics
+            const totalApps = filteredApplications.length;
+            const approvedApps = filteredApplications.filter(app => app.application_status === 'Approved').length;
+            const declinedApps = filteredApplications.filter(app => app.application_status === 'Declined').length;
+            const pendingApps = totalApps - approvedApps - declinedApps;
+            
+            const approvedPlanningRecs = filteredApplications.filter(app => app.planning_recommendation_status === 'Approved').length;
+            const declinedPlanningRecs = filteredApplications.filter(app => app.planning_recommendation_status === 'Declined').length;
+            const pendingPlanningRecs = totalApps - approvedPlanningRecs - declinedPlanningRecs;
+            
+            // Update stat cards with new values
+            document.querySelector('.stat-card:nth-child(1) .text-3xl').textContent = totalApps;
+            
+            // Director's Approval stat card - Fix the selector to target specific items
+            const directorCard = document.querySelector('.stat-card:nth-child(2)');
+            if (directorCard) {
+                const directorStats = directorCard.querySelectorAll('.flex.items-center.space-x-2');
+                if (directorStats.length >= 3) {
+                    directorStats[0].querySelector('.text-sm.text-gray-600').textContent = `Approved: ${approvedApps}`;
+                    directorStats[1].querySelector('.text-sm.text-gray-600').textContent = `Pending: ${pendingApps}`;
+                    directorStats[2].querySelector('.text-sm.text-gray-600').textContent = `Declined: ${declinedApps}`;
+                }
+            }
+            
+            // Planning Recommendation stat card - Fix the selector to target specific items
+            const planningCard = document.querySelector('.stat-card:nth-child(3)');
+            if (planningCard) {
+                const planningStats = planningCard.querySelectorAll('.flex.items-center.space-x-2');
+                if (planningStats.length >= 3) {
+                    planningStats[0].querySelector('.text-sm.text-gray-600').textContent = `Approved: ${approvedPlanningRecs}`;
+                    planningStats[1].querySelector('.text-sm.text-gray-600').textContent = `Pending: ${pendingPlanningRecs}`;
+                    planningStats[2].querySelector('.text-sm.text-gray-600').textContent = `Declined: ${declinedPlanningRecs}`;
+                }
+            }
+        }
+        
+        // Update all charts with filtered data
+        function updateCharts() {
+            // Update application status donut chart
+            if (statusChart) {
+                const approvedApps = filteredApplications.filter(app => app.application_status === 'Approved').length;
+                const declinedApps = filteredApplications.filter(app => app.application_status === 'Declined').length;
+                const pendingApps = filteredApplications.length - approvedApps - declinedApps;
+                
+                statusChart.updateSeries([approvedApps, pendingApps, declinedApps]);
+            }
+            
+            // Update monthly trend chart
+            if (monthlyTrendChart) {
+                const monthlyData = getMonthlyTrendData(filteredApplications);
+                monthlyTrendChart.updateOptions({
+                    xaxis: {
+                        categories: monthlyData.labels
+                    }
+                });
+                monthlyTrendChart.updateSeries([{
+                    name: 'Applications',
+                    data: monthlyData.values
+                }]);
+            }
+            
+            // Update applicant type chart
+            if (applicantTypeChart) {
+                const individual = filteredApplications.filter(app => app.applicant_type === 'individual').length;
+                const corporate = filteredApplications.filter(app => app.applicant_type === 'corporate').length;
+                const multiple = filteredApplications.filter(app => app.applicant_type === 'multiple').length;
+                
+                applicantTypeChart.updateSeries([individual, corporate, multiple]);
+            }
+            
+            // Update land use chart
+            if (landUseChart) {
+                const residential = filteredApplications.filter(app => app.land_use === 'Residential').length;
+                const commercial = filteredApplications.filter(app => app.land_use === 'Commercial').length;
+                const industrial = filteredApplications.filter(app => app.land_use === 'Industrial').length;
+                const mixedUse = filteredApplications.filter(app => app.land_use === 'Mixed Use').length;
+                
+                landUseChart.updateSeries([residential, commercial, industrial, mixedUse]);
+            }
+            
+            // For the unit metrics and building component chart, we would need unit application data
+            // This is a simplification - in a real implementation you would need to filter both primary and unit applications
+        }
+        
+        // Helper function to calculate monthly trend data from filtered applications
+        function getMonthlyTrendData(applications) {
+            const monthlyCount = {};
+            
+            applications.forEach(app => {
+                if (!app.created_at) return;
+                
+                const month = new Date(app.created_at).toISOString().substring(0, 7); // YYYY-MM format
+                monthlyCount[month] = (monthlyCount[month] || 0) + 1;
+            });
+            
+            // Sort months chronologically
+            const sortedMonths = Object.keys(monthlyCount).sort();
+            const monthlyValues = sortedMonths.map(month => monthlyCount[month]);
+            
+            return {
+                labels: sortedMonths,
+                values: monthlyValues
+            };
+        }
+        
+        // Initialize charts if ApexCharts is available
+        if (typeof ApexCharts !== 'undefined') {
+            // Application Status Donut Chart
+            const statusChartOptions = {
+                series: [
+                    {{ $approvedApplications ?? 0 }}, 
+                    {{ $pendingApplications ?? 0 }}, 
+                    {{ $DeclinedApplications ?? 0 }}
+                ],
+                chart: {
+                    type: 'donut',
+                    height: 250
+                },
+                labels: ['Approved', 'Pending', 'Declined'],
+                colors: ['#10B981', '#F59E0B', '#EF4444'],
+                legend: {
+                    position: 'bottom'
+                }
+            };
+            
+            statusChart = new ApexCharts(document.querySelector("#application-status-chart"), statusChartOptions);
+            statusChart.render();
+            
+            // Monthly Trend Line Chart (Changed from bar to line)
+            const monthlyTrendOptions = {
+                series: [{
+                    name: 'Applications',
+                    data: {!! json_encode($applicationCountByMonth ?? []) !!}
+                }],
+                chart: {
+                    type: 'line',
+                    height: 250,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 3
+                },
+                markers: {
+                    size: 4
+                },
+                xaxis: {
+                    categories: {!! json_encode($monthLabels ?? []) !!},
+                    labels: {
+                        rotate: -45,
+                        style: {
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                colors: ['#6366F1'],
+                yaxis: {
+                    title: {
+                        text: 'Number of Applications'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " applications"
+                        }
+                    }
+                }
+            };
+            
+            monthlyTrendChart = new ApexCharts(document.querySelector("#monthly-trend-chart"), monthlyTrendOptions);
+            monthlyTrendChart.render();
+            
+            // Applicant Type Donut Chart (New)
+            const applicantTypeData = {
+                'Individual': {{ collect($primaryApplications ?? [])->where('applicant_type', 'individual')->count() }},
+                'Corporate Body': {{ collect($primaryApplications ?? [])->where('applicant_type', 'corporate')->count() }},
+                'Multiple Owners': {{ collect($primaryApplications ?? [])->where('applicant_type', 'multiple')->count() }}
+            };
+            
+            const applicantTypeChartOptions = {
+                series: Object.values(applicantTypeData),
+                chart: {
+                    type: 'donut',
+                    height: 250
+                },
+                labels: Object.keys(applicantTypeData),
+                colors: ['#8B5CF6', '#EC4899', '#F59E0B'],
+                legend: {
+                    position: 'bottom'
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            
+            applicantTypeChart = new ApexCharts(document.querySelector("#applicant-type-chart"), applicantTypeChartOptions);
+            applicantTypeChart.render();
+            
+            // Land Use Donut Chart (New)
+            const landUseData = {
+                'Residential': {{ collect($primaryApplications ?? [])->where('land_use', 'Residential')->count() }},
+                'Commercial': {{ collect($primaryApplications ?? [])->where('land_use', 'Commercial')->count() }},
+                'Industrial': {{ collect($primaryApplications ?? [])->where('land_use', 'Industrial')->count() }},
+                'Mixed Use': {{ collect($primaryApplications ?? [])->where('land_use', 'Mixed Use')->count() }}
+            };
+            
+            const landUseChartOptions = {
+                series: Object.values(landUseData),
+                chart: {
+                    type: 'donut',
+                    height: 250
+                },
+                labels: Object.keys(landUseData),
+                colors: ['#3B82F6', '#10B981', '#F97316', '#A855F7'],
+                legend: {
+                    position: 'bottom'
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            
+            landUseChart = new ApexCharts(document.querySelector("#land-use-chart"), landUseChartOptions);
+            landUseChart.render();
+            
+            // Building Units Pie Chart
+            const buildingUnitsPieOptions = {
+                series: [
+                    {{ $registeredUnits }}, 
+                    {{ $remainingUnits }}
+                ],
+                chart: {
+                    type: 'donut',
+                    height: 300
+                },
+                labels: ['Registered Units', 'Unregistered Units'],
+                colors: ['#4F46E5', '#2F0353FF'],
+                legend: {
+                    position: 'bottom'
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            
+            buildingUnitsPieChart = new ApexCharts(
+                document.querySelector("#building-units-pie-chart"), 
+                buildingUnitsPieOptions
+            );
+            buildingUnitsPieChart.render();
+            
+            // Building Components Comparison Chart
+            const buildingComponentsOptions = {
+                series: [{
+                    name: 'Total',
+                    data: [{{ $totalUnits }}, {{ $totalBlocks }}, {{ $totalFloors }}]
+                }, {
+                    name: 'Registered',
+                    data: [{{ $registeredUnits }}, {{ $registeredBlocks }}, {{ $registeredFloors }}]
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    stacked: false,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: ['Units', 'Blocks', 'Floors'],
+                },
+                yaxis: {
+                    title: {
+                        text: 'Count'
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val
+                        }
+                    }
+                },
+                colors: ['#3B82F6', '#10B981']
+            };
+            
+            buildingComponentsChart = new ApexCharts(
+                document.querySelector("#building-components-chart"), 
+                buildingComponentsOptions
+            );
+            buildingComponentsChart.render();
+        }
+        
+        // Setup DataTable if available
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#primary-applications-table').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [5, 10, 25, 50],
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
+        }
+        
+        // Setup filter functionality
+        $('#primary-filter').on('change', function() {
+            const filterValue = $(this).val();
+            let table = $('#primary-applications-table').DataTable();
+            
+            if (filterValue === 'all') {
+                table.search('').columns().search('').draw();
+            } else if (filterValue === 'approved') {
+                table.column(3).search('Approved').draw();
+            } else if (filterValue === 'pending') {
+                table.column(3).search('Pending').draw();
+            } else if (filterValue === 'Declined') {
+                table.column(3).search('Declined').draw();
+            }
+        });
+        
+        // Print button functionality
+        $('#print-primary-btn').on('click', function() {
+            window.print();
+        });
+        
+        // Export functionality is handled by DataTables buttons
+    });
+</script>

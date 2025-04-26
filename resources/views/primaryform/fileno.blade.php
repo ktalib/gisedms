@@ -1,4 +1,4 @@
-<div class="bg-green-50 border border-green-100 rounded-md p-4 mb-6">
+<div class="bg-green-50 border border-green-100 rounded-md p-4 mb-6 items-center">
     <div class="flex items-center mb-2">
       <i data-lucide="file" class="w-5 h-5 mr-2 text-green-600"></i>
       <span class="font-medium">File Number Information</span>

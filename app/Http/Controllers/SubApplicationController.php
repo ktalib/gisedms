@@ -330,6 +330,9 @@ class SubApplicationController extends Controller
 
     public function viewrecorddetail_sub(Request $request)
     {
+        $PageTitle = 'Unit Application Details';
+ 
+        $PageDescription = 'View Unit Application Details';
         // Check if the ID is provided directly in the URL path (as a route parameter)
         $id = $request->route('id');
         
@@ -457,7 +460,7 @@ class SubApplicationController extends Controller
             'mother_multiple_owners_names_array' => $application->mother_multiple_owners_names_array ?? []
         ]);
         
-        return view('sectionaltitling.viewrecorddetail_sub', compact('application'));
+        return view('sectionaltitling.viewrecorddetail_sub', compact('application', 'PageTitle', 'PageDescription'));
     }
 
 

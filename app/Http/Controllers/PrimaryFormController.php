@@ -29,7 +29,16 @@ class PrimaryFormController extends Controller
             $validated = $request->validate([
                 'applicantType' => 'required',
                 'applicant_title' => 'nullable',
-                'fullname' => 'required', // Keep this as 'full_name' to validate the form field
+             
+                'first_name' => 'nullable',
+                'middle_name' => 'nullable',
+                'surname' => 'nullable',
+                'corporate_name' => 'nullable',
+                'rc_number' => 'nullable',
+                'multiple_owners_names' => 'nullable|array',
+              
+                'multiple_owners_passport' => 'nullable|array',
+                'multiple_owners_passport.*' => 'nullable|image|max:5120',
                 'address_house_no' => 'nullable',
                 'owner_street_name' => 'nullable',
                 'owner_district' => 'nullable',
@@ -74,9 +83,20 @@ class PrimaryFormController extends Controller
 
             // Handle passport upload
             $passportPath = null;
-            if ($request->hasFile('passportInput')) {
-                $passport = $request->file('passportInput');
+            if ($request->hasFile('passport')) {
+                $passport = $request->file('passport');
                 $passportPath = $passport->store('passports', 'public');
+            }
+
+            // Handle multiple owners passports upload
+            $multipleOwnersPassportPaths = [];
+            if ($request->hasFile('multiple_owners_passport')) {
+                foreach ($request->file('multiple_owners_passport') as $passport) {
+                    if ($passport && $passport->isValid()) {
+                        $path = $passport->store('multiple_owners_passports', 'public');
+                        $multipleOwnersPassportPaths[] = $path;
+                    }
+                }
             }
 
             // Process document uploads - using direct file access
@@ -120,7 +140,13 @@ class PrimaryFormController extends Controller
             $data = [
                 'applicant_type' => $request->input('applicantType'),
                 'applicant_title' => $request->input('applicant_title'),
-                'owner_fullname' => $request->input('fullname'), // Ensure this matches the form field name
+                'first_name' => $request->input('first_name'),
+                'middle_name' => $request->input('middle_name'),
+                'surname' => $request->input('surname'),
+                'corporate_name' => $request->input('corporate_name'),
+                'rc_number' => $request->input('rc_number'),
+                'multiple_owners_names' => $request->has('multiple_owners_names') ? json_encode($request->input('multiple_owners_names')) : null,
+                'multiple_owners_passport' => !empty($multipleOwnersPassportPaths) ? json_encode($multipleOwnersPassportPaths) : null,
                 'passport' => $passportPath,
                 'fileno' => $fileNo,
                 'address' =>$request->input('address'),
@@ -132,7 +158,13 @@ class PrimaryFormController extends Controller
                 'phone_number' => $phoneNumber,
                 'email' => $request->input('owner_email'),
                 'identification_type' => $request->input('idType'),
-                'residential_type' => $request->input('residenceType'),
+             
+               
+                'property_plot_no' => $request->input('property_plot_no'),
+                'property_street_name' => $request->input('property_street_name'),
+                'property_district' => $request->input('property_district'),
+                'property_lga' => $request->input('property_lga'),
+                'property_state' => $request->input('property_state'),
                 'NoOfUnits' => $request->input('units_count'),
                 'application_fee' => $request->input('application_fee'),
                 'processing_fee' => $request->input('processing_fee'),
@@ -141,8 +173,11 @@ class PrimaryFormController extends Controller
                 'receipt_number' => $request->input('receipt_number'),
                 'comments' => $request->input('comments'),
                 'commercial_type' => $request->input('commercial_type'),
+                'residential_type' => $request->input('residenceType'),
+                'industrial_type' => $request->input('industrial_type'),
                 'land_use' => $request->input('land_use'),
                 'application_status' => 'Pending',
+                'applicationID' => date('Y').'-'.str_pad((DB::connection('sqlsrv')->table('mother_applications')->count() + 1), 2, '0', STR_PAD_LEFT),
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Store documents as a proper JSON string

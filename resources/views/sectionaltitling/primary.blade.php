@@ -66,6 +66,10 @@
                                     <i data-lucide="factory" class="w-4 h-4 text-red-500 mr-2"></i>
                                     Industrial
                                 </a>
+                                <a href="{{ route('primaryform.index') }}?landuse=Mixed" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                                    <i data-lucide="layers" class="w-4 h-4 text-purple-500 mr-2"></i>
+                                    Mixed 
+                                </a>
                             </div>
                         </div>
 
@@ -77,39 +81,64 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th class="table-header">ID</th>
-                                <th class="table-header">File No</th>
-                                <th class="table-header">Property</th>
-                                <th class="table-header">Type</th>
-                                <th class="table-header">Landuse</th>
-                                <th class="table-header">Owner</th>
-                                <th class="table-header">Units</th>
-                                <th class="table-header">Date</th>
-                                <th class="table-header">Planning</th>
-                                <th class="table-header">Director</th>
-                                <th class="table-header">Actions</th>
+                                <th class="table-header text-green-500">ID</th>
+                                <th class="table-header text-green-500">File No</th>
+                                <th class="table-header text-green-500">Property</th>
+                                <th class="table-header text-green-500">Type</th>
+                                <th class="table-header text-green-500">Land Use</th>
+                                <th class="table-header text-green-500">Owner</th>
+                                <th class="table-header text-green-500">Units</th>
+                                <th class="table-header text-green-500">Date</th>
+                                <th class="table-header text-green-500">Planning</th>
+                                <th class="table-header text-green-500">Status</th>
+                                <th class="table-header text-green-500">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach ($PrimaryApplications as $PrimaryApplication)
                                 <tr>
-                                    <td class="table-cell">{{ $PrimaryApplication->id }}</td>
+                                    <td class="table-cell">ST-2025-0{{ $PrimaryApplication->id }}</td> 
                                     <td class="table-cell">{{ $PrimaryApplication->fileno }}</td>
-                                    <td class="table-cell">{{ $PrimaryApplication->property_plot_no }}
-                                        {{ $PrimaryApplication->property_street_name }}, {{ $PrimaryApplication-> property_lga}}</td>
-                                    <td class="table-cell">{{ $PrimaryApplication->applicant_type }}</td>
+                                     
+                                    <td class="table-cell">
+                                        <div class="truncate max-w-[150px]" title="{{ $PrimaryApplication->property_plot_no }} {{ $PrimaryApplication->property_street_name }}, {{ $PrimaryApplication->property_lga }}">
+                                            {{ $PrimaryApplication->property_plot_no }} {{ $PrimaryApplication->property_street_name }}, {{ $PrimaryApplication->property_lga }}
+                                        </div>
+                                    </td>
+                                    <td class="table-cell">
+                                        @if ($PrimaryApplication->commercial_type)
+                                            {{ $PrimaryApplication->commercial_type }}
+                                        @elseif ($PrimaryApplication->industrial_type)
+                                            {{ $PrimaryApplication->industrial_type }}
+                                        @elseif ($PrimaryApplication->mixed_type)
+                                            {{ $PrimaryApplication->mixed_type }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="table-cell">{{ $PrimaryApplication->land_use }}</td>
                                     <td class="table-cell">
                                         <div class="flex items-center">
-                                            <div
-                                                class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center mr-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-500"
-                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                </svg>
+                                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                                                @if ($PrimaryApplication->passport)
+                                                    <img src="{{ asset('storage/app/public/' . $PrimaryApplication->passport) }}" 
+                                                         alt="Passport" 
+                                                         class="w-full h-full rounded-full object-cover cursor-pointer"
+                                                         onclick="showPassportPreview('{{ asset('storage/app/public/' . $PrimaryApplication->passport) }}', 'Owner Passport')">
+                                                @elseif ($PrimaryApplication->multiple_owners_passport)
+                                                    @php
+                                                        $passports = json_decode($PrimaryApplication->multiple_owners_passport, true);
+                                                        $firstPassport = $passports[0] ?? null;
+                                                    @endphp
+                                                    @if ($firstPassport)
+                                                        <img src="{{ asset('storage/app/public/' . $firstPassport) }}" 
+                                                             alt="Passport" 
+                                                             class="w-full h-full rounded-full object-cover cursor-pointer"
+                                                             onclick="showMultipleOwners({{ $PrimaryApplication->multiple_owners_names }}, {{ $PrimaryApplication->multiple_owners_passport }})">
+                                                    @endif
+                                                @endif
                                             </div>
-                                            <span>
+                                            <span class="truncate max-w-[120px]">
                                                 @if ($PrimaryApplication->corporate_name)
                                                     {{ $PrimaryApplication->corporate_name }}
                                                 @elseif($PrimaryApplication->multiple_owners_names)
@@ -122,7 +151,7 @@
                                                     @endphp
                                                     {{ $firstOwner }}
                                                     <span class="ml-1 cursor-pointer text-blue-500"
-                                                        onclick="showFullNames({{ $PrimaryApplication->multiple_owners_names }})">
+                                                        onclick="showMultipleOwners({{ $PrimaryApplication->multiple_owners_names }}, {{ $PrimaryApplication->multiple_owners_passport }})">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline"
                                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -131,34 +160,80 @@
                                                         </svg>
                                                     </span>
                                                 @elseif($PrimaryApplication->first_name || $PrimaryApplication->surname)
-                                                    {{ $PrimaryApplication->applicant_title }}
-                                                    {{ $PrimaryApplication->first_name }}
-                                                    {{ $PrimaryApplication->surname }}
+                                                    {{ $PrimaryApplication->first_name }} {{ $PrimaryApplication->surname }}
                                                 @else
                                                     Unknown Owner
                                                 @endif
                                             </span>
                                         </div>
+
+                                        <script>
+                                            function showPassportPreview(imageSrc, title) {
+                                                Swal.fire({
+                                                    title: title,
+                                                    html: `<img src="${imageSrc}" class="img-fluid" style="max-height: 400px;">`,
+                                                    width: 'auto',
+                                                    showCloseButton: true,
+                                                    showConfirmButton: false
+                                                });
+                                            }
+                                              
+                                            function showMultipleOwners(owners, passports) {
+                                                if (Array.isArray(owners) && owners.length > 0) {
+                                                    let htmlContent = '<div class="grid grid-cols-3 gap-4" style="max-width: 600px;">';
+                                                    
+                                                    owners.forEach((name, index) => {
+                                                        const passport = Array.isArray(passports) && passports[index] 
+                                                            ? `<img src="{{ asset('storage/app/public/') }}/${passports[index]}" 
+                                                                 class="w-24 h-32 object-cover mx-auto border-2 border-gray-300" 
+                                                                 style="object-position: center top;">` 
+                                                            : '<div class="w-24 h-32 bg-gray-300 mx-auto flex items-center justify-center"><span>No Image</span></div>';
+                                                        
+                                                        htmlContent += `
+                                                            <div class="flex flex-col items-center">
+                                                                <div class="passport-container bg-blue-50 p-2 rounded">
+                                                                    ${passport}
+                                                                    <p class="text-center text-sm font-medium mt-1">${name}</p>
+                                                                </div>
+                                                            </div>
+                                                        `;
+                                                    });
+                                                    
+                                                    htmlContent += '</div>';
+                                                    
+                                                    Swal.fire({
+                                                        title: 'Multiple Owners',
+                                                        html: htmlContent,
+                                                        width: 'auto',
+                                                        showCloseButton: true,
+                                                        showConfirmButton: false
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        title: 'Multiple Owners',
+                                                        text: 'No owners available',
+                                                        icon: 'info',
+                                                        confirmButtonText: 'Close'
+                                                    });
+                                                }
+                                            }
+                                        </script>
                                     </td>
                                     <td class="table-cell">{{ $PrimaryApplication->NoOfUnits }}</td>
                                     <td class="table-cell">
                                         {{ \Carbon\Carbon::parse($PrimaryApplication->created_at)->format('Y-m-d') }}</td>
                                     <td class="table-cell">
-                                        <span
-                                            class="badge badge-{{ strtolower($PrimaryApplication->planning_recommendation_status) }}">
+                                        <span class="badge badge-{{ strtolower($PrimaryApplication->planning_recommendation_status) }}">
                                             {{ $PrimaryApplication->planning_recommendation_status }}
                                         </span>
-                                    </td>
-                                    <td class="table-cell">
-                                        <span
-                                            class="badge badge-{{ strtolower($PrimaryApplication->application_status) }}">
+                                    </td>  
+                                         <td class="table-cell">
+                                        <span class="badge badge-{{ strtolower($PrimaryApplication->application_status) }}">
                                             {{ $PrimaryApplication->application_status }}
                                         </span>
                                     </td>
-                                    <td class="table-cell">
-                                        <button class="text-gray-400 hover:text-gray-600">
-                                            <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-                                          </button>
+                                    <td class="table-cell overflow-visible relative">
+                                        @include('sectionaltitling.action_menu.action')
                                     </td>
                                 </tr>
                             @endforeach
@@ -184,43 +259,27 @@
 
         <!-- Footer -->
         @include('admin.footer')
-    </div>
+      </div>
+    @include('sectionaltitling.action_modals.payment_modal')
+    @include('sectionaltitling.action_modals.other_departments')
+    @include('sectionaltitling.action_modals.eRegistry_modal')
+    @include('sectionaltitling.action_modals.recommendation')
+    @include('sectionaltitling.action_modals.directorApproval')
+    @include('sectionaltitling.action_modals.finalconveyance')
+<script>
+  
 
-    <script>
-        function showFullNames(owners) {
-            if (Array.isArray(owners) && owners.length > 0) {
-                Swal.fire({
-                    title: 'Full Names of Multiple Owners',
-                    text: 'The following names are associated with this application:',
-                    html: '<ul>' + owners.map(name => `<li>${name}</li>`).join('') + '</ul>',
-                    icon: 'info',
-                    confirmButtonText: 'Close'
-                });
-            } else {
-                Swal.fire({
-                    title: 'Full Names of Multiple Owners',
-                    text: 'No owners available',
-                    icon: 'info',
-                    confirmButtonText: 'Close'
-                });
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdownMenu = event.currentTarget.nextElementSibling;
+            if (dropdownMenu) {
+                dropdownMenu.classList.toggle('hidden');
             }
         }
 
-     
-        function toggleDropdown(event) {
-            const dropdown = event.currentTarget.nextElementSibling;
-            dropdown.classList.toggle('hidden');
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function (event) {
-            const dropdowns = document.querySelectorAll('.dropdown-menu');
-            dropdowns.forEach(dropdown => {
-                if (!dropdown.contains(event.target) && !dropdown.previousElementSibling.contains(event.target)) {
-                    dropdown.classList.add('hidden');
-                }
-            });
+        document.addEventListener('click', () => {
+            const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+            dropdownMenus.forEach(menu => menu.classList.add('hidden'));
         });
-    
 </script>
 @endsection

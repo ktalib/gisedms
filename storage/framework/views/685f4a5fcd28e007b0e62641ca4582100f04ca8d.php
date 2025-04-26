@@ -4,13 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KLAS - Kano State Land Admin System</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   <style>
     .sidebar-item {
       display: flex;
@@ -74,7 +69,41 @@
   }
   </style>
 </head>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
 <body class="bg-gray-100 flex h-screen">
+<!-- Preloader -->
+<div id="preloader" class="fixed inset-0 bg-white bg-opacity-80 flex items-center justify-center z-50">
+  <img src="<?php echo e(asset('storage/upload/logo/klas_logo.gif')); ?>" alt="Loading..." style="width: 200px; height: auto;">
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const preloader = document.getElementById('preloader');
+    setTimeout(function () {
+      preloader.style.display = 'none';
+    }, 3000); // 5 seconds timer
+  });
+</script>
   <!-- Sidebar -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -111,22 +140,7 @@
     });
   </script>
 
-  <div class="w-64 h-full bg-white border-r border-gray-200 flex flex-col">
-    <!-- Logo Header -->
-    <div class="p-4 border-b border-gray-200 bg-purple-50">
-      <div class="flex items-center">
-        <div class="mr-2 flex-shrink-0">
-          <div class="klas-logo">
-            <div class="klas-logo-red"></div>
-            <div class="klas-logo-green"></div>
-            <div class="klas-logo-yellow"></div>
-            <div class="klas-logo-blue"></div>
-          </div>
-        </div>
-        <span class="text-xl font-bold">KLAS</span>
-      </div>
-    </div>
-
+ 
     <!-- Sidebar Menu -->
     <?php echo $__env->make('admin.menu', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
   <!-- Main Content (Placeholder) -->

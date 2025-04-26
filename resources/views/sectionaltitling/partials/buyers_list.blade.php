@@ -10,37 +10,37 @@
                 <p class="mb-2">This Final Conveyance Agreement is made this [Insert Date], between:</p>
                 <ul class="list-none pl-6 mb-4">
                     <li class="mb-1">- The Original Owner: 
-                        @if(isset($application))
-                            @if($application->corporate_name)
-                                {{ $application->corporate_name }}
-                            @elseif($application->multiple_owners_names)
-                                {{ is_array(json_decode($application->multiple_owners_names, true)) 
-                                    ? implode(', ', json_decode($application->multiple_owners_names, true)) 
-                                    : $application->multiple_owners_names }}
+                        @if(isset($PrimaryApplication))
+                            @if($PrimaryApplication->corporate_name)
+                                {{ $PrimaryApplication->corporate_name }}
+                            @elseif($PrimaryApplication->multiple_owners_names)
+                                {{ is_array(json_decode($PrimaryApplication->multiple_owners_names, true)) 
+                                    ? implode(', ', json_decode($PrimaryApplication->multiple_owners_names, true)) 
+                                    : $PrimaryApplication->multiple_owners_names }}
                             @else
-                                {{ trim($application->first_name . ' ' . $application->middle_name . ' ' . $application->surname) }}
+                                {{ trim($PrimaryApplication->first_name . ' ' . $PrimaryApplication->middle_name . ' ' . $PrimaryApplication->surname) }}
                             @endif
                         @else
                             [Insert Name]
                         @endif
                     </li>
                     <li class="mb-1">- Property Location: 
-                        @if(isset($application))
-                            {{ trim($application->plot_house_no . ' ' . $application->plot_plot_no . ' ' . $application->plot_street_name . ', ' . $application->plot_district) }}
+                        @if(isset($PrimaryApplication))
+                            {{ trim($PrimaryApplication->property_house_no . ' ' . $PrimaryApplication->property_property_no . ' ' . $PrimaryApplication->property_street_name . ', ' . $PrimaryApplication->property_district) }}
                         @else
                             [Insert Property Address]
                         @endif
                     </li>
                     <li class="mb-1">- Decommissioned Certificate of Occupancy (CofO) Number: 
-                        @if(isset($application))
-                            {{ $application->fileno ?? '[No CofO Number Available]' }}
+                        @if(isset($PrimaryApplication))
+                            {{ $PrimaryApplication->fileno ?? '[No CofO Number Available]' }}
                         @else
                             [Insert Original CofO No.]
                         @endif
                     </li>
                     <li class="mb-1">- Total Land Area: 
-                        @if(isset($application) && $application->plot_size)
-                            {{ $application->plot_size }} Square Meters
+                        @if(isset($PrimaryApplication) && $PrimaryApplication->plot_size)
+                            {{ $PrimaryApplication->plot_size }} Square Meters
                         @else
                             [Insert Size in Square Meters]
                         @endif
@@ -68,8 +68,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2 w-1/2">Original CofO No.</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->fileno ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->fileno ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -78,8 +78,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">Plot Number</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->plot_plot_no ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->property_property_no ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -88,8 +88,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">Block Number</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->plot_house_no ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->property_house_no ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -98,8 +98,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">Approved Plan Number</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->scheme_no ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->scheme_no ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -108,8 +108,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">Survey Plan No.</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->scheme_no ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->scheme_no ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -118,8 +118,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">Surveyed By</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->revenue_accountant ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->revenue_accountant ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -128,8 +128,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">Layout Name</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->plot_district ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->property_district ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -138,8 +138,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">District Name</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->plot_district ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->property_district ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -148,8 +148,8 @@
                         <tr>
                             <td class="border border-gray-400 p-2">Local Government Area (LGA)</td>
                             <td class="border border-gray-400 p-2">
-                                @if(isset($application))
-                                    {{ $application->property_lga ?? '[No Data]' }}
+                                @if(isset($PrimaryApplication))
+                                    {{ $PrimaryApplication->property_lga ?? '[No Data]' }}
                                 @else
                                     [Insert Value]
                                 @endif
@@ -161,9 +161,9 @@
     
             
     
-            @if(isset($application) && $application->conveyance)
+            @if(isset($PrimaryApplication) && $PrimaryApplication->conveyance)
                 @php
-                    $conveyanceData = json_decode($application->conveyance, true);
+                    $conveyanceData = json_decode($PrimaryApplication->conveyance, true);
                 @endphp
                 <div class="mt-4 p-4 bg-white shadow">
                     <h3 class="text-lg font-bold mb-2">Final Conveyance Records</h3>

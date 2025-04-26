@@ -76,6 +76,35 @@
         display: block;
     }
 
+    /* Loading overlay styles */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        display: none;
+    }
+    
+    .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
 </style>
 <div class="flex-1 overflow-auto">
     <!-- Header -->
@@ -89,7 +118,13 @@
  
       <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
         <div class="modal-content">
-            <form method="POST" action="{{ route('primaryform.store') }}" enctype="multipart/form-data">
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="loader"></div>
+                <div class="text-white ml-3">Processing your request...</div>
+            </div>
+            
+            <form id="primaryForm" method="POST" action="{{ route('primaryform.store') }}" enctype="multipart/form-data">
                 @csrf
                 <!-- Step 1: Basic Information -->
 
@@ -152,15 +187,15 @@
                             <label class="block mb-2 font-medium">Applicant Type</label>
                             <div class="flex space-x-6">
                               <label class="flex items-center">
-                                <input type="radio" name="applicantType" class="mr-2" value="individual">
+                                <input type="radio" name="applicantType" class="mr-2" value="individual"  onclick="setApplicantType('individual'); showIndividualFields()">
                                 <span>Individual</span>
                               </label>
                               <label class="flex items-center">
-                                <input type="radio" name="applicantType" class="mr-2" value="corporate">
+                                <input type="radio" name="applicantType" class="mr-2" value="corporate" onclick="setApplicantType('corporate'); showCorporateFields()">
                                 <span>Corporate Body</span>
                               </label>
                               <label class="flex items-center">
-                                <input type="radio" name="applicantType" class="mr-2" value="multiple" checked>
+                                <input type="radio" name="applicantType" class="mr-2" value="multiple" onclick="setApplicantType('multiple'); showMultipleOwnersFields()">
                                 <span>Multiple Owners</span>
                               </label>
                             </div>
@@ -171,52 +206,17 @@
                         </div>
                         </div>
      
-                        <!-- Right column (1/3 width) - Passport Photo Upload -->
-                     @include('primaryform.passport')
+ 
+                   
                       </div>
             
-    
+                     @include('primaryform.applicant')
     
                       <div class="mb-6">
-                        <div class="flex justify-between items-center mb-4">
-                          <h3 class="font-medium">Property Owners</h3>
-                          <button class="flex items-center px-3 py-1 bg-white border border-gray-300 rounded-md">
-                            <i data-lucide="plus" class="w-4 h-4 mr-1"></i>
-                            <span>Add Owner</span>
-                          </button>
-                        </div>
+                 
                         
                         <div class="mb-4">
-                          <h4 class="font-medium mb-4">Owner 1</h4>
-                          
-                          <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                              <label class="block text-sm mb-1">Title</label>
-                              <div class="relative">
-                                <select class="w-full p-2 border border-gray-300 rounded-md appearance-none pr-8" name="applicant_title">
-                                    <option value="" disabled selected>Select title</option>
-                                    @php
-                                        $titles = [
-                                            'Mr.', 'Mrs.', 'Chief', 'Master', 'Capt', 'Coln', 'Pastor', 'King', 'Prof', 
-                                            'Dr.', 'Alhaji', 'Alhaja', 'High Chief', 'Lady', 'Bishop', 'Senator', 'Messr', 
-                                            'Honorable', 'Miss', 'Rev.', 'Barr.', 'Arc.', 'Sister', 'Other'
-                                        ];
-                                    @endphp
-                                    @foreach($titles as $title)
-                                        <option value="{{ $title }}">{{ $title }}</option>
-                                    @endforeach
-                                </select>
-                                </select>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                  <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
-                                </div>
-                              </div>
-                            </div>
-                            <div>
-                              <label class="block text-sm mb-1">Full Name</label>
-                              <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="e.g. Abubakar Ibrahim" name="fullname">
-                            </div>
-                          </div>
+                        <p class="text-sm mb-1">Owner's Address</p>
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label class="block text-sm mb-1">House No.</label>
@@ -304,67 +304,69 @@
                         </div>
                       </div>
             
-                      <div class="mb-6">
-                        <div class="flex justify-between items-center mb-2">
-                          <label class="font-medium">Upload ID Document</label>
-                          <button class="flex items-center px-3 py-1 bg-white border border-gray-300 rounded-md">
-                            <i data-lucide="upload" class="w-4 h-4 mr-1"></i>
-                            <span>Upload</span>
-                          </button>
-                        </div>
-                        <p class="text-sm text-gray-500 mb-2">No ID document uploaded</p>
-                      </div>
-                       @include('primaryform.types.commercial')
-                      <div class="mb-6">
+                     
+
+
+                        <div class="mb-6">
                         <h3 class="font-medium mb-4">Property Details</h3>
                         
-                        <div class="mb-4">
-                          <label class="block mb-2 font-medium">Type of Residence</label>
-                          <div class="grid grid-cols-2 gap-4">
-                            <label class="flex items-center">
-                              <input type="radio" name="residenceType" class="mr-2" value="Detached House" checked>
-                              <span>Detached House</span>
-                            </label>
-                            <label class="flex items-center">
-                              <input type="radio" name="residenceType" class="mr-2" value="Housing Estate">
-                              <span>Housing Estate</span>
-                            </label>
-                            <label class="flex items-center">
-                              <input type="radio" name="residenceType" class="mr-2" value="Fragmented Layout">
-                              <span>Fragmented Layout</span>
-                            </label>
-                            <label class="flex items-center">
-                              <input type="radio" name="residenceType" class="mr-2" value="others">
-                              <span>Others</span>
-                            </label>
-                          </div>
-                        </div>
+                        @include('primaryform.types.commercial')
+                        @include('primaryform.types.residential')
+                        @include('primaryform.types.industrial')
                         
                         <div class="grid grid-cols-3 gap-4 mb-4">
                           <div>
-                            <label class="block text-sm mb-1">No. of Units</label>
-                            <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter number of units" name="units_count">
+                          <label class="block text-sm mb-1">No. of Units</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter number of units" name="units_count">
                           </div>
                           <div>
-                            <label class="block text-sm mb-1">No. of Blocks</label>
-                            <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter number of blocks" name="blocks_count">
+                          <label class="block text-sm mb-1">No. of Blocks</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter number of blocks" name="blocks_count">
                           </div>
                           <div>
-                            <label class="block text-sm mb-1">No. of Sections (Floors)</label>
-                            <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter number of floors" name="sections_count">
+                          <label class="block text-sm mb-1">No. of Sections (Floors)</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter number of floors" name="sections_count">
                           </div>
                         </div>
                         
-                     
-                      </div>
-            
-                   
-                      @include('primaryform.initial_bill')
-                   
+                        <h4 class="font-medium mb-2 mt-4">Property Address</h4>
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                          <div>
+                          <label class="block text-sm mb-1">House No.</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter house number" name="property_house_no">
+                          </div>
+                          <div>
+                          <label class="block text-sm mb-1">Plot No.</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter plot number" name="property_plot_no">
+                          </div>
+                          <div>
+                          <label class="block text-sm mb-1">Street Name</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter street name" name="property_street_name">
+                          </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                          <div>
+                          <label class="block text-sm mb-1">District</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter district" name="property_district">
+                          </div>
+                          <div>
+                          <label class="block text-sm mb-1">LGA</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter LGA" name="property_lga">
+                          </div>
+                          <div>
+                          <label class="block text-sm mb-1">State</label>
+                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter state" name="property_state">
+                          </div>
+                        </div>
+                        </div>
+                      @include('primaryform.types.ownership')
                       <div class="mb-4">
                         <label class="block text-sm mb-1">Write any comments that will assist in processing the application</label>
                         <textarea class="w-full p-2 border border-gray-300 rounded-md" rows="4" placeholder="Enter any additional comments or information" name="comments"></textarea>
                       </div>
+                      @include('primaryform.initial_bill')
+                   
+                
                       <div class="flex justify-between mt-8">
                         <button class="px-4 py-2 bg-white border border-gray-300 rounded-md">Cancel</button>
                         <div class="flex items-center">
@@ -440,5 +442,23 @@
 @include('primaryform.print')
 @include('primaryform.js')
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('primaryForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading overlay
+            loadingOverlay.style.display = 'flex';
+            
+            // Wait for 3 seconds before submitting the form
+            setTimeout(function() {
+                form.submit();
+            }, 3000);
+        });
+    });
+</script>
 
 @endsection

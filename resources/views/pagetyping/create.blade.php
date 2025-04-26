@@ -196,6 +196,7 @@
 </style>
 
 @section('content')
+
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
@@ -542,6 +543,9 @@
     @include('filescanning.filenumber_js')
 
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+           
         // function updateZoomValue(value) {
         //     document.getElementById('zoomValue').textContent = value + '%';
  

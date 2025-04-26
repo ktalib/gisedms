@@ -74,12 +74,15 @@
         <span class="text-red-500">-5% from last month</span>
       </div>
     </div>
-
+   
     <div class="stat-card bg-green-50 border-green-100">
       <div class="flex flex-col items-center justify-center h-full">
+        <a href="{{ route('map.index') }}">
         <h3 class="text-green-700 font-medium text-center">Kano State</h3>
         <h3 class="text-green-700 font-medium text-center">GIS Mapping</h3>
         <i data-lucide="map" class="text-green-500 w-10 h-10 my-2"></i>
+      </a>
       </div>
     </div>
+
   </div>

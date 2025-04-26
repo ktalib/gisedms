@@ -49,38 +49,38 @@ Property Records Assistant
         
         <div >
       
-            
+        <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
             <div class="modal-container bg-white w-11/12 md:max-w-4xl mx-auto rounded-md shadow-lg z-50 overflow-y-auto">
                 <!-- Modal Header -->
                 <div class="bg-gray-100 p-3 border-b flex justify-between items-center"> 
                     <div class="flex items-center space-x-2">
-                        <button id="firstButton" class="p-1 text-gray-600 hover:text-blue-600" title="First Record">
-                            <i class="fas fa-angle-double-left"></i>
+                        <button id="firstButton" class="p-1 hover:text-blue-600" title="First Record">
+                            <i data-lucide="chevrons-left" style="color: black;"></i>
                         </button>
                         <button id="previousButton" class="p-1 text-gray-600 hover:text-blue-600" title="Previous">
-                            <i class="fas fa-arrow-left"></i>
+                            <i data-lucide="chevron-left" style="color: black;"></i>
                         </button>
                         <p id="recordCounter" class="text-lg font-semibold text-gray-700">{{ isset($result) ? $result->id : '' }} of {{$recordCount}}</p>
                         <button id="nextButton" class="p-1 text-gray-600 hover:text-blue-600" title="Next">
-                            <i class="fas fa-arrow-right"></i>
+                            <i data-lucide="chevron-right" style="color: black;"></i>
                         </button>
                         <button id="lastButton" class="p-1 text-gray-600 hover:text-blue-600" title="Last Record">
-                            <i class="fas fa-angle-double-right"></i>
+                            <i data-lucide="chevrons-right" style="color: black;"></i>
                         </button>
                     </div>
                     <div class="flex space-x-2">
                         <button class="p-1 bg-red-600 text-white hover:bg-red-700" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
+                            <i data-lucide="trash-2" style="color: black;"></i>
                         </button>
                         <button class="p-1 bg-green-600 text-white hover:bg-green-700" title="Add" onclick="window.location.href='{{ route('propertycard.create') }}'" >
-                            <i class="fas fa-plus"></i>
+                            <i data-lucide="plus" style="color: black;"></i>
                         </button>
                         <button class="p-1 bg-blue-600 text-white hover:bg-blue-700" title="Edit">
-                            <i class="fas fa-edit"></i>
+                            <i data-lucide="edit" style="color: black;"></i>
                         </button>
                     </div>
                 </div>
-                
                 <!-- Modal Content -->
                 <div class="p-2">
                     <form method="POST" action="{{ route('propertycard.saveRecord') }}" id="propertyCardForm">

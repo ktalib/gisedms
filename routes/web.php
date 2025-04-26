@@ -38,6 +38,7 @@ use App\Http\Controllers\FileIndexingController;
 use App\Http\Controllers\FileScanningController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\PageTypingController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -538,3 +539,7 @@ Route::post('/pagetyping/store', [PageTypingController::class, 'store'])->name('
 Route::get('/sectionaltitling', [\App\Http\Controllers\SectionalTitlingController::class, 'index'])->name('sectionaltitling.index');
 Route::get('/sectionaltitling/primary', [\App\Http\Controllers\SectionalTitlingController::class, 'Primary'])->name('sectionaltitling.primary');
 Route::get('/sectionaltitling/secondary', [\App\Http\Controllers\SectionalTitlingController::class, 'Secondary'])->name('sectionaltitling.secondary');
+Route::get('/map', [\App\Http\Controllers\SectionalTitlingController::class, 'Map'])->name('map.index');
+
+// Payment filtering route
+Route::get('/programmes/payments/filter', [App\Http\Controllers\ProgrammesController::class, 'filterPayments'])->name('programmes.payments.filter');

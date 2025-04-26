@@ -56,7 +56,9 @@ class  SectionalTitlingController extends Controller
         $SecondaryApplications = DB::connection('sqlsrv')->table('dbo.subapplications')
             ->leftJoin('dbo.mother_applications', 'dbo.subapplications.main_application_id', '=', 'dbo.mother_applications.id')
             ->select(
-            'dbo.subapplications.fileno',
+            'dbo.subapplications.fileno', 
+            'dbo.subapplications.scheme_no',
+            'dbo.subapplications.id',
             'dbo.subapplications.main_application_id',
             'dbo.subapplications.applicant_title',
             'dbo.subapplications.first_name',
@@ -68,7 +70,12 @@ class  SectionalTitlingController extends Controller
             'dbo.subapplications.application_status',
             'dbo.subapplications.created_at',
             'dbo.subapplications.unit_number',
+
+            'dbo.subapplications.passport',
+            'dbo.subapplications.multiple_owners_passport',
             'dbo.mother_applications.fileno as mother_fileno',
+           'dbo.mother_applications.passport as mother_passport',
+            'dbo.mother_applications.multiple_owners_passport as mother_multiple_owners_passport',
             'dbo.mother_applications.applicant_title as mother_applicant_title',
             'dbo.mother_applications.first_name as mother_first_name',
             'dbo.mother_applications.surname as mother_surname',
@@ -82,5 +89,14 @@ class  SectionalTitlingController extends Controller
         return view('sectionaltitling.secondary', compact('SecondaryApplications', 'PageTitle', 'PageDescription')); 
     }
 
+
+
+    public function Map()
+    {
+        $PageTitle = 'GIS Mapping - Sectional Titling';
+        $PageDescription = 'Geospatial visualization of sectional title properties in Kano State.';
+  
+        return view('map.index', compact('PageTitle', 'PageDescription'));
+    }
   
 }

@@ -63,6 +63,41 @@
         </table>
       </div>
       
+      <!-- NEW: Property Address Section -->
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Property Address</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="width:40%; padding:5px 0;"><strong>House No:</strong></td>
+            <td style="padding:5px 0;" id="print-property-house-no"></td>
+          </tr>
+          <tr>
+            <td style="padding:5px 0;"><strong>Plot No:</strong></td>
+            <td style="padding:5px 0;" id="print-property-plot-no"></td>
+          </tr>
+          <tr>
+            <td style="padding:5px 0;"><strong>Street Name:</strong></td>
+            <td style="padding:5px 0;" id="print-property-street-name"></td>
+          </tr>
+          <tr>
+            <td style="padding:5px 0;"><strong>District:</strong></td>
+            <td style="padding:5px 0;" id="print-property-district"></td>
+          </tr>
+          <tr>
+            <td style="padding:5px 0;"><strong>LGA:</strong></td>
+            <td style="padding:5px 0;" id="print-property-lga"></td>
+          </tr>
+          <tr>
+            <td style="padding:5px 0;"><strong>State:</strong></td>
+            <td style="padding:5px 0;" id="print-property-state"></td>
+          </tr>
+          <tr>
+            <td style="padding:5px 0;"><strong>Complete Address:</strong></td>
+            <td style="padding:5px 0;" id="print-property-full-address"></td>
+          </tr>
+        </table>
+      </div>
+      
       <div style="margin-bottom: 20px;">
         <h3 style="font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Payment Information</h3>
         <table style="width: 100%; border-collapse: collapse;">
@@ -114,4 +149,3 @@
       </div>
     </div>
   </div>
-  

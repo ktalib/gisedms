@@ -158,6 +158,40 @@
         </div>
         
         <div class="mb-6">
+          <h4 class="font-medium mb-4">Property Address</h4>
+          <table class="w-full text-sm">
+            <tr>
+              <td class="py-1 text-gray-600">House No:</td>
+              <td class="py-1 font-medium" id="summary-property-house-no">-</td>
+            </tr>
+            <tr>
+              <td class="py-1 text-gray-600">Plot No:</td>
+              <td class="py-1 font-medium" id="summary-property-plot-no">-</td>
+            </tr>
+            <tr>
+              <td class="py-1 text-gray-600">Street Name:</td>
+              <td class="py-1 font-medium" id="summary-property-street-name">-</td>
+            </tr>
+            <tr>
+              <td class="py-1 text-gray-600">District:</td>
+              <td class="py-1 font-medium" id="summary-property-district">-</td>
+            </tr>
+            <tr>
+              <td class="py-1 text-gray-600">LGA:</td>
+              <td class="py-1 font-medium" id="summary-property-lga">-</td>
+            </tr>
+            <tr>
+              <td class="py-1 text-gray-600">State:</td>
+              <td class="py-1 font-medium" id="summary-property-state">-</td>
+            </tr>
+            <tr>
+              <td class="py-1 text-gray-600">Complete Address:</td>
+              <td class="py-1 font-medium" id="summary-property-full-address">-</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="mb-6">
           <h4 class="font-medium mb-4">Uploaded Documents</h4>
           <div class="grid grid-cols-2 gap-4" id="summary-documents">
             <!-- Documents will be populated dynamically -->
@@ -235,6 +269,15 @@
           return '₦' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         };
         
+        // Property Address from Property Details
+        const propertyHouseNo = document.querySelector('input[name="property_house_no"]')?.value || '-';
+        const propertyPlotNo = document.querySelector('input[name="property_plot_no"]')?.value || '-';
+        const propertyStreetName = document.querySelector('input[name="property_street_name"]')?.value || '-';
+        const propertyDistrict = document.querySelector('input[name="property_district"]')?.value || '-';
+        const propertyLga = document.querySelector('input[name="property_lga"]')?.value || '-';
+        const propertyState = document.querySelector('input[name="property_state"]')?.value || '-';
+        const propertyFullAddress = `${propertyHouseNo} ${propertyPlotNo} ${propertyStreetName}, ${propertyDistrict}, ${propertyLga}, ${propertyState}`.replace(/,\s*-/g, '');
+        
         // Update summary fields
         document.getElementById('summary-applicant-type').textContent = applicantType;
         document.getElementById('summary-name').textContent = title + ' ' + fullName;
@@ -260,6 +303,15 @@
         document.getElementById('summary-total-fee').textContent = formatCurrency(totalFee);
         document.getElementById('summary-receipt-number').textContent = receiptNumber;
         document.getElementById('summary-payment-date').textContent = paymentDate;
+        
+        // Update Property Address summary fields
+        document.getElementById('summary-property-house-no').textContent = propertyHouseNo;
+        document.getElementById('summary-property-plot-no').textContent = propertyPlotNo;
+        document.getElementById('summary-property-street-name').textContent = propertyStreetName;
+        document.getElementById('summary-property-district').textContent = propertyDistrict;
+        document.getElementById('summary-property-lga').textContent = propertyLga;
+        document.getElementById('summary-property-state').textContent = propertyState;
+        document.getElementById('summary-property-full-address').textContent = propertyFullAddress;
         
         // Collect and display uploaded documents
         const documentsContainer = document.getElementById('summary-documents');
@@ -317,6 +369,15 @@
             document.getElementById('print-total-fee').textContent = document.getElementById('summary-total-fee').textContent;
             document.getElementById('print-receipt-number').textContent = document.getElementById('summary-receipt-number').textContent;
             document.getElementById('print-payment-date').textContent = document.getElementById('summary-payment-date').textContent;
+            
+            // Copy property address fields to print template
+            document.getElementById('print-property-house-no').textContent = document.getElementById('summary-property-house-no').textContent;
+            document.getElementById('print-property-plot-no').textContent = document.getElementById('summary-property-plot-no').textContent;
+            document.getElementById('print-property-street-name').textContent = document.getElementById('summary-property-street-name').textContent;
+            document.getElementById('print-property-district').textContent = document.getElementById('summary-property-district').textContent;
+            document.getElementById('print-property-lga').textContent = document.getElementById('summary-property-lga').textContent;
+            document.getElementById('print-property-state').textContent = document.getElementById('summary-property-state').textContent;
+            document.getElementById('print-property-full-address').textContent = document.getElementById('summary-property-full-address').textContent;
             
             // Copy documents
             const printDocsContainer = document.getElementById('print-documents');

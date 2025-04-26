@@ -55,28 +55,28 @@ Property Records Assistant
                 <div class="bg-gray-100 p-3 border-b flex justify-between items-center"> 
                     <div class="flex items-center space-x-2">
                         <button id="firstButton" class="p-1 text-gray-600 hover:text-blue-600" title="First Record">
-                            <i class="fas fa-angle-double-left"></i>
+                            <i data-lucide="chevrons-left"></i>
                         </button>
                         <button id="previousButton" class="p-1 text-gray-600 hover:text-blue-600" title="Previous">
-                            <i class="fas fa-arrow-left"></i>
+                            <i data-lucide="chevron-left"></i>
                         </button>
                         <p id="recordCounter" class="text-lg font-semibold text-gray-700">{{ isset($result) ? $result->id : '' }} of {{$recordCount}}</p>
                         <button id="nextButton" class="p-1 text-gray-600 hover:text-blue-600" title="Next">
-                            <i class="fas fa-arrow-right"></i>
+                            <i data-lucide="chevron-right"></i>
                         </button>
                         <button id="lastButton" class="p-1 text-gray-600 hover:text-blue-600" title="Last Record">
-                            <i class="fas fa-angle-double-right"></i>
+                            <i data-lucide="chevrons-right"></i>
                         </button>
                     </div>
                     <div class="flex space-x-2">
                         <button class="p-1 bg-red-600 text-white hover:bg-red-700" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
+                            <i data-lucide="trash-2"></i>
                         </button>
                         <button class="p-1 bg-green-600 text-white hover:bg-green-700" title="Add" onclick="window.location.href='{{ route('propertycard.create') }}'" >
-                            <i class="fas fa-plus"></i>
+                            <i data-lucide="plus"></i>
                         </button>
                         <button class="p-1 bg-blue-600 text-white hover:bg-blue-700" title="Edit">
-                            <i class="fas fa-edit"></i>
+                            <i data-lucide="edit"></i>
                         </button>
                     </div>
                 </div>

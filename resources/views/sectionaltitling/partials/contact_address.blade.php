@@ -13,7 +13,7 @@
             <label class="block text-sm font-medium text-gray-700">Street Name <span style="color:red">*</span></label>
             <input type="text" name="address_street_name" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter street name">
         </div>
- 
+   
         <div>
             <label class="block text-sm font-medium text-gray-700">District <span style="color:red">*</span></label>
             <input type="text" name="address_district" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter district">

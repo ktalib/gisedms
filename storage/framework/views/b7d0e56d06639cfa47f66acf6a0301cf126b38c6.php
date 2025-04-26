@@ -1,111 +1,185 @@
+            
+            <?php $__env->startSection('page-title'); ?>
+            <?php echo e(__('SECTIONAL TITLING  MODULE')); ?>
 
-<?php $__env->startSection('page-title'); ?>
-    <?php echo e(__('Sub-Application Form (Child)')); ?>
+            <?php $__env->stopSection(); ?>
 
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('breadcrumb'); ?>
-    <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
-    <li class="breadcrumb-item" aria-current="page"> <?php echo e(__('Sub-Application Form')); ?></li>
-<?php $__env->stopSection(); ?>
-<?php $__env->startPush('script-page'); ?>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-<script src="<?php echo e(asset('assets/js/plugins/ckeditor/classic/ckeditor.js')); ?>"></script>
-<script>
-    if ($('#classic-editor').length > 0) {
-        ClassicEditor.create(document.querySelector('#classic-editor')).catch((error) => {
-            console.error(error);
-        });
-    }
-    setTimeout(() => {
-        feather.replace();
-    }, 500);
-</script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
-<?php $__env->stopPush(); ?>
-<style>
-    .ck-editor__editable {
-        min-height: 200px;
-    }
+            <style>
+            .ck-editor__editable {
+            min-height: 200px;
+            }
 
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    textarea,
-    select {
-        min-height: 55px;
-        background-color: #fdfdfd;
-    }
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            textarea,
+            select {
+            min-height: 55px;
+            background-color: #fdfdfd;
+            }
 
-    input:disabled,
-    select:disabled,
-    textarea:disabled {
-        background-color: #bbbbbb;
-    }
+            input:disabled,
+            select:disabled,
+            textarea:disabled {
+            background-color: #bbbbbb;
+            }
 
-    #myDiv {
-        display: none;
-        transition: all 0.3s ease-in-out;
-    }
-    select,
-    input {
-        transition: all 0.2s ease-in-out;
-    }
-    select:focus,
-    input:focus {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-    #Previewflenumber {
-        font-family: monospace;
-        letter-spacing: 0.05em;
-    }
-    .bootstrap-tagsinput {
-        width: 100%;
-        padding: 0.5rem;
-        border-radius: 0.375rem;
-        min-height: 55px;
-        background-color: #fdfdfd;
-    }
+            #myDiv {
+            display: none;
+            transition: all 0.3s ease-in-out;
+            }
+            select,
+            input {
+            transition: all 0.2s ease-in-out;
+            }
+            select:focus,
+            input:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            #Previewflenumber {
+            font-family: monospace;
+            letter-spacing: 0.05em;
+            }
+            .bootstrap-tagsinput {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            min-height: 55px;
+            background-color: #fdfdfd;
+            }
 
-    .bootstrap-tagsinput .tag {
-        background-color: #3b82f6;
-        color: white;
-        padding: 3px 7px;
-        border-radius: 3px;
-        margin-right: 4px;
-    }
-</style>
+            .bootstrap-tagsinput .tag {
+            background-color: #3b82f6;
+            color: white;
+            padding: 3px 7px;
+            border-radius: 3px;
+            margin-right: 4px;
 
-<?php $__env->startSection('content'); ?>
-<div class="container py-4">
-    <div class="card shadow-sm">
-        <div class="card-body" style="width:100%">
-            <form id="subApplicationForm" method="POST" action="<?php echo e(route('sectionaltitling.storesub')); ?>" enctype="multipart/form-data" class="space-y-6">
-                <?php echo csrf_field(); ?>
-                    <!-- Main Application Reference -->
+            }
 
-                    
-                    <div class="form-section">
-                        <h2 class="section-title">Main Application Reference</h2>
-                        <div class="bg-gray-50 p-4 rounded-md">
-                            <label class="block text-sm font-medium text-gray-700">Main Application ID</label>
-                            <input type="text"   id="mainApplicationId" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled> 
-                            
-                            <input type="hidden" name="main_application_id" id="mainApplicationId1" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
 
-                            <input type="hidden" name="file_no" id="fileNo2" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <p class="text-xs text-gray-500 mt-1">This field links your sub-application to a valid main application.</p>
-                            <!-- Updated display container for main application data -->
-                            <div id="mainApplicationData" class="mt-4 space-y-2">
-                                <p><strong>Owner Name:</strong> <span id="mainApplicationOwner" class="ml-2"></span></p>
-                                <p><strong>File Number:</strong> <span id="fileNo" class="ml-2"></span></p>
-                                <p><strong>Form ID:</strong> <span id="formId" class="ml-2"></span></p>
-                                <p><strong>Property Location:</strong> <span id="propertyLocation" class="ml-2"></span></p> 
-                                <p><strong>Number of Units:</strong> <span id="mainApplicationNoOfUnits" class="ml-2"></span></p>
-                                <?php
+   
+            .step-circle {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            }
+            .step-circle.active-tab {
+            background-color: #10b981;
+            color: white;
+            }
+            .step-circle.inactive-tab {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            }
+            .form-section {
+            display: none;
+            }
+            .form-section.active-tab {
+            display: block;
+            }
+            .upload-box {
+            border: 2px dashed #e5e7eb;
+            border-radius: 0.375rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            }
+            .upload-box:hover {
+            border-color: #3b82f6;
+            }
+            </style>
+            <?php echo $__env->make('sectionaltitling.partials.assets.css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <?php $__env->startSection('content'); ?>
+            <!-- Main Content -->
+            <div class="flex-1 overflow-auto">
+            <!-- Header -->
+            <?php echo $__env->make('admin.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+            <!-- Dashboard Content -->
+            <div class="p-6">
+
+                <!-- Tabs -->
+                <?php echo $__env->make('sectionaltitling.partials.tabs', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+                <?php
+                $mainApplicationId = request()->get('application_id');
+                // Fetch data from the mother_applications table
+                $motherApplication = DB::connection('sqlsrv')->table('mother_applications')->where('id', $mainApplicationId)->first();
+                $totalUnitsInMotherApp = $motherApplication ? $motherApplication->NoOfUnits : 0;
+
+                // Count the number of sub-applications linked to the main application
+                $totalSubApplications = DB::connection('sqlsrv')->table('subapplications')->where('main_application_id', $mainApplicationId)->count();
+
+                // Calculate the remaining units
+                $remainingUnits = $totalUnitsInMotherApp - $totalSubApplications;
+
+                // Get property location
+                $propertyLocation = '';
+                if ($motherApplication) {
+                  $locationParts = array_filter([
+                    $motherApplication->property_plot_no ?? null,
+                    $motherApplication->property_street_name ?? null,
+                    $motherApplication->property_district ?? null
+                  ]);
+                  $propertyLocation = implode(', ', $locationParts);
+                }
+              ?>
+
+                <!-- Primary Applications Table -->
+                <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
+                    <div class="container py-4">
+                        <div class="modal-content">
+                            <!-- Step 1: Basic Information -->
+                            <form id="subApplicationForm" method="POST" action="<?php echo e(route('sectionaltitling.storesub')); ?>" enctype="multipart/form-data" class="space-y-6">
+                              <?php echo csrf_field(); ?>
+                            <div class="form-section active-tab" id="step1">
+                              <div class="p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                  <h2 class="text-xl font-bold text-gray-800">MINISTRY OF LAND AND PHYSICAL PLANNING</h2>
+                                  <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                  </button>
+                                </div>
+                                
+                                <div class="mb-6">
+                                  <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                      <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
+                                      <h3 class="text-lg font-bold items-center">Application for Sectional Titling - Unit Application</h3>
+                                    </div>
+                                    <div class="flex items-center">
+                                      <span class="text-gray-600 mr-2">Land Use:</span>
+                                      <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm"><?php echo e($motherApplication->land_use ?? 'N/A'); ?></span>
+                                    </div>
+                                  </div>
+                                  <p class="text-gray-600 mt-1">Complete the form below to submit a new primary application for sectional titling</p>
+                                </div>
+                        
+                                <div class="flex items-center mb-6">
+                                  <div class="flex items-center mr-4">
+                                    <div class="step-circle active-tab flex items-center justify-center">1</div>
+                                  </div>
+                                  <div class="flex items-center mr-4">
+                                    <div class="step-circle inactive-tab flex items-center justify-center">2</div>
+                                  </div>
+                                  <div class="flex items-center">
+                                    <div class="step-circle inactive-tab flex items-center justify-center">3</div>
+                                  </div>
+                                  <div class="ml-4">Step 1</div>
+                                </div>
+                        
+                                <div class="mb-6">
+                                  <div class="text-right text-sm text-gray-500">CODE: ST FORM - 1</div>
+                                  <hr class="my-4">
+                                  <?php
                                     $mainApplicationId = request()->get('application_id');
-                                    // Fetch the number of units from the mother_applications table
+                                    // Fetch data from the mother_applications table
                                     $motherApplication = DB::connection('sqlsrv')->table('mother_applications')->where('id', $mainApplicationId)->first();
                                     $totalUnitsInMotherApp = $motherApplication ? $motherApplication->NoOfUnits : 0;
 
@@ -114,776 +188,745 @@
 
                                     // Calculate the remaining units
                                     $remainingUnits = $totalUnitsInMotherApp - $totalSubApplications;
-                                ?>
+
+                                    // Get property location
+                                    $propertyLocation = '';
+                                    if ($motherApplication) {
+                                      $locationParts = array_filter([
+                                        $motherApplication->property_plot_no ?? null,
+                                        $motherApplication->property_street_name ?? null,
+                                        $motherApplication->property_district ?? null
+                                      ]);
+                                      $propertyLocation = implode(', ', $locationParts);
+                                    }
+                                  ?>
+
+                                  <div class="mb-6">
+                                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Main Application Reference</h2>
+                                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+                                      <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                          <label class="block text-sm font-medium text-gray-700 mb-1">Main Application ID</label>
+                                          <input type="text" id="mainApplicationId" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="<?php echo e($mainApplicationId); ?>" disabled>
+                                          <input type="hidden" name="main_application_id" value="<?php echo e($mainApplicationId); ?>">
+                                         
+                                        </div>
+                                        <div class="flex items-center">
+                                          <span class="px-3 py-1 text-sm rounded-full <?php echo e($remainingUnits > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'); ?>">
+                                            <?php echo e($remainingUnits); ?> units remaining
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      <!-- Main Application Details -->
+                                      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
+                                        <!-- Applicant Information -->
+                                        <div class="bg-gray-50 p-4 rounded-md">
+                                          <h3 class="text-md font-medium text-gray-700 mb-3 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            Applicant Information
+                                          </h3>
+                                          <div class="space-y-2 text-sm">
+                                            <div class="flex">
+                                              <span class="text-gray-500 w-36">Applicant Type:</span>
+                                              <span class="font-medium"><?php echo e($motherApplication->applicant_type ?? 'N/A'); ?></span>
+                                            </div>
+                                            <div class="flex">
+                                              <span class="text-gray-500 w-36">Name:</span>
+                                              <span class="font-medium">
+                                                <?php echo e($motherApplication->applicant_title ?? ''); ?> 
+                                                <?php echo e($motherApplication->first_name ?? ''); ?> 
+                                                <?php echo e($motherApplication->surname ?? ''); ?>
+
+                                              </span>
+                                            </div>
+                                            <div class="flex">
+                                              <span class="text-gray-500 w-36">Form ID:</span>
+                                              <span class="font-medium"><?php echo e($motherApplication->id ?? 'N/A'); ?></span>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <!-- Property Information -->
+                                        <div class="bg-gray-50 p-4 rounded-md">
+                                          <h3 class="text-md font-medium text-gray-700 mb-3 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                            </svg>
+                                            Property Information
+                                          </h3>
+                                          <div class="space-y-2 text-sm">
+                                            <div class="flex">
+                                              <span class="text-gray-500 w-36">File Number:</span>
+                                              <span class="font-medium"><?php echo e($motherApplication->fileno ?? 'N/A'); ?></span>
+                                            </div>
+                                            <div class="flex">
+                                              <span class="text-gray-500 w-36">Land Use:</span>
+                                              <span class="font-medium"><?php echo e($motherApplication->land_use ?? 'N/A'); ?></span>
+                                            </div>
+                                            <div class="flex">
+                                              <span class="text-gray-500 w-36">Property Location:</span>
+                                              <span class="font-medium"><?php echo e($propertyLocation ?: 'N/A'); ?></span>
+                                            </div>
+                                            <div class="flex">
+                                              <span class="text-gray-500 w-36">Total Units:</span>
+                                              <span class="font-medium"><?php echo e($totalUnitsInMotherApp); ?></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Progress indicator -->
+                                      <div class="mt-5 pt-4 border-t border-gray-200">
+                                        <div class="flex items-center">
+                                          <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <?php $progressPercent = $totalUnitsInMotherApp > 0 ? (($totalSubApplications / $totalUnitsInMotherApp) * 100) : 0; ?>
+                                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: <?php echo e($progressPercent); ?>%"></div>
+                                          </div>
+                                          <span class="ml-3 text-sm text-gray-600"><?php echo e($totalSubApplications); ?>/<?php echo e($totalUnitsInMotherApp); ?> units registered</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">This sub-application will be linked to the main application referenced above.</p>
+                                  </div>    
+                                <div class="grid grid-cols-3 gap-6 mb-6">
+                                    
+                                    <!-- Left column (2/3 width) -->
+                                    <div class="col-span-2">
+                                      <div class="mb-6">
+                                        <label class="block mb-2 font-medium">Applicant Type</label>
+                                        <div class="flex space-x-6">
+                                            <label class="flex items-center">
+                                                <input type="radio" name="applicantType" class="mr-2" value="individual"  onclick="setApplicantType('individual'); showIndividualFields()">
+                                                <span>Individual</span>
+                                              </label>
+                                              <label class="flex items-center">
+                                                <input type="radio" name="applicantType" class="mr-2" value="corporate" onclick="setApplicantType('corporate'); showCorporateFields()">
+                                                <span>Corporate Body</span>
+                                              </label>
+                                              <label class="flex items-center">
+                                                <input type="radio" name="applicantType" class="mr-2" value="multiple" onclick="setApplicantType('multiple'); showMultipleOwnersFields()">
+                                                <span>Multiple Owners</span>
+                                              </label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    <! -- Right column (1/3 width) -->
+                                  </div>
+
+                                  <?php echo $__env->make('primaryform.applicant', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                  
+
+                                  <div class="bg-gray-50 p-4 rounded-md mb-6">
+                        
+                                     
+                                   
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                     
+                                        <div>
+                                            <label class="block text-sm mb-1">Scheme No</label>
+                                            <input type="text" id="schemeName" class="w-full p-2 border border-gray-300 rounded-md"  " name="scheme_no" placeholder="enter scheme number. eg: ST/SP/0001">
+                                        </div>
+                                    </div>
+                                  </div>
+
+                                    <div class="bg-gray-50 p-4 rounded-md mb-6">
+                        
+                                    <div class="mb-4">
+                                    <p class="text-sm mb-1">Unit Owner's Address</p>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm mb-1">House No.</label>
+                                            <input type="text" id="ownerHouseNo" class="w-full p-2 border border-gray-300 rounded-md" placeholder="House No." name="address_house_no">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm mb-1">Street Name</label>
+                                            <input type="text" id="ownerStreetName" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Street Name" name="address_street_name">
+                                        </div>
+                                    </div>
+                
+                                    <div class="grid grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm mb-1">District</label>
+                                            <input type="text" id="ownerDistrict" class="w-full p-2 border border-gray-300 rounded-md" placeholder="District" name="address_district">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm mb-1">LGA</label>
+                                            <input type="text" id="ownerLga" class="w-full p-2 border border-gray-300 rounded-md" placeholder="LGA" name="address_lga">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm mb-1">State</label>
+                                            <input type="text" id="ownerState" class="w-full p-2 border border-gray-300 rounded-md" placeholder="eg: Kano"  name="address_state">
+                                        </div>
+                                    </div>
+                                           <input type="hidden" name="address" id="contactAddressDisplay">    
+                                    <div class="mb-4">
+                                        <label class="block text-sm mb-1">Contact Address:</label>
+                                        <div id="contactAddressDisplay" class="p-2 bg-gray-50 border border-gray-200 rounded-md">
+                                            <span id="fullContactAddress"></span>
+                                        </div>
+                                    </div>
+                 
+                                      <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                          <label class="block text-sm mb-1">Phone No. 1</label>
+                                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter phone number" name="phone_number[]">
+                                        </div>
+                                        <div>
+                                          <label class="block text-sm mb-1">Phone No. 2</label>
+                                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter alternate phone" name="phone_number[]">
+                                        </div>
+                                      </div>
+                                      
+                                      <div>
+                                        <label class="block text-sm mb-1">Email Address</label>
+                                        <input type="email" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter email address" name="owner_email">
+                                      </div>
+                                    </div>
+                                  </div>
                                  
-                                <p>
-                                    <strong>Remaining Units:</strong>
-                                    <span class="ml-2 font-semibold text-green-500">
-                                        <?php echo e($remainingUnits); ?>
-
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                      
-                     </div>
-                 
-
-
-                    <div class="form-section">
-                        <h2 class="section-title">Applicant Type</h2>
-                        <div class="flex gap-4">
-                            <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700" onclick="showIndividualFields(); setApplicantType('individual')">Individual</button>
-                            <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700" onclick="showCorporateFields(); setApplicantType('corporate')">Corporate Body</button>
-                            <button type="button" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700" onclick="showMultipleOwnersFields(); setApplicantType('multiple')">Multiple Owners</button>
-                        </div>
-                    </div>
-                    <input type="hidden" name="applicant_type" id="applicantType" value="">
+                                <div class="bg-gray-50 p-4 rounded-md grid grid-cols-2 gap-6 mb-6">
+                                    <!-- Left column -->
+                                    <div>
+                                        <label class="block mb-2 font-medium">Means of identification</label>
+                                        <div class="grid grid-cols-1 gap-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="identification_type" class="mr-2" value="national id" checked>
+                                        <span>National ID</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="identification_type" class="mr-2" value="drivers license">
+                                        <span>Driver's License</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="identification_type" class="mr-2" value="others">
+                                        <span>Others</span>
+                                    </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right column -->
+                                    <div>
+                                        <div class="h-6"></div> <!-- Spacer to align with left column label -->
+                                        <div class="grid grid-cols-1 gap-2">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="identification_type" class="mr-2" value="voters card">
+                                        <span>Voter's Card</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="identification_type" class="mr-2" value="international passport">
+                                        <span>International Passport</span>
+                                    </label>
+                                        </div>
+                                    </div>
+                                    </div>            
                         
-                    <div class="form-section" style="display: none;">
-                    
-                     <!-- Replace the existing file prefix, year, and serial number section with this code -->
-<div class="bg-gray-50 p-4 rounded-md">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Prefix Selection -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700">File Prefix</label>
-            <input type="text" id="filePrefix" name="file_prefix" 
-                class="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
-                value="<?php echo e($prefix); ?>" readonly>
-            <!-- Hidden input for land use -->
-            <input type="hidden" id="landUse" value="<?php echo e(request()->get('land_use')); ?>">
-        </div>
+                                  <div class="bg-gray-50 p-4 rounded-md mb-6">
+                                    <h3 class="font-medium mb-4">Unit Details</h3>
+                                    <?php echo $__env->make('sectionaltitling.types.ownership', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    <?php echo $__env->make('sectionaltitling.types.commercial', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    <?php echo $__env->make('sectionaltitling.types.residential', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    <?php echo $__env->make('sectionaltitling.types.industrial', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    
+                                    <div class="grid grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Block No</label>
+                                            <input type="text" name="block_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter block number">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Section No (Floor) </label>
+                                            <input type="text" name="floor_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter floor number">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Unit No</label>
+                                            <input type="text" name="unit_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter unit number">
+                                        </div>
+                                    </div>
+                                    
+                                   
         
-        <!-- Year Selection (Current Year) -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Year</label>
-            <input type="text" id="fileYear" 
-                class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
-                value="<?php echo e($currentYear); ?>" readonly>
-            <!-- Hidden input for Year -->
-            <input type="hidden" id="fileYearHidden" name="file_year" value="<?php echo e($currentYear); ?>">
-        </div>
-        
-        <!-- Serial Number -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Serial Number</label>
-            <input type="text" id="serialNumber" 
-            class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
-            value="<?php echo e($formattedSerialNumber); ?>" readonly>
-        
-            <!-- Hidden input for Serial Number -->
-            <input type="text" id="serialNumberHidden" name="serial_number" value="<?php echo e($formattedSerialNumber); ?>">
-        </div>
-    </div>
-
-    <!-- Full File Number Preview -->
-    <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700">Full File Number</label>
-        <input type="text" id="fileNumberPreview" 
-        class="w-full p-2 border border-gray-300 rounded-md bg-gray-100" 
-        value="<?php echo e($prefix); ?>-<?php echo e($currentYear); ?>-<?php echo e($formattedSerialNumber); ?>" readonly>
-    <input type="hidden" id="hiddenFileNumber" name="fileno" 
-        value="<?php echo e($prefix); ?>-<?php echo e($currentYear); ?>-<?php echo e($formattedSerialNumber); ?>">
-    </div>
-</div>
-
-<script>
-    // No need for the DOM-loaded script for prefix since it's now set server-side
-    // We can keep a simplified version of the script just to ensure the full number is properly formatted
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set the file number preview initially
-        const prefix = document.getElementById('filePrefix').value;
-        const year = document.getElementById('fileYear').value;
-        const serial = document.getElementById('serialNumber').value;
-        
-        const fullFileNumber = `${prefix}-${year}-${serial}`;
-        document.getElementById('fileNumberPreview').value = fullFileNumber;
-        document.getElementById('hiddenFileNumber').value = fullFileNumber;
-    });
-</script>
-                    </div>
-    
-                 
-             
-             <!-- Personal Information -->
-             <div class="form-section" id="individualFields" style="display: none;">
-                <h2 class="section-title">Personal Information</h2>
-                <div class="bg-gray-50 p-4 rounded-md">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <!-- Left side - Personal Details -->
-                        <div class="md:col-span-3">
-                            <div class="grid grid-cols-3 gap-4">
-                                <!-- Title -->
-                                <div class="w-full">
-                                    <label class="block text-sm font-medium text-gray-700">Title</label>
-                                    <select id="applicantTitle" name="applicant_title" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  onchange="updateApplicantNamePreview()">
-                                        <option value="" disabled selected>Select title</option>
-                                        <option value="Mr.">Mr.</option>
-                                        <option value="Mrs.">Mrs.</option>
-                                        <option value="Chief">Chief</option>
-                                        <option value="Master">Master</option>
-                                        <option value="Capt">Capt</option>
-                                        <option value="Coln">Coln</option>
-                                        <option value="Pastor">Pastor</option>
-                                        <option value="King">King</option>
-                                        <option value="Prof">Prof</option>
-                                        <option value="Dr.">Dr.</option>
-                                        <option value="Alhaji">Alhaji</option>
-                                        <option value="Alhaja">Alhaja</option>
-                                        <option value="High Chief">High Chief</option>
-                                        <option value="Lady">Lady</option>
-                                        <option value="Bishop">Bishop</option>
-                                        <option value="Senator">Senator</option>
-                                        <option value="Messr">Messr</option>
-                                        <option value="Honorable">Honorable</option>
-                                        <option value="Miss">Miss</option>
-                                        <option value="Rev.">Rev.</option>
-                                        <option value="Barr.">Barr.</option>
-                                        <option value="Arc.">Arc.</option>
-                                        <option value="Sister">Sister</option>
-                                        <option value="Other">Other</option>
-                                    </select>
+                                
+                                   </div>
+                        
+                                   <div class="bg-gray-50 p-4 rounded-md mb-6">
+                                    <label for="application_comment" class="block text-sm font-medium text-gray-700 mb-2">. Write any comment that will assist in processing the application</label>
+                                    <textarea id="application_comment" name="application_comment" rows="3" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Add any comments or notes here..."></textarea>
+                                  </div>
+                        
+                                  <div class="bg-gray-50 p-4 rounded-md mb-6">
+                                    <h3 class="font-medium text-center mb-4">INITIAL BILL</h3>
+                                    
+                                    <div class="grid grid-cols-3 gap-4 mb-4">
+                                      <div>
+                                        <label class="flex items-center text-sm mb-1">
+                                          <i data-lucide="file-text" class="w-4 h-4 mr-1 text-green-600"></i>
+                                          Application fee (₦)
+                                        </label>
+                                        <input type="number" name="application_fee" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter application fee">
+                                      </div>
+                                      <div>
+                                        <label class="flex items-center text-sm mb-1">
+                                          <i data-lucide="file-check" class="w-4 h-4 mr-1 text-green-600"></i>
+                                          Processing fee (₦)
+                                        </label>
+                                        <input  type="number" name="processing_fee" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter processing fee">
+                                      </div>
+                                      <div>
+                                        <label class="flex items-center text-sm mb-1">
+                                          <i data-lucide="map" class="w-4 h-4 mr-1 text-green-600"></i>
+                                          Site Plan (₦)
+                                        </label>
+                                        <input type="text" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter site plan fee">
+                                      </div>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center mb-4">
+                                      <div class="flex items-center">
+                                        <i data-lucide="file-text" class="w-4 h-4 mr-1 text-green-600"></i>
+                                        <span>Total:</span>
+                                      </div>
+                                      <span class="font-bold">₦0.00</span>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <label class="flex items-center text-sm mb-1">
+                                          <i data-lucide="calendar" class="w-4 h-4 mr-1 text-green-600"></i>
+                                          has been paid on
+                                        </label>
+                                        <input type="date" name="payment_date" class="w-full p-2 border border-gray-300 rounded-md" value="2025-04-15">
+                                      </div>
+                                      <div>
+                                        <label class="flex items-center text-sm mb-1">
+                                          <i data-lucide="receipt" class="w-4 h-4 mr-1 text-green-600"></i>
+                                          with receipt No.
+                                        </label>
+                                        <input type="text"  name="receipt_number" class="w-full p-2 border border-gray-300 rounded-md" placeholder="Enter receipt number">
+                                      </div>
+                                    </div>
+                                  </div> 
+                                  
+                                  <div class="flex justify-between mt-8">
+                                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-md">Cancel</button>
+                                    <div class="flex items-center">
+                                      <span class="text-sm text-gray-500 mr-4">Step 1 of 3</span>
+                                      <button class="px-4 py-2 bg-black text-white rounded-md" id="nextStep1">Next</button>
+                                    </div>
+                                  </div>
                                 </div>
-
-                                <!-- First Name -->
-                                <div class="w-full">
-                                    <label class="block text-sm font-medium text-gray-700">First Name</label>
-                                    <input type="text" id="applicantName" name="first_name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter first name" oninput="updateApplicantNamePreview()">
-                                </div>
-
-                                <!-- Middle Name -->
-                                <div class="w-full">
-                                    <label class="block text-sm font-medium text-gray-700">Middle Name (Optional)</label>
-                                    <input type="text" id="applicantMiddleName" name="middle_name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter middle name" oninput="updateApplicantNamePreview()">
-                                </div>
-
-                                <!-- Surname -->
-                                <div class="w-full col-span-3">
-                                    <label class="block text-sm font-medium text-gray-700">Surname</label>
-                                    <input type="text" id="applicantSurname" name="surname" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"  placeholder="Enter surname" oninput="updateApplicantNamePreview()">
-                                </div>
-
-                                <!-- Name of Applicant -->
-                                <div class="w-full col-span-3">
-                                    <label class="block text-sm font-medium text-gray-700">Name of Applicant</label>
-                                    <input type="text" id="applicantNamePreview" name="applicant_name_preview" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" disabled>
-                                </div>
+                              </div>
                             </div>
-                        </div>
-
-                        <!-- Right side - Photo Upload -->
-                        <div class="w-[180px] flex-shrink-0">
-                            <div id="photoUploadContainer" class="relative w-[180px] h-[215px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                                <div id="photoPlaceholder" class="flex flex-col items-center justify-center text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                    <p class="text-sm">Upload Photo</p>
+                        
+                            <!-- Step 2: Required Documents -->
+                            <div class="form-section" id="step2">
+                              <div class="p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                  <h2 class="text-xl font-bold text-center text-gray-800">MINISTRY OF LAND AND PHYSICAL PLANNING</h2>
+                                  <button id="closeModal2" class="text-gray-500 hover:text-gray-700">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                  </button>
                                 </div>
-                                <img id="photoPreview" class="w-full h-full object-cover hidden" src="#" alt="">
-                                <button type="button" id="removePhotoBtn" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hidden hover:bg-red-600" onclick="removePhoto()">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                                <input type="file" id="photoUpload" name="passport" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="previewPhoto(event)">
+                                
+                                <div class="mb-6">
+                                  <div class="flex items-center mb-2">
+                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
+                                    <h3 class="text-lg font-bold">Application for Sectional Titling - Main Application</h3>
+                                    <div class="ml-auto flex items-center">
+                                      <span class="text-gray-600 mr-2">Land Use:</span>
+                                      <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Residential</span>
+                                    </div>
+                                  </div>
+                                  <p class="text-gray-600">Complete the form below to submit a new primary application for sectional titling</p>
+                                </div>
+                        
+                                <div class="flex items-center mb-8">
+                                  <div class="flex items-center mr-4">
+                                    <div class="step-circle inactive-tab">1</div>
+                                  </div>
+                                  <div class="flex items-center mr-4">
+                                    <div class="step-circle active-tab">2</div>
+                                  </div>
+                                  <div class="flex items-center">
+                                    <div class="step-circle inactive-tab">3</div>
+                                  </div>
+                                  <div class="ml-4">Step 2</div>
+                                </div>
+                        
+                                <div class="mb-6">
+                                  <div class="flex items-start mb-4">
+                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
+                                    <span class="font-medium">Required Documents</span>
+                                  </div>
+                                  
+                                  <div class="bg-blue-50 border border-blue-100 rounded-md p-4 mb-6">
+                                    <div class="flex items-start">
+                                      <i data-lucide="info" class="w-5 h-5 mr-2 text-blue-500 mt-0.5"></i>
+                                      <div>
+                                        <h4 class="font-medium text-blue-800">Document Requirements</h4>
+                                        <p class="text-sm text-blue-600">Please upload all required documents. Acceptable formats are PDF, JPG, and PNG. Maximum file size is 5MB per document.</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="grid grid-cols-2 gap-6 mb-6">
+                                    <div class="border border-gray-200 rounded-md p-4">
+                                      <h4 class="font-medium mb-2">Application Letter</h4>
+                                      <p class="text-sm text-gray-600 mb-4">Formal letter requesting sectional titling</p>
+                                      
+                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                                        <div class="flex justify-center mb-2">
+                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
+                                        </div>
+                                        <div class="flex justify-center">
+                                          <button class="flex items-center text-blue-600">
+                                            <span>Upload Document</span>
+                                          </button>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div class="border border-gray-200 rounded-md p-4">
+                                      <h4 class="font-medium mb-2">Building Plan</h4>
+                                      <p class="text-sm text-gray-600 mb-4">Approved building plan with architectural details</p>
+                                      
+                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                                        <div class="flex justify-center mb-2">
+                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
+                                        </div>
+                                        <div class="flex justify-center">
+                                          <button class="flex items-center text-blue-600">
+                                            <span>Upload Document</span>
+                                          </button>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="grid grid-cols-2 gap-6 mb-6">
+                                    <div class="border border-gray-200 rounded-md p-4">
+                                      <h4 class="font-medium mb-2">Architectural Design</h4>
+                                      <p class="text-sm text-gray-600 mb-4">Detailed architectural design of the property</p>
+                                      
+                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                                        <div class="flex justify-center mb-2">
+                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
+                                        </div>
+                                        <div class="flex justify-center">
+                                          <button class="flex items-center text-blue-600">
+                                            <span>Upload Document</span>
+                                          </button>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
+                                      </div>
+                                    </div>
+                                    
+                                    <div class="border border-gray-200 rounded-md p-4">
+                                      <h4 class="font-medium mb-2">Ownership Document</h4>
+                                      <p class="text-sm text-gray-600 mb-4">Proof of ownership (CofO, deed, etc.)</p>
+                                      
+                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                                        <div class="flex justify-center mb-2">
+                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
+                                        </div>
+                                        <div class="flex justify-center">
+                                          <button class="flex items-center text-blue-600">
+                                            <span>Upload Document</span>
+                                          </button>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="flex justify-between mt-8">
+                                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-md" id="backStep2">Back</button>
+                                    <div class="flex items-center">
+                                      <span class="text-sm text-gray-500 mr-4">Step 2 of 3</span>
+                                      <button class="px-4 py-2 bg-black text-white rounded-md" id="nextStep2">Next</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                            <p class="text-xs text-gray-500 mt-2 text-center">Passport size photo (3.5 x 4.5 cm)</p>
-                        </div>
-
-                        <script>
-                            function updateApplicantNamePreview() {
-                                const title = document.getElementById('applicantTitle').value;
-                                const name = document.getElementById('applicantName').value;
-                                const middleName = document.getElementById('applicantMiddleName').value;
-                                const surname = document.getElementById('applicantSurname').value;
-                                let applicantName = '';
-
-                                if (title) {
-                                    applicantName += title + ' ';
-                                }
-                                if (name) {
-                                    applicantName += name + ' ';
-                                }
-                                if (middleName) {
-                                    applicantName += middleName + ' ';
-                                }
-                                if (surname) {
-                                    applicantName += surname;
-                                }
-
-                                document.getElementById('applicantNamePreview').value = applicantName.trim();
-                            }
-                        </script>
+                        
+                            <!-- Step 3: Application Summary -->
+                            <div class="form-section" id="step3">
+                              <div class="p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                  <h2 class="text-xl font-bold text-center text-gray-800">MINISTRY OF LAND AND PHYSICAL PLANNING</h2>
+                                  <button id="closeModal3" class="text-gray-500 hover:text-gray-700">
+                                    <i data-lucide="x" class="w-5 h-5"></i>
+                                  </button>
+                                </div>
+                                
+                                <div class="mb-6">
+                                  <div class="flex items-center mb-2">
+                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
+                                    <h3 class="text-lg font-bold">Application for Sectional Titling - Main Application</h3>
+                                    <div class="ml-auto flex items-center">
+                                      <span class="text-gray-600 mr-2">Land Use:</span>
+                                      <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Residential</span>
+                                    </div>
+                                  </div>
+                                  <p class="text-gray-600">Complete the form below to submit a new primary application for sectional titling</p>
+                                </div>
+                        
+                                <div class="flex items-center mb-8">
+                                  <div class="flex items-center mr-4">
+                                    <div class="step-circle inactive-tab">1</div>
+                                  </div>
+                                  <div class="flex items-center mr-4">
+                                    <div class="step-circle inactive-tab">2</div>
+                                  </div>
+                                  <div class="flex items-center">
+                                    <div class="step-circle active-tab">3</div>
+                                  </div>
+                                  <div class="ml-4">Step 3</div>
+                                </div>
+                        
+                                <div class="mb-6">
+                                  <div class="flex items-start mb-4">
+                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
+                                    <span class="font-medium">Application Summary</span>
+                                  </div>
+                                  
+                                  <div class="border border-gray-200 rounded-md p-6 mb-6">
+                                    <div class="grid grid-cols-2 gap-6">
+                                      <div>
+                                        <h4 class="font-medium mb-4">Applicant Information</h4>
+                                        <table class="w-full text-sm">
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Applicant Type:</td>
+                                            <td class="py-1 font-medium">Individual</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Name:</td>
+                                            <td class="py-1 font-medium">Mr. Clement Joseph</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Email:</td>
+                                            <td class="py-1 font-medium">clemzy689@gmail.com</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Phone:</td>
+                                            <td class="py-1 font-medium">07032228984</td>
+                                          </tr>
+                                        </table>
+                                      </div>
+                                      
+                                      <div>
+                                        <h4 class="font-medium mb-4">Unit Information</h4>
+                                        <table class="w-full text-sm">
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Type of Residence:</td>
+                                            <td class="py-1 font-medium">Detached House</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Block No:</td>
+                                            <td class="py-1 font-medium">7</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Section (Floor) No:</td>
+                                            <td class="py-1 font-medium">Not provided</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Unit No:</td>
+                                            <td class="py-1 font-medium">5</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Unit Type:</td>
+                                            <td class="py-1 font-medium">Not provided</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">File Number:</td>
+                                            <td class="py-1 font-medium">CON-COM-2019-296</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Land Use:</td>
+                                            <td class="py-1 font-medium">Residential</td>
+                                          </tr>
+                                          <tr>
+                                            <td class="py-1 text-gray-600">Primary Application ID:</td>
+                                            <td class="py-1 font-medium">Not provided</td>
+                                          </tr>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="mb-6">
+                                    <h4 class="font-medium mb-4">Address Information</h4>
+                                    <table class="w-full text-sm">
+                                      <tr>
+                                        <td class="py-1 text-gray-600 w-1/4">House No:</td>
+                                        <td class="py-1 font-medium">79</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">Street Name:</td>
+                                        <td class="py-1 font-medium">Umudagu road</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">District:</td>
+                                        <td class="py-1 font-medium">Not provided</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">LGA:</td>
+                                        <td class="py-1 font-medium">Not provided</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">State:</td>
+                                        <td class="py-1 font-medium">Kano</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">Complete Address:</td>
+                                        <td class="py-1 font-medium">79 Umudagu road, , , Kano</td>
+                                      </tr>
+                                    </table>
+                                  </div>
+                                  
+                                  <div class="mb-6">
+                                    <div class="flex items-start mb-4">
+                                      <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
+                                      <span class="font-medium">Payment Information</span>
+                                    </div>
+                                    <table class="w-full text-sm">
+                                      <tr>
+                                        <td class="py-1 text-gray-600 w-1/4">Application Fee:</td>
+                                        <td class="py-1 font-medium">₦2,000</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">Processing Fee:</td>
+                                        <td class="py-1 font-medium">₦20,000</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">Site Plan Fee:</td>
+                                        <td class="py-1 font-medium">₦24,000</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600 font-medium">Total:</td>
+                                        <td class="py-1 font-bold">₦46,000.00</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">Receipt Number:</td>
+                                        <td class="py-1 font-medium">RC-20478</td>
+                                      </tr>
+                                      <tr>
+                                        <td class="py-1 text-gray-600">Payment Date:</td>
+                                        <td class="py-1 font-medium">4/15/2025</td>
+                                      </tr>
+                                    </table>
+                                  </div>
+                                  
+                                  <div class="mb-6">
+                                    <h4 class="font-medium mb-4">Uploaded Documents</h4>
+                                    <div class="grid grid-cols-2 gap-4">
+                                      <div class="flex items-center">
+                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                        <span>Application Letter</span>
+                                      </div>
+                                      <div class="flex items-center">
+                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                        <span>Building Plan</span>
+                                      </div>
+                                      <div class="flex items-center">
+                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                        <span>Architectural Design</span>
+                                      </div>
+                                      <div class="flex items-center">
+                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                        <span>Ownership Document</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <div class="flex justify-between mt-8">
+                                    <div class="flex space-x-4">
+                                      <button class="px-4 py-2 bg-white border border-gray-300 rounded-md" id="backStep3">Back</button>
+                                      <button class="px-4 py-2 bg-white border border-gray-300 rounded-md flex items-center">
+                                        <i data-lucide="printer" class="w-4 h-4 mr-2"></i>
+                                        Print Application Slip
+                                      </button>
+                                    </div>
+                                    <div class="flex items-center">
+                                      <span class="text-sm text-gray-500 mr-4">Step 3 of 3</span>
+                                      <button class="px-4 py-2 bg-black text-white rounded-md">Submit Application</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Corporate Body Information -->
-            <div class="form-section" id="corporateFields" style="display: none;">
-                <h2 class="section-title">Corporate Body Information</h2>
-                <div class="bg-gray-50 p-4 rounded-md">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <!-- Left side -->
-                        <div class="md:col-span-3">
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Name of Corporate Body</label>
-                                    <input type="text" id="corporateName" name="corporate_name" class="w-full p-2 border border-gray-300 rounded-md"  placeholder="Enter corporate body name">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">RC Number</label>
-                                    <input type="text" id="rcNumber" name="rc_number" class="w-full p-2 border border-gray-300 rounded-md"  placeholder="Enter RC number">
-                                </div>
-                            </div>
-                        </div>
-                        
-                 
-                    </div>
-                </div>
-            </div>
-
-            <!-- Multiple Owners Information -->
-            <div class="form-section" id="multipleOwnersFields" style="display: none;">
-                <h2 class="section-title">Multiple Owners Information</h2>
-                <div class="bg-gray-50 p-4 rounded-md">
-                    <div id="ownersContainer">
-                        <!-- Dynamic rows will be inserted here -->
-                    </div>
-                    <div class="mt-4">
-                        <button type="button" onclick="addOwnerRow()" class="px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700">
-                            <i class="fas fa-plus"></i> Add Owner
-                        </button>
-                    </div>
-                </div>
+            <!-- Footer -->
+            <?php echo $__env->make('admin.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
 
             <script>
-                let ownerRowCount = 0;
-
-                function addOwnerRow() {
-                    const container = document.getElementById('ownersContainer');
-                    const rowId = `owner-row-${ownerRowCount}`;
-                    
-                    const row = document.createElement('div');
-                    row.id = rowId;
-                    row.className = 'grid grid-cols-12 gap-4 mb-4 items-center';
-                    
-                    row.innerHTML = `
-                        <div class="col-span-6">
-                            <input type="text" name="multiple_owners_names[]" 
-                                   class="w-full p-2 border border-gray-300 rounded-md" 
-                                   placeholder="Full Name" required>
-                        </div>
-                        <div class="col-span-4">
-                            <div class="relative">
-                                <input type="file" name="multiple_owners_passport[]" 
-                                       class="w-full p-2 border border-gray-300 rounded-md" 
-                                       accept="image/*" required
-                                       onchange="previewOwnerPhoto(event, '${rowId}')">
-                                <img class="owner-preview hidden w-16 h-16 object-cover mt-2 rounded-md" src="#" alt="Preview">
-                            </div>
-                        </div>
-                        <div class="col-span-2 flex justify-end">
-                            <button type="button" onclick="removeOwnerRow('${rowId}')" 
-                                    class="px-3 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    container.appendChild(row);
-                    ownerRowCount++;
-                }
-
-                function removeOwnerRow(rowId) {
-                    const row = document.getElementById(rowId);
-                    if (row) {
-                        row.remove();
-                    }
-                }
-
-                function previewOwnerPhoto(event, rowId) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        const row = document.getElementById(rowId);
-                        const preview = row.querySelector('.owner-preview');
-                        
-                        reader.onload = function(e) {
-                            preview.src = e.target.result;
-                            preview.classList.remove('hidden');
-                        }
-                        reader.readAsDataURL(file);
-                    }
-                }
-
-                // Add initial row when multiple owners is selected
-                function showMultipleOwnersFields() {
-                    document.getElementById('individualFields').style.display = 'none';
-                    document.getElementById('corporateFields').style.display = 'none';
-                    document.getElementById('multipleOwnersFields').style.display = 'block';
-                    
-                    // Clear existing rows
-                    document.getElementById('ownersContainer').innerHTML = '';
-                    // Add first row
-                    addOwnerRow();
-                }
+ // Initialize Lucide icons
+ lucide.createIcons();
+    
+    // Form navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      const step1 = document.getElementById('step1');
+      const step2 = document.getElementById('step2');
+      const step3 = document.getElementById('step3');
+      
+      const nextStep1 = document.getElementById('nextStep1');
+      const nextStep2 = document.getElementById('nextStep2');
+      const backStep2 = document.getElementById('backStep2');
+      const backStep3 = document.getElementById('backStep3');
+      
+      // Next from Step 1 to Step 2
+      nextStep1.addEventListener('click', function() {
+        step1.classList.remove('active-tab');
+        step2.classList.add('active-tab');
+      });
+      
+      // Next from Step 2 to Step 3
+      nextStep2.addEventListener('click', function() {
+        step2.classList.remove('active-tab');
+        step3.classList.add('active-tab');
+      });
+      
+      // Back from Step 2 to Step 1
+      backStep2.addEventListener('click', function() {
+        step2.classList.remove('active-tab');
+        step1.classList.add('active-tab');
+      });
+      
+      // Back from Step 3 to Step 2
+      backStep3.addEventListener('click', function() {
+        step3.classList.remove('active-tab');
+        step2.classList.add('active-tab');
+      });
+      
+      // Close modal buttons
+      document.getElementById('closeModal').addEventListener('click', function() {
+        // In a real application, this would close the modal
+        alert('Application process canceled');
+      });
+      
+      document.getElementById('closeModal2').addEventListener('click', function() {
+        // In a real application, this would close the modal
+        alert('Application process canceled');
+      });
+      
+      document.getElementById('closeModal3').addEventListener('click', function() {
+        // In a real application, this would close the modal
+        alert('Application process canceled');
+      });
+    });
             </script>
 
-                <!-- Contact Information -->
-                <?php echo $__env->make('sectionaltitling.partials.contact_address', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                <!-- Identification -->
-                <div class="form-section">
-                    <h2 class="section-title">Identification</h2>
-                    <div>
-                        <h3 class="text-sm font-medium mb-4">5. Tick means of Identification (Attached)</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <label class="flex items-center space-x-3">
-                                <input type="radio" name="identification_type" value="national_id" class="radio-custom">
-                                <span class="text-sm">A. National ID</span>
-                            </label>
-                            <label class="flex items-center space-x-3">
-                                <input type="radio" name="identification_type" value="voters_card" class="radio-custom">
-                                <span class="text-sm">B. Voters Card</span>
-                            </label>
-                            <label class="flex items-center space-x-3">
-                                <input type="radio" name="identification_type" value="drivers_license" class="radio-custom">
-                                <span class="text-sm">C. Driver's License</span>
-                            </label>
-                            <label class="flex items-center space-x-3">
-                                <input type="radio" name="identification_type" value="international_passport" class="radio-custom">
-                                <span class="text-sm">D. International Passport</span>
-                            </label>
-                            <div class="col-span-2 flex items-center space-x-3">
-                                <input type="radio" name="identification_type" value="others" class="radio-custom" id="identificationOthers" onchange="toggleOtherInput('identificationOthers', 'identificationOthersInput')">
-                                <span class="text-sm">E. Others (Specify)</span>
-                                <input type="text" id="identificationOthersInput" name="identification_others" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex-1" disabled placeholder="Specify other identification">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+   <?php $__env->stopSection(); ?>
 
-
-                <!-- Property/Unit Details -->
-                <div class="form-section">
-                    <h2 class="section-title">Unit Details</h2>
-                    <div class="bg-gray-50 p-4 rounded-md space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Block No</label>
-                                <input type="text" name="block_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter block number">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Section No (Floor) </label>
-                                <input type="text" name="floor_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter floor number">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Unit No</label>
-                                <input type="text" name="unit_number" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter unit number">
-                            </div>
-                        </div>
-                        <div>
-                           
-                        </div>
-                        <div style="display: none;">
-                            <label class="block text-sm font-medium text-gray-700">Ownership Details</label>
-                            <p class="text-xs text-gray-500 mb-2">Type of ownership based on application type</p>
-                            <input type="text" name="ownership" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-2" readonly>
-                            <label class="block text-sm font-medium text-gray-700">Property Location</label>
-                            <textarea name="property_location" id="propertyLocation" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required placeholder="Enter property location" disabled></textarea>
-                        </div>
-                    </div>
-                </div>
-        
-                
-                <!-- Additional Information -->
-                <div class="form-section">
-                    <h2 class="section-title">Additional Information</h2>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Comments</label>
-                        <textarea name="comments" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]" placeholder="Enter any comments"></textarea>
-                    </div>
-                </div>
-                <div class="form-section bg-gray-200 shadow-md rounded-md">
-                    <h3 class="section-title bg-gray-700 text-white px-6 py-3 rounded-t-md">Initial Bill</h3>
-                    <div class="p-6 space-y-6">
-                        <!-- Fee Grid Layout -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Application Fee -->
-                            <div class="flex items-center">
-                                <label class="w-32 text-sm font-medium text-gray-700">Application Fee:</label>
-                                <input type="number" name="application_fee" 
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
-                                    placeholder="Enter amount">
-                            </div>
-
-                            <!-- Processing Fee -->
-                            <div class="flex items-center">
-                                <label class="w-32 text-sm font-medium text-gray-700">Processing Fee:</label>
-                                <input type="number" name="processing_fee" 
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
-                                    placeholder="Enter amount">
-                            </div>
-                         
-                            <!-- Site Plan Fee -->
-                            <div class="flex items-center">
-                                <label class="w-32 text-sm font-medium text-gray-700">Site Plan Fee:</label>
-                                <input type="number" name="site_plan_fee" 
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
-                                    placeholder="Enter amount">
-                            </div>
-                            
-                            <div class="flex items-center">
-                                <label class="w-32 text-sm font-medium text-gray-700">Payment Date:</label>
-                                <input type="date" name="payment_date" 
-                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
-                            </div>
-
-                        
-                        <!-- Receipt Section -->
-                        <div class="border-t pt-6">
-                            <div class="flex items-center">
-                                <label class="w-32 text-sm font-medium text-gray-700">Receipt No:</label>
-                                <input type="text" name="receipt_number" 
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" 
-                                    placeholder="Enter receipt number">
-                            </div>
-                        </div>
-
-                        <!-- Optional: Totals Section -->
-                        <div class="border-t pt-6 mt-4">
-                            <div class="flex justify-end items-center space-x-4">
-                                <span class="text-sm font-medium text-green-700">Total Amount:</span>
-                                <span class="text-lg font-bold text-green-700" id="totalAmount">₦0.00</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-             
-
-
-                <!-- Form Actions -->
-                <div class="flex justify-end space-x-4" style="tex">
-                    <button type="reset" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50" onclick="resetSubForm()">
-                        Reset
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">
-                        Submit Sub-Application
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Function to get URL parameters
-    function getUrlParams() {
-        let params = {};
-        const searchParams = new URLSearchParams(window.location.search);
-        for(let [key, value] of searchParams) {
-            params[key] = decodeURIComponent(value);
-        }
-        return params;
-    }
-
-    // Get URL parameters
-    const params = getUrlParams();
-
-    // Populate the fields
-    if(params.application_id) {
-        document.getElementById('mainApplicationId').value = 'STM-2025-000-' + params.application_id;
-    } 
-
-    if(params.NoOfUnits) {
-        document.getElementById('mainApplicationNoOfUnits').textContent = params.NoOfUnits;
-    }  
-    
-    if(params.land_use) {
-        document.getElementById('landUse').value = params.land_use;
-    }
-    if(params.application_id) {
-        document.getElementById('mainApplicationId1').value = params.application_id;
-    }
-    
-    // Handle owner name based on type
-    if(params.owner_name) {
-        document.getElementById('mainApplicationOwner').textContent = params.owner_name.trim();
-    } else if(params.corporate_name) {
-        document.getElementById('mainApplicationOwner').textContent = params.corporate_name.trim();
-    } else if(params.multiple_owners_names) {
-        document.getElementById('mainApplicationOwner').textContent = params.multiple_owners_names.trim();
-    }
-    
-    if(params.fileno) {
-        document.getElementById('fileNo').textContent = params.fileno;
-    } 
-    
-    if(params.fileno) {
-        document.getElementById('fileNo2').value = params.fileno;
-    }
-    if(params.formID) {
-        document.getElementById('formId').textContent = '000' + params.formID;
-    }
-
-    // Join property location fields
-    const propertyLocation = [
-        params.plot_house_no,
-        params.plot_plot_no,
-        params.plot_street_name,
-        params.plot_district
-    ].filter(Boolean).join(' ');
-
-    if(propertyLocation) {
-        document.getElementById('propertyLocation').textContent = propertyLocation;
-        // Update the ownership details property location
-        document.querySelector('textarea[name="property_location"]').value = propertyLocation;
-    }
-
-    // Update ownership value based on applicant type
-    const ownershipInput = document.querySelector('input[name="ownership"]');
-    if(params.corporate_name) {
-        ownershipInput.value = "Corporate Owner";
-    } else if(params.multiple_owners_names) {
-        ownershipInput.value = "Multiple Owners";
-    } else {
-        ownershipInput.value = "Individual Owner";
-    }
-});
- 
-      // Photo upload preview functionality
-    function previewPhoto(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const photoPreview = document.getElementById('photoPreview');
-                const photoPlaceholder = document.getElementById('photoPlaceholder');
-                const removePhotoBtn = document.getElementById('removePhotoBtn');
-                
-                photoPreview.src = e.target.result;
-                photoPreview.classList.remove('hidden');
-                photoPlaceholder.classList.add('hidden');
-                removePhotoBtn.classList.remove('hidden');
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    // Remove photo functionality
-    function removePhoto() {
-        const photoUpload = document.getElementById('photoUpload');
-        const photoPreview = document.getElementById('photoPreview');
-        const photoPlaceholder = document.getElementById('photoPlaceholder');
-        const removePhotoBtn = document.getElementById('removePhotoBtn');
-        
-        photoUpload.value = '';
-        photoPreview.src = '#';
-        photoPreview.classList.add('hidden');
-        photoPlaceholder.classList.remove('hidden');
-        removePhotoBtn.classList.add('hidden');
-    }
-
-    // Toggle "Other" input fields
-    function toggleOtherInput(checkboxId, inputId) {
-        const checkbox = document.getElementById(checkboxId);
-        const input = document.getElementById(inputId);
-        input.disabled = !checkbox.checked;
-        if (!checkbox.checked) {
-            input.value = '';
-        }
-    }
-
- 
-
-    // Updated event listeners to enable/disable "Others" input fields based on selection:
-    document.querySelectorAll('input[name="identificationType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const othersInput = document.getElementById('identificationOthersInput');
-            if (document.getElementById('identificationOthers').checked) {
-                othersInput.disabled = false;
-            } else {
-                othersInput.disabled = true;
-                othersInput.value = '';
-            }
-        });
-    });
-
-    document.querySelectorAll('input[name="residentialType"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const othersInput = document.getElementById('residentialOthersInput');
-            if (document.getElementById('residentialOthers').checked) {
-                othersInput.disabled = false;
-            } else {
-                othersInput.disabled = true;
-                othersInput.value = '';
-            }
-        });
-    });
-
-    // Form submission
-   
-  
-
-    // Replace the duplicate event listeners with this single updated version:
-    function initializeRadioHandlers() {
-        // For Identification Type
-        document.querySelectorAll('input[name="identificationType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const othersInput = document.getElementById('identificationOthersInput');
-                othersInput.disabled = !document.getElementById('identificationOthers').checked;
-                if (othersInput.disabled) {
-                    othersInput.value = '';
-                }
-            });
-        });
-
-        // For Residential Type 
-        document.querySelectorAll('input[name="residentialType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const othersInput = document.getElementById('residentialOthersInput');
-                othersInput.disabled = !document.getElementById('residentialOthers').checked;
-                if (othersInput.disabled) {
-                    othersInput.value = '';
-                }
-            });
-        });
-    }
-
-    // Initialize the handlers when the document loads
-    document.addEventListener('DOMContentLoaded', initializeRadioHandlers);
-
-    function showIndividualFields() {
-        clearOtherFields('individualFields');
-        document.getElementById('individualFields').style.display = 'block';
-        document.getElementById('corporateFields').style.display = 'none';
-        document.getElementById('multipleOwnersFields').style.display = 'none';
-    }
-
-    function showCorporateFields() {
-        clearOtherFields('corporateFields');
-        document.getElementById('individualFields').style.display = 'none';
-        document.getElementById('corporateFields').style.display = 'block';
-        document.getElementById('multipleOwnersFields').style.display = 'none';
-    }
-
-    function showMultipleOwnersFields() {
-        clearOtherFields('multipleOwnersFields');
-        document.getElementById('individualFields').style.display = 'none';
-        document.getElementById('corporateFields').style.display = 'none';
-        document.getElementById('multipleOwnersFields').style.display = 'block';
-    }
-
-    function clearOtherFields(exceptId) {
-        const fields = ['individualFields', 'corporateFields', 'multipleOwnersFields'];
-        fields.forEach(id => {
-            if (id !== exceptId) {
-                document.getElementById(id).querySelectorAll('input, select, textarea').forEach(input => {
-                    input.value = '';
-                });
-            }
-        });
-    }
-  
-   // Initialize tagsinput with custom options
-$(document).ready(function() {
-    $('#multipleOwnersNames').tagsinput({
-        trimValue: true,
-        confirmKeys: [13, 44], // Enter and comma
-        tagClass: 'badge bg-primary'
-    });
-
-    // Example of how to add pre-populated names
-    var exampleOwners = [
-        "Mr. Kator Issac",
-        "Mr. Kunle Olaniyan",
-        "Mrs. Beatrice Emeka"
-    ];
-    
-    exampleOwners.forEach(function(owner) {
-        $('#multipleOwnersNames').tagsinput('add', owner);
-    });
-});
- 
- 
- 
-
-function previewOwnerPhoto(event, containerId) {
-    const container = document.getElementById(containerId);
-    const file = event.target.files[0];
-    
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = container.querySelector('.photo-preview');
-            const placeholder = container.querySelector('.photo-placeholder');
-            const removeBtn = container.querySelector('.remove-photo-btn');
-            
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            removeBtn.classList.remove('hidden');
-        }
-        reader.readAsDataURL(file);
-    }
-}
-
-function removeOwnerPhoto(containerId) {
-    const container = document.getElementById(containerId);
-    const preview = container.querySelector('.photo-preview');
-    const placeholder = container.querySelector('.photo-placeholder');
-    const removeBtn = container.querySelector('.remove-photo-btn');
-    const fileInput = container.querySelector('input[type="file"]');
-    
-    fileInput.value = '';
-    preview.src = '#';
-    preview.classList.add('hidden');
-    placeholder.classList.remove('hidden');
-    removeBtn.classList.add('hidden');
-}
-
-function updatePlotFullAddress() {
-    const houseNo = document.getElementById('plotHouseNo').value;
-    const plotNo = document.getElementById('plotPlotNo').value;
-    const streetName = document.getElementById('plotStreetName').value;
-    const district = document.getElementById('plotDistrict').value;
-    const fullAddress = `${houseNo} ${plotNo} ${streetName} ${district}`.trim();
-    document.getElementById('plotFullAddress').value = fullAddress;
-}
-
-function updateOwnerFullAddress() {
-    const houseNo = document.getElementById('ownerHouseNo').value;
-    const plotNo = document.getElementById('ownerPlotNo').value;
-    const streetName = document.getElementById('ownerStreetName').value;
-    const district = document.getElementById('ownerDistrict').value;
-    const fullAddress = `${houseNo} ${plotNo} ${streetName} ${district}`.trim();
-    document.getElementById('ownerFullAddress').value = fullAddress;
-}
-
-// Applicant type selection
-
-    function setApplicantType(type) {
-        document.getElementById('applicantType').value = type;
-    }
-
-
-         document.querySelectorAll('input[type="number"]').forEach(input => {
-                    input.addEventListener('input', calculateTotal);
-                });
-
-                function calculateTotal() {
-                    const applicationFee = parseFloat(document.querySelector('input[name="application_fee"]').value) || 0;
-                    const processingFee = parseFloat(document.querySelector('input[name="processing_fee"]').value) || 0;
-                    const sitePlanFee = parseFloat(document.querySelector('input[name="site_plan_fee"]').value) || 0;
-                    
-                    const total = applicationFee + processingFee + sitePlanFee;
-                    document.getElementById('totalAmount').textContent = `₦${total.toFixed(2)}`;
-                }
-    </script>
-
-<?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\wamp64\www\gisedms\resources\views/sectionaltitling/sub_application.blade.php ENDPATH**/ ?>

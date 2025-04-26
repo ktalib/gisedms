@@ -107,6 +107,11 @@ function updateFileName(input, labelId) {
     if (fileName) {
         document.getElementById(input.id + '_name').textContent = fileName;
         document.getElementById(labelId).innerHTML = '<span>Change Document</span>';
+        
+        // Trigger the summary update whenever a document is uploaded
+        if (typeof updateApplicationSummary === 'function') {
+            updateApplicationSummary();
+        }
     }
 }
 </script>

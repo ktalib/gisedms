@@ -18,7 +18,7 @@
       <!-- Tabs -->
       @include('sectionaltitling.partials.tabs')
       <!-- SecondaryApplications Overview  -->
-      @include('sectionaltitling.partials.statistic.SecondaryApplications')
+ 
       <!-- Secondary Applications Table - Screenshot 135 -->
       <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
         <div class="flex justify-between items-center mb-6">
@@ -55,140 +55,174 @@
           </div>
         </div>
         
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
+        <div class="w-full">
+          <table class="w-full table-auto divide-y divide-gray-200">
             <thead>
-              <tr>
-            <th class="table-header">Primary App ID</th>
-            <th class="table-header">Primary File No</th>
-            <th class="table-header">ST File No</th>
-            <th class="table-header">Land Use</th>
-            <th class="table-header">Original Owner</th>
-            <th class="table-header">Unit Owner Name</th>
-            <th class="table-header">Unit</th>
-            <th class="table-header">Phone Number</th>
-            <th class="table-header">Planning Rec.</th>
-            <th class="table-header">Application Status</th>
-            <th class="table-header">Actions</th>
+              <tr class="text-xs">
+            <th class="table-header whitespace-normal px-1 w-[7%]">Primary App ID</th>
+            <th class="table-header whitespace-normal px-1 w-[7%]">Primary File No</th>
+            <th class="table-header whitespace-normal px-1 w-[7%]">ST File No</th>
+            <th class="table-header whitespace-normal px-1 w-[7%]">Scheme No</th>
+            <th class="table-header whitespace-normal px-1 w-[7%]">Land Use</th>
+            <th class="table-header whitespace-normal px-1 w-[15%]">Original Owner</th>
+            <th class="table-header whitespace-normal px-1 w-[15%]">Unit Owner Name</th>
+            <th class="table-header whitespace-normal px-1 w-[5%]">Unit</th>
+            <th class="table-header whitespace-normal px-1 w-[8%]">Phone Number</th>
+            <th class="table-header whitespace-normal px-1 w-[7%]">Planning Rec.</th>
+            <th class="table-header whitespace-normal px-1 w-[7%]">Status</th>
+            <th class="table-header whitespace-normal px-1 w-[8%]">Actions</th> 
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               @foreach($SecondaryApplications as $app)
-              <tr>
-            <td class="table-cell">ST-2025-0{{ $app->main_application_id ?? 'N/A' }}</td>
-            <td class="table-cell">{{ $app->mother_fileno ?? 'N/A' }}</td>
-            <td class="table-cell">{{ $app->fileno ?? 'N/A' }}</td>
-            <td class="table-cell">{{ $app->land_use ?? 'N/A' }}</td>
-            <td class="table-cell">
+              <tr class="text-xs">
+            <td class="table-cell px-1 py-1 truncate">ST-2025-0{{ $app->main_application_id ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->mother_fileno ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->fileno ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->scheme_no ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->land_use ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1">
               <div class="flex items-center">
-            @if(!empty($app->mother_corporate_name))
-            <div class="w-6 h-6 rounded-full bg-purple-200 flex items-center justify-center mr-2">
-              <i data-lucide="building" class="w-3 h-3 text-purple-500"></i>
-            </div>
-            <div>
-              <span>{{ $app->mother_corporate_name }}</span>
-               
-            </div>
-            @elseif(!empty($app->mother_multiple_owners_names))
-            <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center mr-2">
-              <i data-lucide="users" class="w-3 h-3 text-gray-500"></i>
-            </div>
-            <div>
-              <span>
-                @php
-                  $names = $app->mother_multiple_owners_names;
-                  $decoded = [];
-                  if (!empty($names)) {
-                    $decoded = is_array($names) ? $names : json_decode($names, true);
-                    if (!is_array($decoded)) $decoded = [];
-                  }
-                  echo !empty($decoded) && isset($decoded[0]) ? $decoded[0] : '';
-                @endphp
-              </span>
-              @if(!empty($decoded))
-              <span class="ml-1 cursor-pointer text-blue-500"
-                    onclick='showFullNames(@json($decoded))'>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </span>
-              @endif
-            </div>
-            @else
-            <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center mr-2">
-              <i data-lucide="user" class="w-3 h-3 text-gray-500"></i>
-            </div>
-            <span>{{ $app->mother_applicant_title ?? '' }} {{ $app->mother_first_name ?? '' }} {{ $app->mother_surname ?? '' }}</span>
-            @endif
-              </div>
-            </td>
-            <td class="table-cell">
-              <div class="flex items-center">
-            @if(!empty($app->corporate_name))
-            <div class="w-6 h-6 rounded-full bg-purple-200 flex items-center justify-center mr-2">
-              <i data-lucide="building" class="w-3 h-3 text-purple-500"></i>
-            </div>
-            <div>
-              <span>{{ $app->corporate_name }}</span>
-        
-            </div>
-            @elseif(!empty($app->multiple_owners_names))
-            <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center mr-2">
-              <i data-lucide="users" class="w-3 h-3 text-gray-500"></i>
-            </div>
-            <div class="flex items-center">
-              <span>
-                @php
-                  $names = $app->multiple_owners_names;
-                  // Try to decode as JSON, fallback to CSV
-                  $decoded = [];
-                  if (!empty($names)) {
-                    if (is_array($names)) {
-                      $decoded = $names;
-                    } else {
-                      $tryJson = json_decode($names, true);
-                      if (is_array($tryJson)) {
-                        $decoded = $tryJson;
-                      } else {
-                        // Remove quotes and split by comma for CSV
-                        $decoded = array_map('trim', str_getcsv($names));
+                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                  @if(!empty($app->mother_passport))
+                    <img src="{{ asset('storage/app/public/' . $app->mother_passport) }}" 
+                         alt="Original Owner Passport" 
+                         class="w-full h-full rounded-full object-cover cursor-pointer"
+                         onclick="showPassportPreview('{{ asset('storage/app/public/' . $app->mother_passport) }}', 'Original Owner Passport')">
+                  @elseif(!empty($app->mother_multiple_owners_passport))
+                    @php
+                      $passports = is_array($app->mother_multiple_owners_passport) ? 
+                        $app->mother_multiple_owners_passport : 
+                        json_decode($app->mother_multiple_owners_passport, true);
+                      $firstPassport = !empty($passports) && isset($passports[0]) ? $passports[0] : null;
+                    @endphp
+                    @if($firstPassport)
+                      <img src="{{ asset('storage/app/public/' . $firstPassport) }}" 
+                           alt="Original Owner Passport" 
+                           class="w-full h-full rounded-full object-cover cursor-pointer"
+                           onclick="showMultipleOwners(
+                             @json(is_array($app->mother_multiple_owners_names) ? $app->mother_multiple_owners_names : json_decode($app->mother_multiple_owners_names, true)), 
+                             @json($passports)
+                           )">
+                    @else
+                      <i data-lucide="{{ !empty($app->mother_corporate_name) ? 'building' : (!empty($app->mother_multiple_owners_names) ? 'users' : 'user') }}" class="w-3 h-3 text-gray-500"></i>
+                    @endif
+                  @else
+                    <i data-lucide="{{ !empty($app->mother_corporate_name) ? 'building' : (!empty($app->mother_multiple_owners_names) ? 'users' : 'user') }}" class="w-3 h-3 text-gray-500"></i>
+                  @endif
+                </div>
+                <div>
+                  @if(!empty($app->mother_corporate_name))
+                    <span>{{ $app->mother_corporate_name }}</span>
+                  @elseif(!empty($app->mother_multiple_owners_names))
+                    @php
+                      $names = $app->mother_multiple_owners_names;
+                      $decoded = [];
+                      if (!empty($names)) {
+                        $decoded = is_array($names) ? $names : json_decode($names, true);
+                        if (!is_array($decoded)) $decoded = [];
                       }
-                    }
-                  }
-                  echo !empty($decoded) && isset($decoded[0]) ? $decoded[0] : '';
-                @endphp
-              </span>
-              @if(!empty($decoded))
-              <span class="ml-1 cursor-pointer text-blue-500"
-                    onclick='showFullNames(@json($decoded))'>
-                <i data-lucide="info" class="h-4 w-4 inline"></i>
-              </span>
-              @endif
-            </div>
-            @else
-            <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center mr-2">
-              <i data-lucide="user" class="w-3 h-3 text-gray-500"></i>
-            </div>
-            <span>{{ $app->applicant_title ?? '' }} {{ $app->first_name ?? '' }} {{ $app->surname ?? '' }}</span>
-            @endif
+                    @endphp
+                    <span>{{ !empty($decoded) && isset($decoded[0]) ? $decoded[0] : '' }}</span>
+                    @if(!empty($decoded))
+                      <span class="ml-1 cursor-pointer text-blue-500"
+                            onclick="showMultipleOwners(
+                              @json($decoded), 
+                              @json(is_array($app->mother_multiple_owners_passport) ? $app->mother_multiple_owners_passport : json_decode($app->mother_multiple_owners_passport, true))
+                            )">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </span>
+                    @endif
+                  @else
+                    <span>{{ $app->mother_applicant_title ?? '' }} {{ $app->mother_first_name ?? '' }} {{ $app->mother_surname ?? '' }}</span>
+                  @endif
+                </div>
               </div>
             </td>
-            <td class="table-cell">{{ $app->unit_number ?? 'N/A' }}</td>
-            <td class="table-cell">{{ $app->phone_number ?? 'N/A' }}</td>
-            <td class="table-cell">
+            <td class="table-cell px-1 py-1">
+              <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                  @if(!empty($app->passport))
+                    <img src="{{ asset('storage/app/public/' . $app->passport) }}" 
+                         alt="Unit Owner Passport" 
+                         class="w-full h-full rounded-full object-cover cursor-pointer"
+                         onclick="showPassportPreview('{{ asset('storage/app/public/' . $app->passport) }}', 'Unit Owner Passport')">
+                  @elseif(!empty($app->multiple_owners_passport))
+                    @php
+                      $passports = is_array($app->multiple_owners_passport) ? 
+                        $app->multiple_owners_passport : 
+                        json_decode($app->multiple_owners_passport, true);
+                      $firstPassport = !empty($passports) && isset($passports[0]) ? $passports[0] : null;
+                    @endphp
+                    @if($firstPassport)
+                      <img src="{{ asset('storage/app/public/' . $firstPassport) }}" 
+                           alt="Unit Owner Passport" 
+                           class="w-full h-full rounded-full object-cover cursor-pointer"
+                           onclick="showMultipleOwners(
+                             @json(is_array($app->multiple_owners_names) ? $app->multiple_owners_names : json_decode($app->multiple_owners_names, true)), 
+                             @json($passports)
+                           )">
+                    @else
+                      <i data-lucide="{{ !empty($app->corporate_name) ? 'building' : (!empty($app->multiple_owners_names) ? 'users' : 'user') }}" class="w-3 h-3 text-gray-500"></i>
+                    @endif
+                  @else
+                    <i data-lucide="{{ !empty($app->corporate_name) ? 'building' : (!empty($app->multiple_owners_names) ? 'users' : 'user') }}" class="w-3 h-3 text-gray-500"></i>
+                  @endif
+                </div>
+                <div>
+                  @if(!empty($app->corporate_name))
+                    <span>{{ $app->corporate_name }}</span>
+                  @elseif(!empty($app->multiple_owners_names))
+                    @php
+                      $names = $app->multiple_owners_names;
+                      $decoded = [];
+                      if (!empty($names)) {
+                        if (is_array($names)) {
+                          $decoded = $names;
+                        } else {
+                          $tryJson = json_decode($names, true);
+                          if (is_array($tryJson)) {
+                            $decoded = $tryJson;
+                          } else {
+                            $decoded = array_map('trim', str_getcsv($names));
+                          }
+                        }
+                      }
+                    @endphp
+                    <span>{{ !empty($decoded) && isset($decoded[0]) ? $decoded[0] : '' }}</span>
+                    @if(!empty($decoded))
+                      <span class="ml-1 cursor-pointer text-blue-500"
+                            onclick="showMultipleOwners(
+                              @json($decoded), 
+                              @json(is_array($app->multiple_owners_passport) ? $app->multiple_owners_passport : json_decode($app->multiple_owners_passport, true))
+                            )">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </span>
+                    @endif
+                  @else
+                    <span>{{ $app->applicant_title ?? '' }} {{ $app->first_name ?? '' }} {{ $app->surname ?? '' }}</span>
+                  @endif
+                </div>
+              </div>
+            </td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->unit_number ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->phone_number ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1">
               <span class="badge badge-{{ strtolower($app->planning_recommendation_status) === 'approved' ? 'approved' : (strtolower($app->planning_recommendation_status) === 'rejected' ? 'rejected' : (strtolower($app->planning_recommendation_status) === 'in progress' ? 'progress' : 'pending')) }}">
             {{ $app->planning_recommendation_status ?? 'Pending' }}
               </span>
             </td>
-            <td class="table-cell">
+            <td class="table-cell px-1 py-1">
               <span class="badge badge-{{ strtolower($app->application_status) === 'approved' ? 'approved' : (strtolower($app->application_status) === 'rejected' ? 'rejected' : (strtolower($app->application_status) === 'in progress' ? 'progress' : 'pending')) }}">
             {{ $app->application_status ?? 'Pending' }}
               </span>
             </td>
-            <td class="table-cell">
-              <button class="text-gray-400 hover:text-gray-600">
-            <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-              </button>
+            <td class="table-cell px-1 py-1">
+              @include('sectionaltitling.action_menu.sub_action')
             </td>
               </tr>
               @endforeach
@@ -209,19 +243,17 @@
           </div>
         </div>
       </div>
+    
     </div>
-
     <!-- Footer -->
-    <div class="p-6 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500 mt-auto">
-      <div>© 2025 Land Admin System. All rights reserved.</div>
-      <div class="flex items-center">
-        <span class="mr-2">LAAD-Sys</span>
-        <div class="bg-green-500 text-white px-2 py-1 rounded text-xs flex items-center">
-          <span class="mr-1">Land Admin System</span>
-        </div>
-      </div>
-    </div>
+    @include('admin.footer')
   </div>
+  @include('sectionaltitling.sub_action_modals.payment_modal')
+  @include('sectionaltitling.sub_action_modals.other_departments')
+  @include('sectionaltitling.sub_action_modals.eRegistry_modal')
+  @include('sectionaltitling.sub_action_modals.recommendation')
+  @include('sectionaltitling.sub_action_modals.directorApproval')
+ 
 @endsection
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

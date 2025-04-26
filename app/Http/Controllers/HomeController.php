@@ -50,7 +50,7 @@ class HomeController extends Controller
                 $result['documentByCategory'] = $this->documentByCategory();
                 $result['documentBySubCategory'] = $this->documentBySubCategory();
                 $result['settings']=settings();
-
+             
 
                 return view('dashboard.index', compact('result', 'PageTitle', 'PageDescription'));
             }

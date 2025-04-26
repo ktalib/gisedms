@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
 
 class ApplicationMotherController extends Controller
@@ -41,6 +42,8 @@ class ApplicationMotherController extends Controller
     }
     public function subApplication()
     {
+        $PageTitle = 'Create Unit Application ';
+        $PageDescription = 'Unit application for sectional title';
         // Get the land use type from the request
         $landUse = request()->get('land_use');
         $prefix = '';
@@ -75,17 +78,20 @@ class ApplicationMotherController extends Controller
         // Format the serial number with leading zeros (e.g., 01, 02, etc.)
         $formattedSerialNumber = sprintf('%02d', $nextSerialNumber);
 
-        return view('sectionaltitling.sub_application', compact('nextSerialNumber', 'prefix', 'currentYear', 'formattedSerialNumber'));
+        return view('sectionaltitling.sub_application', compact('nextSerialNumber', 'prefix', 'currentYear', 'formattedSerialNumber','PageTitle', 'PageDescription'));
     }
 
     public function create()
     {
+ 
+
+        // Check user role
         $role = $this->AssignRole();
         
         if ($role == 'access denied') {
             return redirect('/')->with('error', 'You do not have permission to access this resource.');
         }
-        return view('sectionaltitling.create');
+        return view('sectionaltitling.create'  );
     }
 
 
@@ -379,60 +385,105 @@ class ApplicationMotherController extends Controller
         return view('sectionaltitling.AcceptLetter');
     }
 
-  
     public function storeSub(Request $request)
     {
         $validatedData = $request->validate([
-            'main_application_id' => 'required|integer',
+            'main_application_id' => 'required',
             'applicant_type' => 'required|in:individual,corporate,multiple',
-            'fileno' => 'nullable|string|max:255',
-            'applicant_title' => 'nullable|string|max:255',
-            'first_name' => 'nullable|string|max:255',
-            'middle_name' => 'nullable|string|max:255',
-            'surname' => 'nullable|string|max:255',
-            'passport' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'corporate_name' => 'nullable|string|max:255',
-            'rc_number' => 'nullable|string|max:255',
-            'multiple_owners_names' => 'nullable|string',
+            'fileno' => 'required',
+            'applicant_title' => 'nullable',
+            'first_name' => 'nullable',
+            'middle_name' => 'nullable',
+            'surname' => 'nullable',
+            'passport' => 'nullable',
+            'corporate_name' => 'nullable',
+            'rc_number' => 'nullable',
+            'multiple_owners_names' => 'nullable',
             'multiple_owners_passport' => 'nullable',
-            'multiple_owners_data' => 'nullable|string',
-            'address' => 'nullable|string',
-            'phone_number' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
-            'identification_type' => 'nullable|string|max:255',
-            'identification_others' => 'nullable|string',
-            'block_number' => 'nullable|string|max:255',
-            'floor_number' => 'nullable|string|max:255',
-            'unit_number' => 'nullable|string|max:255',
-            'property_location' => 'nullable|string',
-            'ownership' => 'nullable|string|max:255',
-            'application_status' => 'required|string|in:pending',
-            'comments' => 'nullable|string',
-            'approval_date' => 'nullable|date',
-            'planning_recommendation_status' => 'required|string|in:pending',
+            'multiple_owners_data' => 'nullable',
+            'address' => 'nullable',
+            'phone_number' => 'nullable',
+            'email' => 'nullable',
+            'identification_type' => 'nullable',
+            'identification_others' => 'nullable',
+            'block_number' => 'nullable',
+            'floor_number' => 'nullable',
+            'unit_number' => 'nullable',
+            'property_location' => 'nullable',
+            'ownership' => 'nullable',
+            'application_status' => 'nullable|in:pending',
+            'comments' => 'nullable',
+            'approval_date' => 'nullable',
+            'planning_recommendation_status' => 'nullable|in:pending',
+            'commercial_type' => 'nullable',
+            'industrial_type' => 'nullable',
+            'ownershipType' => 'nullable',
+            'residenceType' => 'nullable',
+             'application_fee'=> 'nullable',
+             'processing_fee'=> 'nullable',
+             'site_plan_fee' => 'nullable',
+             'payment_date' => 'nullable',
+             'address_street_name' => 'nullable',
+             'address_district' => 'nullable',
+             'address_lga' => 'nullable',
+             'address_state' => 'nullable',
+             
+
+
         ]);
 
         try {
+            // Handle multiple_owners_names as JSON if it's an array
+            if (isset($validatedData['multiple_owners_names']) && is_array($validatedData['multiple_owners_names'])) {
+                $validatedData['multiple_owners_names'] = json_encode($validatedData['multiple_owners_names']);
+            }
+            
+            // Handle multiple_owners_data as JSON if it's an array
+            if (isset($validatedData['multiple_owners_data']) && is_array($validatedData['multiple_owners_data'])) {
+                $validatedData['multiple_owners_data'] = json_encode($validatedData['multiple_owners_data']);
+            }
+            
+            // Handle multiple_owners_passport as JSON if it's an array
+            if (isset($validatedData['multiple_owners_passport']) && is_array($validatedData['multiple_owners_passport'])) {
+                $validatedData['multiple_owners_passport'] = json_encode($validatedData['multiple_owners_passport']);
+            }
+            
+            $fileno = $request->input('fileno');
+
             // Insert into StFileNo table
             DB::connection('sqlsrv')->table('dbo.StFileNo')->insert([
                 'file_prefix' => $request->input('file_prefix'),
                 'serial_number' => $request->input('serial_number'),
                 'year' => $request->input('year'),
-                'fileno' => $request->input('fileno'),
+                'fileno' => $fileno,
             ]);
 
             if ($request->hasFile('passport')) {
                 $validatedData['passport'] = $request->file('passport')->store('sub_applications/passports', 'public');
             }
 
-            DB::connection('sqlsrv')->table('dbo.subapplications')->insert($validatedData);
+            // Check and handle any potential arrays in remaining fields
+            foreach ($validatedData as $key => $value) {
+                if (is_array($value)) {
+                    $validatedData[$key] = json_encode($value);
+                }
+            }
+
+            // remove file related fields before inserting into subapplications table
+            $fileData = Arr::only($validatedData, ['file_prefix', 'serial_number', 'year', 'fileno']);
+            $subAppData = Arr::except($validatedData, ['file_prefix', 'serial_number', 'year', 'fileno']);
+            $subAppData['fileno'] = $fileno;
+
+
+            DB::connection('sqlsrv')->table('dbo.subapplications')->insert($subAppData);
         } catch (\Exception $e) {
-            \Log::error("storeSub: Error inserting sub-application - " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error("storeSub: Error inserting sub-application - " . $e->getMessage(), ['exception' => $e]);
             return redirect()->back()->with('error', 'Error creating Sub-application.');
         }
 
-        return redirect()->route('sectionaltitling.sub_applications')->with('success', 'Sub-application created successfully.');
+        return redirect()->route('sectionaltitling.Subapplications')->with('success', 'Sub-application created successfully.');
     }
+    
 
     public function decisionSubApplication(Request $request)
     {
@@ -743,7 +794,8 @@ class ApplicationMotherController extends Controller
     public function Veiwrecords(Request $request)
     {
         $id = $request->query('id');
-        
+        $PageTitle = 'Application Details ';
+        $PageDescription = 'View Application Details';
         if (!$id) {
             return redirect()->route('sectionaltitling.index')->with('error', 'No record ID provided');
         }
@@ -757,7 +809,7 @@ class ApplicationMotherController extends Controller
             return redirect()->route('sectionaltitling.index')->with('error', 'Record not found');
         }
         
-        return view('sectionaltitling.viewrecorddetail', compact('application'));
+        return view('sectionaltitling.viewrecorddetail', compact('application' , 'PageTitle', 'PageDescription'));
     }
 
  
