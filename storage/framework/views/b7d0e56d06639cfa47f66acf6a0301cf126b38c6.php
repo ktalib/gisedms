@@ -3,98 +3,7 @@
             <?php echo e(__('SECTIONAL TITLING  MODULE')); ?>
 
             <?php $__env->stopSection(); ?>
-
-            <style>
-            .ck-editor__editable {
-            min-height: 200px;
-            }
-
-            input[type="text"],
-            input[type="number"],
-            input[type="date"],
-            textarea,
-            select {
-            min-height: 55px;
-            background-color: #fdfdfd;
-            }
-
-            input:disabled,
-            select:disabled,
-            textarea:disabled {
-            background-color: #bbbbbb;
-            }
-
-            #myDiv {
-            display: none;
-            transition: all 0.3s ease-in-out;
-            }
-            select,
-            input {
-            transition: all 0.2s ease-in-out;
-            }
-            select:focus,
-            input:focus {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            }
-            #Previewflenumber {
-            font-family: monospace;
-            letter-spacing: 0.05em;
-            }
-            .bootstrap-tagsinput {
-            width: 100%;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            min-height: 55px;
-            background-color: #fdfdfd;
-            }
-
-            .bootstrap-tagsinput .tag {
-            background-color: #3b82f6;
-            color: white;
-            padding: 3px 7px;
-            border-radius: 3px;
-            margin-right: 4px;
-
-            }
-
-
-   
-            .step-circle {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 500;
-            }
-            .step-circle.active-tab {
-            background-color: #10b981;
-            color: white;
-            }
-            .step-circle.inactive-tab {
-            background-color: #f3f4f6;
-            color: #6b7280;
-            }
-            .form-section {
-            display: none;
-            }
-            .form-section.active-tab {
-            display: block;
-            }
-            .upload-box {
-            border: 2px dashed #e5e7eb;
-            border-radius: 0.375rem;
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s;
-            }
-            .upload-box:hover {
-            border-color: #3b82f6;
-            }
-            </style>
+            <?php echo $__env->make('sectionaltitling.sub_app_css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <?php echo $__env->make('sectionaltitling.partials.assets.css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             <?php $__env->startSection('content'); ?>
             <!-- Main Content -->
@@ -104,8 +13,7 @@
             <!-- Dashboard Content -->
             <div class="p-6">
 
-                <!-- Tabs -->
-                <?php echo $__env->make('sectionaltitling.partials.tabs', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                
 
                 <?php
                 $mainApplicationId = request()->get('application_id');
@@ -136,8 +44,7 @@
                     <div class="container py-4">
                         <div class="modal-content">
                             <!-- Step 1: Basic Information -->
-                            <form id="subApplicationForm" method="POST" action="<?php echo e(route('sectionaltitling.storesub')); ?>" enctype="multipart/form-data" class="space-y-6">
-                              <?php echo csrf_field(); ?>
+                            
                             <div class="form-section active-tab" id="step1">
                               <div class="p-6">
                                 <div class="flex justify-between items-center mb-4">
@@ -151,14 +58,14 @@
                                   <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                       <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
-                                      <h3 class="text-lg font-bold items-center">Application for Sectional Titling - Unit Application</h3>
+                                      <h3 class="text-lg font-bold items-center">Application for Sectional Titling - Secondary Application</h3>
                                     </div>
                                     <div class="flex items-center">
                                       <span class="text-gray-600 mr-2">Land Use:</span>
                                       <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm"><?php echo e($motherApplication->land_use ?? 'N/A'); ?></span>
                                     </div>
                                   </div>
-                                  <p class="text-gray-600 mt-1">Complete the form below to submit a new primary application for sectional titling</p>
+                                  <p class="text-gray-600 mt-1">Complete the form below to submit a new secondary application for sectional titling</p>
                                 </div>
                         
                                 <div class="flex items-center mb-6">
@@ -170,6 +77,9 @@
                                   </div>
                                   <div class="flex items-center">
                                     <div class="step-circle inactive-tab flex items-center justify-center">3</div>
+                                  </div>    
+                                   <div class="flex items-center">
+                                    <div class="step-circle inactive-tab flex items-center justify-center">4</div>
                                   </div>
                                   <div class="ml-4">Step 1</div>
                                 </div>
@@ -200,15 +110,26 @@
                                       $propertyLocation = implode(', ', $locationParts);
                                     }
                                   ?>
-
+                                  
+                                  <form id="subApplicationForm" method="POST" action="<?php echo e(route('secondaryform.save')); ?>" enctype="multipart/form-data" class="space-y-6">
+                                    <?php echo csrf_field(); ?>
+                                    
+                                    
                                   <div class="mb-6">
                                     <h2 class="text-lg font-semibold text-gray-800 mb-3">Main Application Reference</h2>
                                     <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                                       <div class="flex items-center justify-between mb-4">
                                         <div>
                                           <label class="block text-sm font-medium text-gray-700 mb-1">Main Application ID</label>
-                                          <input type="text" id="mainApplicationId" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="<?php echo e($mainApplicationId); ?>" disabled>
-                                          <input type="hidden" name="main_application_id" value="<?php echo e($mainApplicationId); ?>">
+                                          <div class="flex items-center">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-id-card-icon lucide-id-card"><path d="M16 10h2"/><path d="M16 14h2"/><path d="M6.17 15a3 3 0 0 1 5.66 0"/><circle cx="9" cy="11" r="2"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg> 
+
+                                              <?php echo e($motherApplication->applicationID ?? 'N/A'); ?>
+
+                                            </span>
+                                          </div>            
+                                          <input type="hidden" name="main_application_id" value="<?php echo e($motherApplication->applicationID ?? ''); ?>">
                                          
                                         </div>
                                         <div class="flex items-center">
@@ -317,7 +238,7 @@
                                     <! -- Right column (1/3 width) -->
                                   </div>
 
-                                  <?php echo $__env->make('primaryform.applicant', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                  <?php echo $__env->make('sectionaltitling.partials.subapplication.applicant', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                   
 
                                   <div class="bg-gray-50 p-4 rounded-md mb-6">
@@ -326,9 +247,18 @@
                                    
                                     <div class="grid grid-cols-2 gap-4 mb-4">
                                      
+                                       
+                                        <div style="display: none">
+                                          <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="prefix" value="<?php echo e($prefix); ?>" >
+                                          <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="year" value="<?php echo e($currentYear); ?>"  >
+                                          <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="serial_number" value="<?php echo e($formattedSerialNumber); ?>"  >
+                                            <input type="text"  class="w-full p-2 border border-gray-300 rounded-md"  name="fileno" value="<?php echo e($prefix); ?>-<?php echo e($currentYear); ?>-<?php echo e($formattedSerialNumber); ?>" >
+                                        </div> 
+                                        
+                                        
                                         <div>
                                             <label class="block text-sm mb-1">Scheme No</label>
-                                            <input type="text" id="schemeName" class="w-full p-2 border border-gray-300 rounded-md"  " name="scheme_no" placeholder="enter scheme number. eg: ST/SP/0001">
+                                            <input type="text" id="schemeName" class="w-full p-2 border border-gray-300 rounded-md"    name="scheme_no" placeholder="enter scheme number. eg: ST/SP/0001">
                                         </div>
                                     </div>
                                   </div>
@@ -520,346 +450,17 @@
                               </div>
                             </div>
                         
-                            <!-- Step 2: Required Documents -->
-                            <div class="form-section" id="step2">
-                              <div class="p-6">
-                                <div class="flex justify-between items-center mb-4">
-                                  <h2 class="text-xl font-bold text-center text-gray-800">MINISTRY OF LAND AND PHYSICAL PLANNING</h2>
-                                  <button id="closeModal2" class="text-gray-500 hover:text-gray-700">
-                                    <i data-lucide="x" class="w-5 h-5"></i>
-                                  </button>
-                                </div>
-                                
-                                <div class="mb-6">
-                                  <div class="flex items-center mb-2">
-                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
-                                    <h3 class="text-lg font-bold">Application for Sectional Titling - Main Application</h3>
-                                    <div class="ml-auto flex items-center">
-                                      <span class="text-gray-600 mr-2">Land Use:</span>
-                                      <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Residential</span>
-                                    </div>
-                                  </div>
-                                  <p class="text-gray-600">Complete the form below to submit a new primary application for sectional titling</p>
-                                </div>
-                        
-                                <div class="flex items-center mb-8">
-                                  <div class="flex items-center mr-4">
-                                    <div class="step-circle inactive-tab">1</div>
-                                  </div>
-                                  <div class="flex items-center mr-4">
-                                    <div class="step-circle active-tab">2</div>
-                                  </div>
-                                  <div class="flex items-center">
-                                    <div class="step-circle inactive-tab">3</div>
-                                  </div>
-                                  <div class="ml-4">Step 2</div>
-                                </div>
-                        
-                                <div class="mb-6">
-                                  <div class="flex items-start mb-4">
-                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
-                                    <span class="font-medium">Required Documents</span>
-                                  </div>
-                                  
-                                  <div class="bg-blue-50 border border-blue-100 rounded-md p-4 mb-6">
-                                    <div class="flex items-start">
-                                      <i data-lucide="info" class="w-5 h-5 mr-2 text-blue-500 mt-0.5"></i>
-                                      <div>
-                                        <h4 class="font-medium text-blue-800">Document Requirements</h4>
-                                        <p class="text-sm text-blue-600">Please upload all required documents. Acceptable formats are PDF, JPG, and PNG. Maximum file size is 5MB per document.</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  
-                                  <div class="grid grid-cols-2 gap-6 mb-6">
-                                    <div class="border border-gray-200 rounded-md p-4">
-                                      <h4 class="font-medium mb-2">Application Letter</h4>
-                                      <p class="text-sm text-gray-600 mb-4">Formal letter requesting sectional titling</p>
-                                      
-                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
-                                        <div class="flex justify-center mb-2">
-                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
-                                        </div>
-                                        <div class="flex justify-center">
-                                          <button class="flex items-center text-blue-600">
-                                            <span>Upload Document</span>
-                                          </button>
-                                        </div>
-                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="border border-gray-200 rounded-md p-4">
-                                      <h4 class="font-medium mb-2">Building Plan</h4>
-                                      <p class="text-sm text-gray-600 mb-4">Approved building plan with architectural details</p>
-                                      
-                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
-                                        <div class="flex justify-center mb-2">
-                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
-                                        </div>
-                                        <div class="flex justify-center">
-                                          <button class="flex items-center text-blue-600">
-                                            <span>Upload Document</span>
-                                          </button>
-                                        </div>
-                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  
-                                  <div class="grid grid-cols-2 gap-6 mb-6">
-                                    <div class="border border-gray-200 rounded-md p-4">
-                                      <h4 class="font-medium mb-2">Architectural Design</h4>
-                                      <p class="text-sm text-gray-600 mb-4">Detailed architectural design of the property</p>
-                                      
-                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
-                                        <div class="flex justify-center mb-2">
-                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
-                                        </div>
-                                        <div class="flex justify-center">
-                                          <button class="flex items-center text-blue-600">
-                                            <span>Upload Document</span>
-                                          </button>
-                                        </div>
-                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
-                                      </div>
-                                    </div>
-                                    
-                                    <div class="border border-gray-200 rounded-md p-4">
-                                      <h4 class="font-medium mb-2">Ownership Document</h4>
-                                      <p class="text-sm text-gray-600 mb-4">Proof of ownership (CofO, deed, etc.)</p>
-                                      
-                                      <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
-                                        <div class="flex justify-center mb-2">
-                                          <i data-lucide="upload" class="w-6 h-6 text-gray-400"></i>
-                                        </div>
-                                        <div class="flex justify-center">
-                                          <button class="flex items-center text-blue-600">
-                                            <span>Upload Document</span>
-                                          </button>
-                                        </div>
-                                        <p class="text-xs text-gray-500 mt-2">PDF, JPG or PNG (max. 5MB)</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  
-                                  <div class="flex justify-between mt-8">
-                                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-md" id="backStep2">Back</button>
-                                    <div class="flex items-center">
-                                      <span class="text-sm text-gray-500 mr-4">Step 2 of 3</span>
-                                      <button class="px-4 py-2 bg-black text-white rounded-md" id="nextStep2">Next</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                        
-                            <!-- Step 3: Application Summary -->
-                            <div class="form-section" id="step3">
-                              <div class="p-6">
-                                <div class="flex justify-between items-center mb-4">
-                                  <h2 class="text-xl font-bold text-center text-gray-800">MINISTRY OF LAND AND PHYSICAL PLANNING</h2>
-                                  <button id="closeModal3" class="text-gray-500 hover:text-gray-700">
-                                    <i data-lucide="x" class="w-5 h-5"></i>
-                                  </button>
-                                </div>
-                                
-                                <div class="mb-6">
-                                  <div class="flex items-center mb-2">
-                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
-                                    <h3 class="text-lg font-bold">Application for Sectional Titling - Main Application</h3>
-                                    <div class="ml-auto flex items-center">
-                                      <span class="text-gray-600 mr-2">Land Use:</span>
-                                      <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Residential</span>
-                                    </div>
-                                  </div>
-                                  <p class="text-gray-600">Complete the form below to submit a new primary application for sectional titling</p>
-                                </div>
-                        
-                                <div class="flex items-center mb-8">
-                                  <div class="flex items-center mr-4">
-                                    <div class="step-circle inactive-tab">1</div>
-                                  </div>
-                                  <div class="flex items-center mr-4">
-                                    <div class="step-circle inactive-tab">2</div>
-                                  </div>
-                                  <div class="flex items-center">
-                                    <div class="step-circle active-tab">3</div>
-                                  </div>
-                                  <div class="ml-4">Step 3</div>
-                                </div>
-                        
-                                <div class="mb-6">
-                                  <div class="flex items-start mb-4">
-                                    <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
-                                    <span class="font-medium">Application Summary</span>
-                                  </div>
-                                  
-                                  <div class="border border-gray-200 rounded-md p-6 mb-6">
-                                    <div class="grid grid-cols-2 gap-6">
-                                      <div>
-                                        <h4 class="font-medium mb-4">Applicant Information</h4>
-                                        <table class="w-full text-sm">
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Applicant Type:</td>
-                                            <td class="py-1 font-medium">Individual</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Name:</td>
-                                            <td class="py-1 font-medium">Mr. Clement Joseph</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Email:</td>
-                                            <td class="py-1 font-medium">clemzy689@gmail.com</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Phone:</td>
-                                            <td class="py-1 font-medium">07032228984</td>
-                                          </tr>
-                                        </table>
-                                      </div>
-                                      
-                                      <div>
-                                        <h4 class="font-medium mb-4">Unit Information</h4>
-                                        <table class="w-full text-sm">
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Type of Residence:</td>
-                                            <td class="py-1 font-medium">Detached House</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Block No:</td>
-                                            <td class="py-1 font-medium">7</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Section (Floor) No:</td>
-                                            <td class="py-1 font-medium">Not provided</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Unit No:</td>
-                                            <td class="py-1 font-medium">5</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Unit Type:</td>
-                                            <td class="py-1 font-medium">Not provided</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">File Number:</td>
-                                            <td class="py-1 font-medium">CON-COM-2019-296</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Land Use:</td>
-                                            <td class="py-1 font-medium">Residential</td>
-                                          </tr>
-                                          <tr>
-                                            <td class="py-1 text-gray-600">Primary Application ID:</td>
-                                            <td class="py-1 font-medium">Not provided</td>
-                                          </tr>
-                                        </table>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  
-                                  <div class="mb-6">
-                                    <h4 class="font-medium mb-4">Address Information</h4>
-                                    <table class="w-full text-sm">
-                                      <tr>
-                                        <td class="py-1 text-gray-600 w-1/4">House No:</td>
-                                        <td class="py-1 font-medium">79</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">Street Name:</td>
-                                        <td class="py-1 font-medium">Umudagu road</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">District:</td>
-                                        <td class="py-1 font-medium">Not provided</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">LGA:</td>
-                                        <td class="py-1 font-medium">Not provided</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">State:</td>
-                                        <td class="py-1 font-medium">Kano</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">Complete Address:</td>
-                                        <td class="py-1 font-medium">79 Umudagu road, , , Kano</td>
-                                      </tr>
-                                    </table>
-                                  </div>
-                                  
-                                  <div class="mb-6">
-                                    <div class="flex items-start mb-4">
-                                      <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
-                                      <span class="font-medium">Payment Information</span>
-                                    </div>
-                                    <table class="w-full text-sm">
-                                      <tr>
-                                        <td class="py-1 text-gray-600 w-1/4">Application Fee:</td>
-                                        <td class="py-1 font-medium">₦2,000</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">Processing Fee:</td>
-                                        <td class="py-1 font-medium">₦20,000</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">Site Plan Fee:</td>
-                                        <td class="py-1 font-medium">₦24,000</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600 font-medium">Total:</td>
-                                        <td class="py-1 font-bold">₦46,000.00</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">Receipt Number:</td>
-                                        <td class="py-1 font-medium">RC-20478</td>
-                                      </tr>
-                                      <tr>
-                                        <td class="py-1 text-gray-600">Payment Date:</td>
-                                        <td class="py-1 font-medium">4/15/2025</td>
-                                      </tr>
-                                    </table>
-                                  </div>
-                                  
-                                  <div class="mb-6">
-                                    <h4 class="font-medium mb-4">Uploaded Documents</h4>
-                                    <div class="grid grid-cols-2 gap-4">
-                                      <div class="flex items-center">
-                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                                        <span>Application Letter</span>
-                                      </div>
-                                      <div class="flex items-center">
-                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                                        <span>Building Plan</span>
-                                      </div>
-                                      <div class="flex items-center">
-                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                                        <span>Architectural Design</span>
-                                      </div>
-                                      <div class="flex items-center">
-                                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                                        <span>Ownership Document</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  
-                                  <div class="flex justify-between mt-8">
-                                    <div class="flex space-x-4">
-                                      <button class="px-4 py-2 bg-white border border-gray-300 rounded-md" id="backStep3">Back</button>
-                                      <button class="px-4 py-2 bg-white border border-gray-300 rounded-md flex items-center">
-                                        <i data-lucide="printer" class="w-4 h-4 mr-2"></i>
-                                        Print Application Slip
-                                      </button>
-                                    </div>
-                                    <div class="flex items-center">
-                                      <span class="text-sm text-gray-500 mr-4">Step 3 of 3</span>
-                                      <button class="px-4 py-2 bg-black text-white rounded-md">Submit Application</button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                            <!-- Step 2:shared areas -->
+                            <?php echo $__env->make('sectionaltitling.partials.subapplication.sharedareas', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+
+                             <!-- Step 3: Application documents -->
+                            <?php echo $__env->make('sectionaltitling.partials.subapplication.documents', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+                            <!-- Step 4: Application Summary -->
+                            <?php echo $__env->make('sectionaltitling.partials.subapplication.summary', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                           
+
                           </div>
                         </form>
                     </div>
@@ -872,41 +473,111 @@
 
             <script>
  // Initialize Lucide icons
- lucide.createIcons();
+      lucide.createIcons();
     
     // Form navigation
     document.addEventListener('DOMContentLoaded', function() {
       const step1 = document.getElementById('step1');
       const step2 = document.getElementById('step2');
       const step3 = document.getElementById('step3');
+      const step4 = document.getElementById('step4');
       
       const nextStep1 = document.getElementById('nextStep1');
       const nextStep2 = document.getElementById('nextStep2');
+      const nextStep3 = document.getElementById('nextStep3');
       const backStep2 = document.getElementById('backStep2');
       const backStep3 = document.getElementById('backStep3');
+      const backStep4 = document.getElementById('backStep4');
+      
+      // Function to safely add event listeners
+      function addSafeEventListener(element, event, callback) {
+        if (element) {
+          element.addEventListener(event, callback);
+        }
+      }
       
       // Next from Step 1 to Step 2
-      nextStep1.addEventListener('click', function() {
+      addSafeEventListener(nextStep1, 'click', function(e) {
+        e.preventDefault();
         step1.classList.remove('active-tab');
         step2.classList.add('active-tab');
+        
+        // Update step indicator (optional)
+        document.querySelectorAll('.step-circle')[0].classList.remove('active-tab');
+        document.querySelectorAll('.step-circle')[0].classList.add('inactive-tab');
+        document.querySelectorAll('.step-circle')[1].classList.remove('inactive-tab');
+        document.querySelectorAll('.step-circle')[1].classList.add('active-tab');
       });
       
       // Next from Step 2 to Step 3
-      nextStep2.addEventListener('click', function() {
+      addSafeEventListener(nextStep2, 'click', function(e) {
+        e.preventDefault();
         step2.classList.remove('active-tab');
         step3.classList.add('active-tab');
+        
+        // Update step indicator (optional)
+        document.querySelectorAll('.step-circle')[1].classList.remove('active-tab');
+        document.querySelectorAll('.step-circle')[1].classList.add('inactive-tab');
+        document.querySelectorAll('.step-circle')[2].classList.remove('inactive-tab');
+        document.querySelectorAll('.step-circle')[2].classList.add('active-tab');
+      });
+      
+      // Next from Step 3 to Step 4
+      addSafeEventListener(nextStep3, 'click', function(e) {
+        e.preventDefault();
+        step3.classList.remove('active-tab');
+        step4.classList.add('active-tab');
+        
+        // Update step indicator (optional)
+        document.querySelectorAll('.step-circle')[2].classList.remove('active-tab');
+        document.querySelectorAll('.step-circle')[2].classList.add('inactive-tab');
+        document.querySelectorAll('.step-circle')[3].classList.remove('inactive-tab');
+        document.querySelectorAll('.step-circle')[3].classList.add('active-tab');
       });
       
       // Back from Step 2 to Step 1
-      backStep2.addEventListener('click', function() {
+      addSafeEventListener(backStep2, 'click', function(e) {
+        e.preventDefault();
         step2.classList.remove('active-tab');
         step1.classList.add('active-tab');
+        
+        // Update step indicator (optional)
+        document.querySelectorAll('.step-circle')[1].classList.remove('active-tab');
+        document.querySelectorAll('.step-circle')[1].classList.add('inactive-tab');
+        document.querySelectorAll('.step-circle')[0].classList.remove('inactive-tab');
+        document.querySelectorAll('.step-circle')[0].classList.add('active-tab');
       });
       
       // Back from Step 3 to Step 2
-      backStep3.addEventListener('click', function() {
+      addSafeEventListener(backStep3, 'click', function(e) {
+        e.preventDefault();
         step3.classList.remove('active-tab');
         step2.classList.add('active-tab');
+        
+        // Update step indicator (optional)
+        document.querySelectorAll('.step-circle')[2].classList.remove('active-tab');
+        document.querySelectorAll('.step-circle')[2].classList.add('inactive-tab');
+        document.querySelectorAll('.step-circle')[1].classList.remove('inactive-tab');
+        document.querySelectorAll('.step-circle')[1].classList.add('active-tab');
+      });
+      
+      // Back from Step 4 to Step 3
+      addSafeEventListener(backStep4, 'click', function(e) {
+        e.preventDefault();
+        step4.classList.remove('active-tab');
+        step3.classList.add('active-tab');
+        
+        // Update step indicator (optional)
+        document.querySelectorAll('.step-circle')[3].classList.remove('active-tab');
+        document.querySelectorAll('.step-circle')[3].classList.add('inactive-tab');
+        document.querySelectorAll('.step-circle')[2].classList.remove('inactive-tab');
+        document.querySelectorAll('.step-circle')[2].classList.add('active-tab');
+      });
+      
+      // Submit form from Step 4
+      document.getElementById('submitApplication').addEventListener('click', function(e) {
+        // Submit the form
+        document.getElementById('subApplicationForm').submit();
       });
       
       // Close modal buttons
@@ -924,8 +595,13 @@
         // In a real application, this would close the modal
         alert('Application process canceled');
       });
-    });
-            </script>
+      
+      document.getElementById('closeModal4').addEventListener('click', function() {
+        // In a real application, this would close the modal
+        alert('Application process canceled');
+      });
+    });  
+     </script>
 
    <?php $__env->stopSection(); ?>
 

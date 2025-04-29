@@ -52,20 +52,35 @@
                     </div>
                     
                     <div class="py-2">
-                      <div class="flex items-center justify-between mb-4">
-                        <div>
-                          <h3 class="text-sm font-medium">{{$application->land_use }} Property</h3>
-                          <p class="text-xs text-gray-500">
-                            Application ID: {{$application->applicationID}} | File No: {{$application->fileno }}  
-                          </p>
+                      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                        <!-- Primary Application Info (First, as requested) -->
+                        <div class="flex items-center mb-3">
+                          <div class="bg-blue-100 text-blue-800 rounded-full p-1 mr-2">
+                            <i data-lucide="file-check" class="w-4 h-4"></i>
+                          </div>
+                          <div>
+                            <h3 class="text-sm font-medium text-blue-800">Primary Application</h3>
+                            <p class="text-xs text-gray-700">
+                              {{ $application->primary_applicant_title ?? '' }} {{ $application->primary_first_name ?? '' }} {{ $application->primary_surname ?? '' }}
+                              <span class="inline-flex items-center px-2 py-0.5 ml-1 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                                <i data-lucide="link" class="w-3 h-3 mr-1"></i>File No: {{ $application->primary_fileno ?? 'N/A' }}
+                              </span>
+                            </p>
+                          </div>
                         </div>
-                        <div class="text-right">
-                          <h3 class="text-sm font-medium">{{$application->applicant_title }} {{$application->first_name }} {{$application->surname }}</h3>
-                          <p class="text-xs text-gray-500">
-                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                            {{$application->land_use }}
-                          </span>
-                          </p>
+                        
+                        <!-- Current Application Info -->
+                        <div class="flex justify-between items-center border-t border-gray-200 pt-3">
+                          <div>
+                            <h3 class="text-sm font-medium">{{ $application->land_use ?? 'Property' }}</h3>
+                            <p class="text-xs text-gray-600 mt-1">
+                              File No: <span class="font-medium">{{ $application->fileno ?? 'N/A' }}</span>
+                            </p>
+                          </div>
+                          <div class="text-right">
+                            <h3 class="text-sm font-medium">{{ $application->applicant_title ?? '' }} {{ $application->surname ?? '' }} {{ $application->first_name ?? '' }}</h3>
+                            <p class="text-xs text-gray-600 mt-1">Applicant</p>
+                          </div>
                         </div>
                       </div>
                 
@@ -87,8 +102,107 @@
                           LANDS
                         </button>
                       </div>
+
+                  <form id="survey-form" method="POST">
+                      @csrf
                       <!-- Survey Tab -->
-                      @include('actions.survey')
+                      <div id="initial-tab" class="tab-content active">
+                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                          <div class="p-4 border-b">
+                            <h3 class="text-sm font-medium">Survey</h3>
+                            <p class="text-xs text-gray-500">Fill in the survey details for the property</p>
+                          </div>
+                          <div class="p-4 space-y-4">
+                            <input type="hidden" id="application_id" name="application_id" value="{{$application->id}}">
+                            <input type="hidden" name="fileno" value="{{$application->fileno}}">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label for="survey-by" class="text-xs font-medium block">
+                                        Survey By
+                                    </label>
+                                    <input id="survey-by" name="survey_by" type="text" placeholder="Enter surveyor's name" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="survey-date" class="text-xs font-medium block">
+                                        Date
+                                    </label>
+                                    <input id="survey-date" name="survey_by_date" type="date" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                            </div>
+                
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label for="drawn-by" class="text-xs font-medium block">
+                                        Drawn By
+                                    </label>
+                                    <input id="drawn-by" name="drawn_by" type="text" placeholder="Enter drafter's name" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="drawn-date" class="text-xs font-medium block">
+                                        Date
+                                    </label>
+                                    <input id="drawn-date" name="drawn_by_date" type="date" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                            </div>
+                
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label for="checked-by" class="text-xs font-medium block">
+                                        Checked By
+                                    </label>
+                                    <input id="checked-by" name="checked_by" type="text" placeholder="Enter checker name" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="checked-date" class="text-xs font-medium block">
+                                        Date
+                                    </label>
+                                    <input id="checked-date" name="checked_by_date" type="date" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                            </div>
+                
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label for="approved-by" class="text-xs font-medium block">
+                                        Approved By
+                                    </label>
+                                    <input id="approved-by" name="approved_by" type="text" placeholder="Enter approver's name" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="approved-date" class="text-xs font-medium block">
+                                        Date
+                                    </label>
+                                    <input id="approved-date" name="approved_by_date" type="date" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
+                            </div>
+                
+                            <hr class="my-4">
+                
+                            <div class="flex justify-between items-center">
+                               
+                              <div class="flex gap-2">
+                                <a href="{{route('sectionaltitling.primary')}}" class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
+                                  <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
+                                  Back
+                                  </a>
+                                <button type="button" class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
+                                  <i data-lucide="map" class="w-3.5 h-3.5 mr-1.5"></i>
+                                View Survey Plan
+                                </button>      
+                                <button type="button" class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
+                                  <i data-lucide="pencil" class="w-3.5 h-3.5 mr-1.5"></i>
+                                  Edit
+                                </button>
+                                <button type="button" id="submit-survey" class="flex items-center px-3 py-1 text-xs bg-green-700 text-white rounded-md hover:bg-gray-800">
+                                    <i data-lucide="send-horizontal" class="w-3.5 h-3.5 mr-1.5"></i>
+                                    Submit
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+
                       <!-- Deeds Tab -->
                       <form id="deeds-form" method="POST">
                           @csrf
@@ -141,10 +255,11 @@
                                 <div class="flex justify-between items-center">
                                
                                   <div class="flex gap-2">
-                                    <a href="{{route('sectionaltitling.primary')}}" class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
+                                    <a  href="{{route('sectionaltitling.secondary')}}" class="flex items-center px-3 py-1 text-xs bg-white text-black p-2 border border-gray-500 rounded-md hover:bg-gray-800">
                                       <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
                                       Back
-                                      </a>   
+                                    </a>    
+                                     
                                     
                                     <button type="button" id="submit-deeds" class="flex items-center px-3 py-1 text-xs bg-green-700 text-white rounded-md hover:bg-gray-800">
                                         <i data-lucide="send-horizontal" class="w-3.5 h-3.5 mr-1.5"></i>
@@ -167,9 +282,13 @@
                           <input type="hidden" id="application_id" value="{{$application->id}}">
                       <input type="hidden" name="fileno" value="{{$application->fileno}}">
                           <div class="p-4 space-y-4">
-                            @include('primaryform.fileno')
                             <div class="grid grid-cols-2 gap-4">
-                                
+                                <div class="space-y-2">
+                                    <label for="file-no" class="text-xs font-medium block">
+                                        File No
+                                    </label>
+                                    <input id="file-no" type="text" placeholder="Enter File No" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+                                </div>
                                 <div class="space-y-2">
                                     <label for="file-name" class="text-xs font-medium block">
                                         File Name
@@ -197,10 +316,7 @@
                 
                             <div class="flex justify-between items-center">
                                 <div class="flex gap-2">
-                                    <a href="{{route('sectionaltitling.primary')}}" class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
-                                    <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
-                                    Back
-                                    </a>
+                                    >
                                     
                                     <button class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-sky-900 hover:bg-gray-50">
                                     <i data-lucide="folder-git-2" class="w-3.5 h-3.5 mr-1.5"></i>
@@ -274,7 +390,7 @@
                       const formData = new FormData(form);
                       
                       // Send AJAX request
-                      fetch('{{ route("primary-applications.store") }}', {
+                      fetch('{{ route("sub-actions.store-survey") }}', {
                           method: 'POST',
                           body: formData,
                           headers: {
@@ -341,7 +457,7 @@
                       const formData = new FormData(form);
                       
                       // Send AJAX request
-                      fetch('{{ route("primary-applications.storeDeeds") }}', {
+                      fetch('{{ route("sub-actions.store-deeds") }}', {
                           method: 'POST',
                           body: formData,
                           headers: {

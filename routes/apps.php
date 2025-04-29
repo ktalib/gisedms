@@ -2,19 +2,38 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrimaryFormController;
-use App\Http\Controllers\MotherApplicationController;
+use App\Http\Controllers\PrimaryActionsController;
 use App\Http\Controllers\SubApplicationModalController;
 use App\Http\Controllers\ActionsController;
 use App\Http\Controllers\ProgrammesController;
 use App\Http\Controllers\CustomerCareController;
+use App\Http\Controllers\SecondaryFormController;
+use App\Http\Controllers\SubActionsController;
+
 
 
 // Place this route OUTSIDE the middleware group if you want it public
-Route::get('/mother-applications/{id}', [MotherApplicationController::class, 'show']);
-Route::post('/mother-applications', [MotherApplicationController::class, 'store'])->name('mother-applications.store');
-Route::post('/mother-applications/storeDeeds', [MotherApplicationController::class, 'storeDeeds'])->name('mother-applications.storeDeeds');
-Route::post('/planning-recommendation/update', [MotherApplicationController::class, 'updatePlanningRecommendation'])->name('planning-recommendation.update');
-Route::post('/director-approval/update', [MotherApplicationController::class, 'updateDirectorApproval'])->name('director-approval.update');
+Route::get('/primary-applications/{id}', [PrimaryActionsController::class, 'show']);
+Route::post('/primary-applications', [PrimaryActionsController::class, 'store'])->name('primary-applications.store');
+Route::post('/primary-applications/storeDeeds', [PrimaryActionsController::class, 'storeDeeds'])->name('primary-applications.storeDeeds');
+Route::post('/planning-recommendation/update', [PrimaryActionsController::class, 'updatePlanningRecommendation'])->name('planning-recommendation.update');
+Route::post('/director-approval/update', [PrimaryActionsController::class, 'updateDirectorApproval'])->name('director-approval.update');
+Route::get('/conveyance/{id}', [PrimaryActionsController::class, 'getConveyance'])->name('conveyance.get');
+Route::post('/conveyance/update', [PrimaryActionsController::class, 'updateConveyance'])->name('conveyance.update');
+Route::post('/conveyance/add-buyer', [PrimaryActionsController::class, 'addBuyer'])->name('conveyance.add-buyer');
+Route::post('/conveyance/delete-buyer', [PrimaryActionsController::class, 'deleteBuyer'])->name('conveyance.delete-buyer');
+Route::post('/render-buyers-list', [PrimaryActionsController::class, 'renderBuyersList'])->name('render-buyers-list');
+
+// Example route for the apps.php file
+  Route::middleware(['auth'])->group(function () {
+    Route::get('/primaryform', [PrimaryFormController::class, 'index'])->name('primaryform.index');
+    Route::post('/primaryform', [PrimaryFormController::class, 'store'])->name('primaryform.store');
+});
+
+
+  Route::middleware(['auth'])->group(function () {
+    Route::post('/secondaryform', [SecondaryFormController::class, 'save'])->name('secondaryform.save');
+});
 
 
 Route::prefix('sub-application')->group(function () {
@@ -30,14 +49,6 @@ Route::prefix('sub-application')->group(function () {
 
 
 
-// Example route for the apps.php file
-Route::middleware(['auth'])->group(function () {
-    Route::get('/primaryform', [PrimaryFormController::class, 'index'])->name('primaryform.index');
-    Route::post('/primaryform', [PrimaryFormController::class, 'store'])->name('primaryform.store');
-    Route::get('/conveyance/{id}', [MotherApplicationController::class, 'getConveyance'])->name('conveyance.get');
-    Route::post('/conveyance/update', [MotherApplicationController::class, 'updateConveyance'])->name('conveyance.update');
-    Route::post('/render-buyers-list', [MotherApplicationController::class, 'renderBuyersList'])->name('render-buyers-list');
-});
 
 Route::prefix('actions')->group(function () {
     Route::get('/other-departments/{id}', [ActionsController::class, 'OtherDepartments'])->name('actions.other-departments');
@@ -47,6 +58,23 @@ Route::prefix('actions')->group(function () {
     Route::get('/final-conveyance/{id}', [ActionsController::class, 'FinalConveyance'])->name('actions.final-conveyance');
     Route::post('/{application}/update-architectural-design', [ActionsController::class, 'updateArchitecturalDesign'])->name('actions.update-architectural-design');
     Route::get('/director-approval/{id}', [ActionsController::class, 'DirectorApproval'])->name('actions.director-approval');
+});
+
+Route::prefix('sub-actions')->group(function () {
+    Route::get('/other-departments/{id}', [SubActionsController::class, 'OtherDepartments'])->name('sub-actions.other-departments');
+    Route::get('/bill/{id}', [SubActionsController::class, 'Bill'])->name('sub-actions.bill');
+    Route::get('/payments/{id}', [SubActionsController::class, 'Payment'])->name('sub-actions.payments');
+    Route::get('/recommendation/{id}', [SubActionsController::class, 'Recommendation'])->name('sub-actions.recommendation');
+    Route::get('/final-conveyance/{id}', [SubActionsController::class, 'FinalConveyance'])->name('sub-actions.final-conveyance');
+    Route::post('/{application}/update-architectural-design', [SubActionsController::class, 'updateArchitecturalDesign'])->name('sub-actions.update-architectural-design');
+    Route::get('/director-approval/{id}', [SubActionsController::class, 'DirectorApproval'])->name('sub-actions.director-approval');
+    
+    // New AJAX endpoints
+    Route::post('/planning-recommendation/update', [SubActionsController::class, 'updatePlanningRecommendation'])->name('sub-actions.update-planning-recommendation');
+    Route::post('/director-approval/update', [SubActionsController::class, 'updateDirectorApproval'])->name('sub-actions.update-director-approval');
+    Route::post('/survey/store', [SubActionsController::class, 'storeSurvey'])->name('sub-actions.store-survey');
+    Route::post('/deeds/store', [SubActionsController::class, 'storeDeeds'])->name('sub-actions.store-deeds');
+    Route::get('/related/{primaryId}', [SubActionsController::class, 'getRelatedSubApplications'])->name('sub-actions.get-related');
 });
 
 Route::prefix('programmes')->group(function () {
@@ -60,6 +88,8 @@ Route::prefix('programmes')->group(function () {
     Route::get('/report', [ProgrammesController::class, 'ST_Report'])->name('programmes.report');
     Route::get('/certificates', [ProgrammesController::class, 'CertificateOfOccupancy'])->name('programmes.certificates');
     Route::get('/entity/{applicationId?}', [ProgrammesController::class, 'Entity'])->name('programmes.entity');
+    Route::get('/memo', [ProgrammesController::class, 'Memo'])->name('programmes.memo'); 
+    Route::get('/rofo', [ProgrammesController::class, 'RofO'])->name('programmes.rofo');
 });
 
 

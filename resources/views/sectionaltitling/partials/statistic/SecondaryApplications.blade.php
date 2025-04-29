@@ -4,7 +4,7 @@
 
 
 <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6 mb-8">
-    <h2 class="text-xl font-bold mb-2">Secondary Applications</h2>
+    <h2 class="text-xl font-bold mb-2">Unit Applications</h2>
     <p class="text-gray-500 text-sm mb-6">Applications from unit owners to claim individual sections</p>
     
     <div class="grid grid-cols-4 gap-6 mb-8">
@@ -31,7 +31,7 @@
     
     <!-- Secondary Application Process -->
     <div class="mt-8"style="display: none;">
-      <h3 class="text-lg font-bold mb-2">Secondary Application Process</h3>
+      <h3 class="text-lg font-bold mb-2">Unit Application Process</h3>
       <p class="text-gray-500 text-sm mb-6">Steps for processing unit owner applications</p>
       
       <div class="pl-4 mt-6">

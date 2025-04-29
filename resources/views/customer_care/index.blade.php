@@ -71,8 +71,7 @@
               </button>
               <div id="messageTypeMenu" class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-10">
                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                  <!-- Individual Outreach Options -->
-                  <div class="px-3 py-1 text-xs font-semibold text-gray-500 border-b">Individual Outreach</div>
+                  
                   <button onclick="promptForIndividualOutreach('call')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left" role="menuitem">
                     <i data-lucide="phone" class="inline-block w-4 h-4 mr-2 text-blue-500"></i> Call a Customer
                   </button>

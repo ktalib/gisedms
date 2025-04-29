@@ -40,10 +40,7 @@
                         <div class="p-5">
                             <!-- File information -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                                <div>
-                                    <p class="text-sm text-gray-600 font-medium">File No:</p>
-                                    <p class="text-blue-600 font-semibold">{{ $application->mother_fileno ?? 'N/A' }}</p>
-                                </div>
+                              
                                 <div>
                                     <p class="text-sm text-gray-600 font-medium">Form ID:</p>
                                     <p>STM-2025-000{{ $application->main_application_id ?? 'N/A' }}</p>
@@ -173,10 +170,29 @@
                                                 </div>
                                             </div>
                                         @endif
+                                        <br>
+                                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-id-card-icon lucide-id-card h-6 w-6 mr-3 text-blue-500"><path d="M16 10h2"/><path d="M16 14h2"/><path d="M6.17 15a3 3 0 0 1 5.66 0"/><circle cx="9" cy="11" r="2"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+                                                <div>
+                                                    <p class="font-medium text-blue-800">
+                                                      FileNo:  {{ $application->mother_fileno ?? 'N/A' }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      
                                     </div>
                                 </div>
                             </div>
                             
+
+ 
+
+
+
+
+
                             <!-- Property details -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
@@ -207,20 +223,7 @@
                         </div>
                         <div class="p-5">
                             <!-- Unit Identification Details -->
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                                <div>
-                                    <p class="text-sm text-gray-600 font-medium">Block Number:</p>
-                                    <p class="text-blue-600 font-semibold">{{ $application->block_number ?? 'N/A' }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-600 font-medium">Section Number (Floor):</p>
-                                    <p>{{ $application->floor_number ?? 'N/A' }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-600 font-medium">Unit Number:</p>
-                                    <p>{{ $application->unit_number ?? 'N/A' }}</p>
-                                </div>
-                            </div>
+                        
                             
                             <!-- Unit Owner Identity -->
                             <div class="bg-gray-50 p-4 rounded-lg mb-6">
@@ -318,7 +321,34 @@
                                                 </div>
                                             </div>
                                         @endif
+                                        
+                                        <br>
+                                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-id-card-icon lucide-id-card h-6 w-6 mr-3 text-blue-500"><path d="M16 10h2"/><path d="M16 14h2"/><path d="M6.17 15a3 3 0 0 1 5.66 0"/><circle cx="9" cy="11" r="2"/><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+                                                <div>
+                                                    <p class="font-medium text-blue-800">
+                                                      ST FIleNo:  {{ $application->fileno ?? '' }}  
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <br>
+                                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid2x2-check-icon lucide-grid-2x2-check h-6 w-6 mr-3 text-blue-500"><path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"/><path d="m16 19 2 2 4-4"/></svg>
+                                                <div>
+                                                    <p class="font-medium text-blue-800">
+                                                        Scheme No:  {{ $application->scheme_no ?? '' }}  
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
+
+                                    
                                 </div>
                             </div>
                             
@@ -374,8 +404,124 @@
                         </div>
                     </div>
 
-                    <!-- Initial Bill Details -->
+                 
+                    <!-- Property Details -->
                     <div class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-100 p-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Property Details
+                            </h3>
+                        </div>
+                        <div class="p-5">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">Block Number:</p>
+                                    <p class="text-blue-600 font-semibold">{{ $application->block_number ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">Section Number (Floor):</p>
+                                    <p>{{ $application->floor_number ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">Unit Number:</p>
+                                    <p>{{ $application->unit_number ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">House Number:</p>
+                                    <p>{{ $application->mother_property_house_no ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">Plot Number:</p>
+                                    <p>{{ $application->mother_property_house_no ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">Street Name:</p>
+                                    <p>{{ $application->mother_property_street_name ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">District:</p>
+                                    <p>{{ $application->mother_property_district ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">Local Govt Area:</p>
+                                    <p>{{ $application->mother_property_lga ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                                <div>
+                                    <p class="text-sm text-gray-600 font-medium">Land Use:</p>
+                                    <p>{{ ucfirst($application->land_use ?? 'N/A') }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <p class="text-sm text-gray-600 font-medium">Comments:</p>
+                                <div class="p-3 bg-gray-50 rounded-md mt-1 text-gray-700">
+                                    {{ $application->comments ?? 'No comments' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shared Areas -->
+                    <div class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-100 p-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                Shared Areas
+                            </h3>
+                        </div>
+                        <div class="p-5">
+                            @php
+                                $sharedAreas = isset($application->shared_areas) && is_string($application->shared_areas) 
+                                    ? json_decode($application->shared_areas, true) 
+                                    : (is_array($application->shared_areas) ? $application->shared_areas : []);
+                                
+                                if (json_last_error() !== JSON_ERROR_NONE) {
+                                    $sharedAreas = [];
+                                }
+                            @endphp
+                            
+                            @if(count($sharedAreas) > 0)
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($sharedAreas as $area)
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            {{ ucfirst($area) }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center py-4 text-gray-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                    <p>No shared areas defined for this property</p>
+                                </div>
+                            @endif
+                            
+                            <div class="mt-4 text-sm text-gray-600">
+                                <p class="font-medium mb-2">All residents have access to these common areas as part of the sectional title scheme.</p>
+                                <p>Maintenance of shared areas is covered by the body corporate fees.</p>
+                            </div>
+                        </div>
+                    </div>
+                       <!-- Initial Bill Details -->
+                       <div class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                         <div class="bg-gray-100 p-4 border-b border-gray-200">
                             <h3 class="text-lg font-semibold flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -429,37 +575,6 @@
                         </div>
                     </div>
                     
-                    <!-- Property Details -->
-                    <div class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="bg-gray-100 p-4 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                </svg>
-                                Property Details
-                            </h3>
-                        </div>
-                        <div class="p-5">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <p class="text-sm text-gray-600 font-medium">Property Location:</p>
-                                    <p>{{ $application->property_location ?? 'N/A' }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-600 font-medium">Land Use:</p>
-                                    <p>{{ ucfirst($application->land_use ?? 'N/A') }}</p>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-6">
-                                <p class="text-sm text-gray-600 font-medium">Comments:</p>
-                                <div class="p-3 bg-gray-50 rounded-md mt-1 text-gray-700">
-                                    {{ $application->comments ?? 'No comments' }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Action Buttons -->
                     <div class="flex justify-center space-x-4 mt-8">
                         <a href="{{ route('sectionaltitling.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
@@ -486,11 +601,6 @@
     <!-- Footer -->
     @include('admin.footer')
   </div>
-  @include('sectionaltitling.sub_action_modals.payment_modal')
-  @include('sectionaltitling.sub_action_modals.other_departments')
-  @include('sectionaltitling.sub_action_modals.eRegistry_modal')
-  @include('sectionaltitling.sub_action_modals.recommendation')
-  @include('sectionaltitling.sub_action_modals.directorApproval')
  
 @endsection
 

@@ -3,19 +3,19 @@
     <label class="block mb-2 font-medium">Type of Residence</label>
     <div class="grid grid-cols-2 gap-4">
       <label class="flex items-center">
-        <input type="radio" name="residenceType" class="mr-2" value="Detached House" checked>
+        <input type="radio" name="residence_type" class="mr-2" value="Detached House" checked>
         <span>Detached House</span>
       </label>
       <label class="flex items-center">
-        <input type="radio" name="residenceType" class="mr-2" value="Housing Estate">
+        <input type="radio" name="residence_type" class="mr-2" value="Housing Estate">
         <span>Housing Estate</span>
       </label>
       <label class="flex items-center">
-        <input type="radio" name="residenceType" class="mr-2" value="Fragmented Layout">
+        <input type="radio" name="residence_type" class="mr-2" value="Fragmented Layout">
         <span>Fragmented Layout</span>
       </label>
       <label class="flex items-center">
-        <input type="radio" name="residenceType" class="mr-2" value="others">
+        <input type="radio" name="residence_type" class="mr-2" value="others">
         <span>Others</span>
       </label>
     </div>

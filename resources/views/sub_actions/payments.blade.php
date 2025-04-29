@@ -90,16 +90,35 @@
                              
                              
                              <div class="py-2">
-                              <div class="flex items-center justify-between mb-4">
-                                <div>
-                                 <h3 class="text-sm font-medium">{{$application->land_use}} Property</h3>
-                                 <p class="text-xs text-gray-500">
-                                   Application ID: <span id="display_application_id">ST-2025-0{{$application->id}}</span> | File No: <span id="display_file_no">{{$application->fileno}}</span>
-                                 </p>
+                              <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                                <!-- Primary Application Info (First, as requested) -->
+                                <div class="flex items-center mb-3">
+                                  <div class="bg-blue-100 text-blue-800 rounded-full p-1 mr-2">
+                                    <i data-lucide="file-check" class="w-4 h-4"></i>
+                                  </div>
+                                  <div>
+                                    <h3 class="text-sm font-medium text-blue-800">Original Owner</h3>
+                                    <p class="text-xs text-gray-700">
+                                      {{ $application->primary_applicant_title ?? '' }} {{ $application->primary_first_name ?? '' }} {{ $application->primary_surname ?? '' }}
+                                      <span class="inline-flex items-center px-2 py-0.5 ml-1 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                                        <i data-lucide="link" class="w-3 h-3 mr-1"></i>File No: {{ $application->primary_fileno ?? 'N/A' }}
+                                      </span>
+                                    </p>
+                                  </div>
                                 </div>
-                                <div class="text-right">
-                                 <h3 class="text-sm font-medium">{{ $application->applicant_title}} {{ $application->surname}} {{ $application->first_name}}</h3>
-                                 <p class="text-xs text-gray-500">{{  $application->land_use}}</p>
+                                
+                                <!-- Current Application Info -->
+                                <div class="flex justify-between items-center border-t border-gray-200 pt-3">
+                                  <div>
+                                    <h3 class="text-sm font-medium">{{ $application->land_use ?? 'Property' }}</h3>
+                                    <p class="text-xs text-gray-600 mt-1">
+                                      File No: <span class="font-medium">{{ $application->fileno ?? 'N/A' }}</span>
+                                    </p>
+                                  </div>
+                                  <div class="text-right">
+                                    <h3 class="text-sm font-medium">{{ $application->applicant_title ?? '' }} {{ $application->surname ?? '' }} {{ $application->first_name ?? '' }}</h3>
+                                    <p class="text-xs text-gray-600 mt-1">Applicant</p>
+                                  </div>
                                 </div>
                               </div>
                       
@@ -398,7 +417,11 @@
                            
                            <!-- Footer -->
                           <div class="flex justify-end p-4 border-t">
-                            <button type="button" class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" id="back">Back</button>
+                            <a  href="{{route('sectionaltitling.secondary')}}" class="flex items-center px-3 py-1 text-xs bg-white text-black p-2 border border-gray-500 rounded-md hover:bg-gray-800">
+                              <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
+                              Back
+                            </a>    
+                            
                           </div>
  
                         </div>

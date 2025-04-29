@@ -417,39 +417,40 @@
         </button>
 
         <div id="conveyanceModal"
-            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 hidden z-50 transition-opacity duration-300">
             <div
-                class="bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+                class="bg-white w-11/12 md:max-w-3xl mx-auto rounded-lg shadow-2xl z-50 overflow-hidden transform transition-transform duration-300">
                 <!-- Modal header -->
-                <div class="flex justify-between items-center py-4 px-6 bg-gray-100 border-b">
-                    <h3 class="text-xl font-medium">Conveyance Records</h3>
+                <div class="flex justify-between items-center py-4 px-6 bg-gray-50 border-b">
+                    <h3 class="text-xl font-semibold text-gray-800">Conveyance Records</h3>
                     <button
                         onclick="document.getElementById('conveyanceModal').classList.add('hidden')"
-                        class="text-gray-600 hover:text-gray-900 text-2xl leading-none">&times;</button>
+                        class="text-gray-500 hover:text-gray-800 transition-colors duration-150 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
                 <!-- Modal body -->
-                <div class="p-6">
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
                     @php
                         // Debug information
                         $conveyanceDebug = $application->conveyance ?? 'No conveyance data';
 
                         // Try to decode if it's a JSON string
-$conveyanceData = $application->conveyance;
-if (is_string($conveyanceData) && !empty($conveyanceData)) {
-try {
-$conveyanceData = json_decode($conveyanceData, true);
-} catch (\Exception $e) {
-// Keep as is if not valid JSON
-}
-}
+                        $conveyanceData = $application->conveyance;
+                        if (is_string($conveyanceData) && !empty($conveyanceData)) {
+                            try {
+                                $conveyanceData = json_decode($conveyanceData, true);
+                            } catch (\Exception $e) {
+                                // Keep as is if not valid JSON
+                            }
+                        }
 
-// Get records with multiple fallback options
-$records = [];
-if (
-is_array($conveyanceData) &&
-isset($conveyanceData['records'])
-) {
-$records = $conveyanceData['records'];
+                        // Get records with multiple fallback options
+                        $records = [];
+                        if (is_array($conveyanceData) && isset($conveyanceData['records'])) {
+                            $records = $conveyanceData['records'];
                         } elseif (isset($conveyance->records)) {
                             $records = $conveyance->records;
                         } elseif (is_array($conveyanceData)) {
@@ -457,53 +458,111 @@ $records = $conveyanceData['records'];
                         }
                     @endphp
 
-
-
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                                    Buyer Name</th>
-                                <th
-                                    class="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                                    Section No</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($records as $record)
-                                <tr
-                                    class="{{ $loop->iteration % 2 == 0 ? 'bg-gray-50' : '' }}">
-                                    <td class="px-4 py-2">
-                                        @if (is_array($record))
-                                            {{ $record['buyerName'] ?? ($record['buyer_name'] ?? 'N/A') }}
-                                        @else
-                                            {{ $record->buyerName ?? ($record->buyer_name ?? 'N/A') }}
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        @if (is_array($record))
-                                            {{ $record['sectionNo'] ?? ($record['section_no'] ?? 'N/A') }}
-                                        @else
-                                            {{ $record->sectionNo ?? ($record->section_no ?? 'N/A') }}
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
+                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
                                 <tr>
-                                    <td colspan="2"
-                                        class="px-4 py-2 text-center text-gray-500">No
-                                        conveyance records available.</td>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Buyer Name
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Section No
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Purchase Date
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions
+                                    </th>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @forelse($records as $record)
+                                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                @if (is_array($record))
+                                                    {{ $record['buyerName'] ?? ($record['buyer_name'] ?? 'N/A') }}
+                                                @else
+                                                    {{ $record->buyerName ?? ($record->buyer_name ?? 'N/A') }}
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">
+                                                @if (is_array($record))
+                                                    {{ $record['sectionNo'] ?? ($record['section_no'] ?? 'N/A') }}
+                                                @else
+                                                    {{ $record->sectionNo ?? ($record->section_no ?? 'N/A') }}
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">
+                                                @if (is_array($record))
+                                                    {{ $record['purchaseDate'] ?? ($record['purchase_date'] ?? 'N/A') }}
+                                                @else
+                                                    {{ $record->purchaseDate ?? ($record->purchase_date ?? 'N/A') }}
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @php
+                                                $status = '';
+                                                if (is_array($record)) {
+                                                    $status = $record['status'] ?? ($record['record_status'] ?? 'Pending');
+                                                } else {
+                                                    $status = $record->status ?? ($record->record_status ?? 'Pending');
+                                                }
+                                                
+                                                $statusColor = 'gray';
+                                                if (strtolower($status) == 'approved') {
+                                                    $statusColor = 'green';
+                                                } elseif (strtolower($status) == 'rejected') {
+                                                    $statusColor = 'red';
+                                                } elseif (strtolower($status) == 'pending') {
+                                                    $statusColor = 'yellow';
+                                                }
+                                            @endphp
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ $statusColor }}-100 text-{{ $statusColor }}-800">
+                                                {{ $status }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                                            <a href="#" class="text-blue-600 hover:text-blue-900">Print</a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                                            <div class="flex flex-col items-center justify-center py-5">
+                                                <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                <span class="mt-2 text-sm font-medium">No conveyance records available</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- Modal footer -->
-                <div class="px-6 py-4 bg-gray-100 border-t text-right">
+                <div class="px-6 py-4 bg-gray-50 border-t flex justify-between items-center">
+                    <button class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out flex items-center">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Add Record
+                    </button>
                     <button
                         onclick="document.getElementById('conveyanceModal').classList.add('hidden')"
-                        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                        class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
                         Close
                     </button>
                 </div>

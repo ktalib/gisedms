@@ -13,7 +13,7 @@
     <div class="p-6">
       <!-- Stats Cards -->
         
-     @include('sectionaltitling.partials.statistic.statistic_card')
+  
 
       <!-- Tabs -->
       @include('sectionaltitling.partials.tabs')
@@ -36,50 +36,53 @@
               <i data-lucide="chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
             </div>
             
-            <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
-              <i data-lucide="upload" class="w-4 h-4 text-gray-600"></i>
-              <span>Import Field Data</span>
-            </button>
-            
+            <button style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background-color: #fff8f1; border: 2px solid #f97316; border-radius: 0.375rem; cursor: pointer; transition: background-color 0.2s ease;">
+              <i data-lucide="upload" style="width: 1rem; height: 1rem; color: #ea580c;"></i>
+              <span style="font-weight: 500; color: #ea580c;">Import Field Data</span>
+          </button>
+
+          <style>
+              button:hover {
+                  background-color: #fed7aa;
+              }
+          </style>
             <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
               <i data-lucide="download" class="w-4 h-4 text-gray-600"></i>
               <span>Export</span>
             </button>
             
-            <div class="relative">
-              <button class="flex items-center space-x-2 px-4 py-2 bg-gray-900 text-white rounded-md">
-                <i data-lucide="home" class="w-4 h-4"></i>
-                <span>New Secondary Application</span>
-              </button>
-            </div>
+           
           </div>
         </div>
-        
-        <div class="w-full">
-          <table class="w-full table-auto divide-y divide-gray-200">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
             <thead>
-              <tr class="text-xs">
-            <th class="table-header whitespace-normal px-1 w-[7%]">Primary App ID</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Primary File No</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">ST File No</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Scheme No</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Land Use</th>
-            <th class="table-header whitespace-normal px-1 w-[15%]">Original Owner</th>
-            <th class="table-header whitespace-normal px-1 w-[15%]">Unit Owner Name</th>
-            <th class="table-header whitespace-normal px-1 w-[5%]">Unit</th>
-            <th class="table-header whitespace-normal px-1 w-[8%]">Phone Number</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Planning Rec.</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Status</th>
-            <th class="table-header whitespace-normal px-1 w-[8%]">Actions</th> 
+            <tr class="text-xs">
+            <th  class="table-header text-green-500">PrimaryID</th>
+            <th  class="table-header text-green-500">SchemeNo</th>
+            <th  class="table-header text-green-500">Mother FileNo</th>
+            <th  class="table-header text-green-500">STFileNo</th>
+
+             
+            
+            <th  class="table-header text-green-500">Land Use</th>
+            <th  class="table-header text-green-500">Original Owner</th>
+            <th  class="table-header text-green-500">Unit Owner</th>
+            <th  class="table-header text-green-500">Unit</th>
+            <th  class="table-header text-green-500">Phone Number</th>
+            <th  class="table-header text-green-500">Planning Rec.</th>
+            <th  class="table-header text-green-500">Status</th>
+            <th  class="table-header text-green-500">Actions</th> 
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               @foreach($SecondaryApplications as $app)
               <tr class="text-xs">
-            <td class="table-cell px-1 py-1 truncate">ST-2025-0{{ $app->main_application_id ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->main_id ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->scheme_no ?? 'N/A' }}</td>
             <td class="table-cell px-1 py-1 truncate">{{ $app->mother_fileno ?? 'N/A' }}</td>
             <td class="table-cell px-1 py-1 truncate">{{ $app->fileno ?? 'N/A' }}</td>
-            <td class="table-cell px-1 py-1 truncate">{{ $app->scheme_no ?? 'N/A' }}</td>
+           
             <td class="table-cell px-1 py-1 truncate">{{ $app->land_use ?? 'N/A' }}</td>
             <td class="table-cell px-1 py-1">
               <div class="flex items-center">
@@ -210,7 +213,24 @@
               </div>
             </td>
             <td class="table-cell px-1 py-1 truncate">{{ $app->unit_number ?? 'N/A' }}</td>
-            <td class="table-cell px-1 py-1 truncate">{{ $app->phone_number ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">
+              @if(!empty($app->phone_number) && str_contains($app->phone_number, ','))
+                @php
+                  $phones = array_map('trim', explode(',', $app->phone_number));
+                  $firstPhone = $phones[0];
+                  $allPhones = implode('<br>', $phones);
+                @endphp
+                <div class="relative group">
+                  <span>{{ $firstPhone }}</span>
+                  <i data-lucide="more-horizontal" class="inline-block w-3 h-3 text-gray-500 ml-1"></i>
+                  <div class="absolute hidden group-hover:block bg-white border border-gray-200 shadow-lg rounded-md p-2 z-10 text-xs">
+                    {!! $allPhones !!}
+                  </div>
+                </div>
+              @else
+                {{ $app->phone_number ?? 'N/A' }}
+              @endif
+            </td>
             <td class="table-cell px-1 py-1">
               <span class="badge badge-{{ strtolower($app->planning_recommendation_status) === 'approved' ? 'approved' : (strtolower($app->planning_recommendation_status) === 'rejected' ? 'rejected' : (strtolower($app->planning_recommendation_status) === 'in progress' ? 'progress' : 'pending')) }}">
             {{ $app->planning_recommendation_status ?? 'Pending' }}

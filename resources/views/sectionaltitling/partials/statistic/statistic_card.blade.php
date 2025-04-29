@@ -18,8 +18,8 @@
     <div class="stat-card">
       <div class="flex items-start mb-2">
         <div>
-          <h3 class="text-gray-700 font-medium">Primary Applications</h3>
-          <p class="text-xs text-gray-500 mt-1">Total primary applications</p>
+          <h3 class="text-gray-700 font-medium">Unit Applications</h3>
+          <p class="text-xs text-gray-500 mt-1">Total unit applications</p>
         </div>
         <i data-lucide="file-text" class="ml-auto text-gray-500 w-5 h-5"></i>
       </div>
@@ -33,8 +33,8 @@
     <div class="stat-card">
       <div class="flex items-start mb-2">
         <div>
-          <h3 class="text-gray-700 font-medium">Secondary Applications</h3>
-          <p class="text-xs text-gray-500 mt-1">Total secondary applications</p>
+          <h3 class="text-gray-700 font-medium">Unit Applications</h3>
+          <p class="text-xs text-gray-500 mt-1">Total unit applications</p>
         </div>
         <i data-lucide="home" class="ml-auto text-gray-500 w-5 h-5"></i>
       </div>

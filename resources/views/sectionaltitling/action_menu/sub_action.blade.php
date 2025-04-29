@@ -6,49 +6,44 @@
    <!-- Dropdown Menu -->
    <ul class="fixed action-menu z-50 bg-white border rounded-lg shadow-lg hidden w-56">
       <li> 
+         @if($app->planning_recommendation_status == 'Pending' && $app->application_status == 'Pending')
+         <span class="block w-full text-left px-4 py-2 text-gray-400 flex items-center space-x-2 cursor-not-allowed" title="Unavailable while status is pending">
+            <i data-lucide="eye" class="w-4 h-4 text-gray-400"></i>
+            <span>View Unit Application</span>
+         </span>
+         @else
          <a href="{{ route('sectionaltitling.viewrecorddetail_sub', $app->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-         <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
-         <span>View Unit Application</span>
+            <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
+            <span>View Unit Application</span>
+         </a>
+         @endif
+      </li>
+      <li>
+         <a href="{{ route('sub-actions.payments', $app->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+            <i data-lucide="credit-card" class="w-4 h-4 text-green-500"></i>
+            <span>Payments</span>
          </a>
       </li>
-   <li>
-      <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2 payment-btn"
-         data-id="{{ $app->id }}">
-      <i data-lucide="credit-card" class="w-4 h-4 text-green-500"></i>
-      <span>Payments</span>
-      </button>
-   </li>
       <li>
-         <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-            data-id="{{ $app->id }}" onclick="openOtherApprovalsModal('{{ $app->id }}')">
-         <i data-lucide="layout-grid" class="w-4 h-4 text-red-500"></i>
-         <span>Other Departments</span>
-         </button>
-      </li>
-      <li>
-         <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-            onclick="openERegistryModal('{{ $app->id }}')">
-         <i data-lucide="database" class="w-4 h-4 text-red-500"></i>
-         <span>e-Registry</span>
-         </button>
-      </li>
-      <li>
-         <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-            data-id="{{ $app->id }}"
-            onclick="openPlanningRecommendationModal('{{ $app->id }}')">
-         <i data-lucide="clipboard-check" class="w-4 h-4 text-blue-500"></i>
-         <span>Planning Recommendation</span>
-         </button>
-      </li>
-      <li>
-         <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2 decision-mother-btn"
-            data-id="{{ $app->id }}"
-            onclick="openDirectorApprovalModal('{{ $app->id }}')">
-         <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
-         <span>Director's Approval</span>
-         </button>
+         <a href="{{ route('sub-actions.other-departments', $app->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+            <i data-lucide="layout-grid" class="w-4 h-4 text-red-500"></i>
+            <span>Other Departments</span>
+         </a>
       </li>
    
+      <li>
+         <a href="{{ route('sub-actions.recommendation', $app->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+            <i data-lucide="clipboard-check" class="w-4 h-4 text-blue-500"></i>
+            <span>Planning Recommendation</span>
+         </a>
+      </li>
+      <li>
+         <a href="{{ route('sub-actions.director-approval', $app->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
+            <span>Director's Approval</span>
+         </a>
+      </li>
+    
    </ul>
  </div>
 

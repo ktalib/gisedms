@@ -1,25 +1,44 @@
- File Indexing API Endpoints
- # Get all records
+# File Indexing API Endpoints
+
+## GET Requests
+# Get all records
 curl -X GET http://localhost:8000/api/file-records
 
 # Get a specific record
 curl -X GET http://localhost:8000/api/file-records/1
 
+## POST Requests
 # Search records
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"fileNo":"KNML 00001"}' \
   http://localhost:8000/api/file-records/search
-  .............................................    http://localhost:8000/api/property-transaction
 
-           use sweetalert for feedback add loader
+# Property Transaction Endpoint
+http://localhost:8000/api/property-transaction
 
-         Swal.fire({
-                title: 'Processing...',
-                html: 'Submitting Final Conveyance',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+# SweetAlert Implementation
+# Add loader and feedback using SweetAlert
+Swal.fire({
+    title: 'Processing...',
+    html: 'Submitting Final Conveyance',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    didOpen: () => {
+        Swal.showLoading();
+    }
+});
+
+
+#We are going to buy this  API
+
+**For customer support**
+
+**Call API**: Allows your application to make programmatic voice calls. 
+
+**SMS API**: Enables sending text messages programmatically. 
+
+**RealTime Notification**
+
+**Signal API**: For realtime notifications, allowing immediate updates to users. 
+

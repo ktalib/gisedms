@@ -79,7 +79,7 @@ class ApplicationMotherController extends Controller
         $formattedSerialNumber = sprintf('%02d', $nextSerialNumber);
 
         return view('sectionaltitling.sub_application', compact('nextSerialNumber', 'prefix', 'currentYear', 'formattedSerialNumber','PageTitle', 'PageDescription'));
-    }
+    } 
 
     public function create()
     {

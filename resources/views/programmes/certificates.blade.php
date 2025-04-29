@@ -159,7 +159,7 @@
                             <i data-lucide="file-text" class="w-5 h-5"></i>
                         </span>
                     </div>
-                    <p class="text-3xl font-bold text-gray-800 mt-2" id="total-count">{{ count($approvedUnitApplications) }}</p>
+                    <p class="text-3xl font-bold text-gray-800 mt-2" id="total-count">{{ collect($approvedUnitApplications)->where('planning_recommendation_status', 'Approved')->where('application_status', 'Approved')->count() }}</p>
                 </div>
                 
                 <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
@@ -212,9 +212,7 @@
                                         <td class="table-cell">{{ $application->owner_name }}</td>
                                         <td class="table-cell">{{ $application->property_lga }}</td>
                                         <td class="table-cell">
-                                            Block: {{ $application->block_number ?? 'N/A' }}, 
-                                            Floor: {{ $application->floor_number ?? 'N/A' }}, 
-                                            Unit: {{ $application->unit_number ?? 'N/A' }}
+                                          {{ $application->block_number ?? 'N/A' }}/{{ $application->floor_number ?? 'N/A' }}/{{ $application->unit_number ?? 'N/A' }}
                                         </td>
                                         <td class="table-cell">{{ $application->land_use }}</td>
                                         <td class="table-cell">

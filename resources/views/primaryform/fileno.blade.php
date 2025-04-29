@@ -1,3 +1,37 @@
+<style>
+   .tab {
+        overflow: hidden;
+
+    }
+
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 10px 16px;
+        transition: 0.3s;
+        font-size: 14px;
+    }
+
+    .tab button:hover {
+        background-color: #ddd;
+    }
+
+    .tab button.active {
+        background-color: #ccc;
+    }
+
+    .tabcontent {
+        display: none;
+    }
+
+    .tabcontent.active {
+        display: block;
+    }
+
+    </style>
 <div class="bg-green-50 border border-green-100 rounded-md p-4 mb-6 items-center">
     <div class="flex items-center mb-2">
       <i data-lucide="file" class="w-5 h-5 mr-2 text-green-600"></i>

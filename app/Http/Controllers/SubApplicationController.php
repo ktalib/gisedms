@@ -381,7 +381,13 @@ class SubApplicationController extends Controller
                 'mother.email as mother_email',
                 'mother.land_use as mother_land_use',
                 'mother.plot_size as mother_plot_size',
-                'mother.fileno as mother_fileno'
+                'mother.fileno as mother_fileno',
+                'mother.property_house_no as mother_property_house_no',
+                'mother.property_plot_no as mother_property_plot_no',
+                'mother.property_street_name as mother_property_street_name',
+                'mother.property_district as mother_property_district',
+                'mother.property_lga as mother_property_lga',
+                
             )
             ->where('sub.id', $id)
             ->first();

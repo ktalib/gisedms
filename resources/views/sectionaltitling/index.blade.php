@@ -135,7 +135,11 @@
           <ul class="space-y-2">
             <li class="flex items-start">
               <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
-              <span>Process applications</span>
+              <span>Process Applications</span>
+            </li>
+            <li class="flex items-start">
+              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
+              <span>Deed Registration</span>
             </li>
             <li class="flex items-start">
               <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
@@ -143,11 +147,7 @@
             </li>
             <li class="flex items-start">
               <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
-              <span>3D modeling</span>
-            </li>
-            <li class="flex items-start">
-              <i data-lucide="check" class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"></i>
-              <span>Deed registration</span>
+              <span>3D Modelling</span>
             </li>
           </ul>
         </div>

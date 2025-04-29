@@ -51,75 +51,64 @@
                     </div>
                     
                     <div class="py-2">
-                      <div class="flex items-center justify-between mb-4">
-                        <div>
-                          <h3 class="text-sm font-medium">{{$application->land_use }} Property</h3>
-                          <p class="text-xs text-gray-500">
-                            Application ID: {{$application->applicationID}} | File No: {{$application->fileno }}  
-                          </p>
-                          @php
-                            $statusClass = match(strtolower($application->planning_recommendation_status ?? '')) {
-                              'approve' => 'bg-green-100 text-green-800',
-                              'approved' => 'bg-green-100 text-green-800',
-                              'pending' => 'bg-yellow-100 text-yellow-800',
-                              'decline' => 'bg-red-100 text-red-800',
-                              'declined' => 'bg-red-100 text-red-800',
-                              default => 'bg-gray-100 text-gray-800'
-                            };
-                            
-                            $statusIcon = match(strtolower($application->planning_recommendation_status ?? '')) {
-                              'approve' => 'check-circle',
-                              'approved' => 'check-circle',
-                              'pending' => 'clock',
-                              'decline' => 'x-circle',
-                              'declined' => 'x-circle',
-                              default => 'help-circle'
-                            };
-                          @endphp
-                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $statusClass }}">
-                            <i data-lucide="{{ $statusIcon }}" class="w-3 h-3 mr-1"></i>
-                            {{$application->planning_recommendation_status }}
-                          </span>
+                      <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                        <!-- Primary Application Info (First, as requested) -->
+                        <div class="flex items-center mb-3">
+                          <div class="bg-blue-100 text-blue-800 rounded-full p-1 mr-2">
+                            <i data-lucide="file-check" class="w-4 h-4"></i>
+                          </div>
+                          <div>
+                            <h3 class="text-sm font-medium text-blue-800">Original Owner</h3>
+                            <p class="text-xs text-gray-700">
+                              {{ $application->primary_applicant_title ?? '' }} {{ $application->primary_first_name ?? '' }} {{ $application->primary_surname ?? '' }}
+                              <span class="inline-flex items-center px-2 py-0.5 ml-1 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                                <i data-lucide="link" class="w-3 h-3 mr-1"></i>File No: {{ $application->primary_fileno ?? 'N/A' }}
+                              </span>
+                            </p>
+                          </div>
                         </div>
-                        <div class="text-right">
-                          <h3 class="text-sm font-medium">{{$application->applicant_title }} {{$application->first_name }} {{$application->surname }}</h3>
-                          <p class="text-xs text-gray-500">
-                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                            {{$application->land_use }}
-                          </span>
-                          </p>
+                        
+                        <!-- Current Application Info -->
+                        <div class="flex justify-between items-center border-t border-gray-200 pt-3">
+                          <div>
+                            <h3 class="text-sm font-medium">{{ $application->land_use ?? 'Property' }}</h3>
+                            <p class="text-xs text-gray-600 mt-1">
+                              File No: <span class="font-medium">{{ $application->fileno ?? 'N/A' }}</span>
+                            </p>
+                          </div>
+                          <div class="text-right">
+                            <h3 class="text-sm font-medium">{{ $application->applicant_title ?? '' }} {{ $application->surname ?? '' }} {{ $application->first_name ?? '' }}</h3>
+                            <p class="text-xs text-gray-600 mt-1">Unit Owner</p>
+                          </div>
+                            
+
                         </div>
                       </div>
-                
                       <!-- Tabs Navigation -->
                       
                   
 
                       <div class="grid grid-cols-3 gap-2 mb-4">
-                      
-                        <button class="tab-button active" data-tab="detterment">
+                        <button class="tab-button active" data-tab="initial">
+                          <i data-lucide="banknote" class="w-3.5 h-3.5 mr-1.5"></i>
+                          Approve Recommendation
+                        </button>
+                        <button class="tab-button" data-tab="detterment">
                           <i data-lucide="calculator" class="w-3.5 h-3.5 mr-1.5"></i>
                          Architectural Design
                         </button>
-
-                        <button class="tab-button" data-tab="initial">
-                          <i data-lucide="banknote" class="w-3.5 h-3.5 mr-1.5"></i>
-                          Planning Recommendation Approval
-                        </button>
-
-                        <button class="tab-button {{ (strtolower($application->application_status ?? '') != 'approved' || strtolower($application->planning_recommendation_status ?? '') != 'approved') ? 'opacity-50 cursor-not-allowed' : '' }}" 
-                          data-tab="final"
-                          {{ (strtolower($application->application_status ?? '') != 'approved' || strtolower($application->planning_recommendation_status ?? '') != 'approved') ? 'disabled' : '' }}>
+                        <button class="tab-button" data-tab="final">
                           <i data-lucide="file-check" class="w-3.5 h-3.5 mr-1.5"></i>
                           Planning Recommendation
+
                         </button>
                       </div>
-                      @include('actions.architecturaldesign')
-
-                      <div id="initial-tab" class="tab-content">
+                
+                      <!-- Survey Tab -->
+                      <div id="initial-tab" class="tab-content active">
                         <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                           <div class="p-4 border-b">
-                            <h3 class="text-sm font-medium">Planning Recommendation Approval</h3>
+                            <h3 class="text-sm font-medium">Approve Recommendation</h3>
                           </div>
                           <form id="planningRecommendationForm">
                           
@@ -167,11 +156,11 @@
                             <div class="flex justify-between items-center">
                                
                               <div class="flex gap-2">
-                                <a href="{{route('sectionaltitling.primary')}}" class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
+                                <a  href="{{route('sectionaltitling.secondary')}}" class="flex items-center px-3 py-1 text-xs bg-white text-black p-2 border border-gray-500 rounded-md hover:bg-gray-800">
                                   <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
                                   Back
-                               </a>
-                                    
+                                </a>    
+                                
                                   
                                 <button id="planningRecommendationSubmitBtn" type="submit" class="flex items-center px-3 py-1 text-xs bg-green-700 text-white rounded-md hover:bg-gray-800">
                                     <i data-lucide="send-horizontal" class="w-3.5 h-3.5 mr-1.5"></i>
@@ -186,7 +175,7 @@
                       </div>
                         
 
-                  
+                      @include('actions.architecturaldesign')
                             
                       
                 
@@ -206,10 +195,11 @@
                 
                             <div class="flex justify-between items-center">
                                 <div class="flex gap-2">
-                                    <button class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
+                                  <a  href="{{route('sectionaltitling.secondary')}}" class="flex items-center px-3 py-1 text-xs bg-white text-black p-2 border border-gray-500 rounded-md hover:bg-gray-800">
                                     <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
                                     Back
-                                    </button>
+                                  </a>    
+                                  
                                     
                                  
                                  
@@ -372,7 +362,7 @@
             let comments = document.getElementById('comments').value; // Match the actual ID
             
             // AJAX request
-            fetch('{{ url("planning-recommendation/update") }}', {
+            fetch('{{ route("sub-actions.update-planning-recommendation") }}', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,

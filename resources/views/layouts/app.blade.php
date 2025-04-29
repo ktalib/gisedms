@@ -67,6 +67,254 @@
   .submenu:not(.hidden) {
     display: block;
   }
+
+
+
+  .sidebar {
+    width: 280px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    height: calc(100vh - 8rem);
+  }
+  
+  .sidebar-content::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .sidebar-content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  
+  .active {
+    font-weight: 500;
+    background-color: #EBF5FF;
+    border-left: 4px solid #3B82F6;
+  }
+  
+  .sidebar-badge {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 9999px;
+    background-color: #E5E7EB;
+    color: #374151;
+  }
+  
+  .module-badge-programmes {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+  }
+  
+  .module-badge-legal-search {
+    background-color: #DCFCE7;
+    color: #166534;
+  }
+  
+  .module-badge-instrument {
+    background-color: #FEF3C7;
+    color: #92400E;
+  }
+  
+  .sidebar-item {
+    transition: all 0.2s;
+  }
+  
+  .sidebar-item:hover {
+    background-color: #F9FAFB;
+  }
+  
+  .animate-ping {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  
+  @keyframes ping {
+    75%, 100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  
+  /* Module icon colors for different sections */
+  .module-icon-dashboard {
+    opacity: 0.8;
+    color: #2563eb; /* Blue */
+  }
+  
+  .module-icon-customer {
+    opacity: 0.8;
+    color: #7c3aed; /* Purple */
+  }
+  
+  .module-icon-programmes {
+    opacity: 0.8;
+    color: #059669; /* Green */
+  }
+  
+  .module-icon-info-products {
+    opacity: 0.8;
+    color: #d97706; /* Orange */
+  }
+  
+  .module-icon-legal-search {
+    opacity: 0.8;
+    color: #0891b2; /* Teal */
+  }
+  
+  .module-icon-instrument {
+    opacity: 0.8;
+    color: #002f64; /* Red */
+  }
+  
+  .module-icon-file-registry {
+    opacity: 0.8;
+    color: #4f46e5; /* Indigo */
+  }
+  
+  .module-icon-systems {
+    opacity: 0.8;
+    color: #db2777; /* Pink */
+  }
+  
+  .module-icon-legacy {
+    opacity: 0.8;
+    color: #92400e; /* Brown */
+  }
+  
+  .module-icon-admin {
+    opacity: 0.8;
+    color: #4b5563; /* Gray */
+  }
+  
+  /* Nested submenu styles */
+  .submenu-l1 {
+    padding-left: 1.5rem;
+  }
+  
+  .submenu-l2 {
+    padding-left: 2.5rem;
+  }
+  
+  .submenu-l3 {
+    padding-left: 3.5rem;
+  }
+  
+  .submenu-item {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+  }
+  
+  .submenu-item:hover {
+    background-color: #F9FAFB;
+  }
+  
+  .submenu-item.active {
+    font-weight: 500;
+    background-color: #EBF5FF;
+    border-left: 4px solid #3B82F6;
+  }
+</style>
+<style>
+
+  
+
+  .stat-card {
+    background-color: white;
+    border-radius: 0.375rem;
+    padding: 1.25rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+  }
+  .tab {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .tab:hover {
+    color: #4b5563;
+  }
+  .tab.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+  }
+  .service-card {
+    background-color: white;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  .badge-primary {
+    background-color: #f3f4f6;
+    color: #4b5563;
+  }
+  .badge-progress {
+    background-color: #dbeafe;
+    color: #2563eb;
+  }
+  .badge-approved {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+  .badge-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+  .progress-bar {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e5e7eb;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+  .progress-bar-blue {
+    background-color: #3b82f6;
+  }
+  .progress-bar-orange {
+    background-color: #f59e0b;
+  }
+  .progress-bar-red {
+    background-color: #ef4444;
+  }
+  .table-header {
+    background-color: #f9fafb;
+    font-weight: 500;
+    color: #4b5563;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .table-cell {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
   </style>
 </head>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -90,6 +338,9 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.8.0/html2pdf.bundle.min.js" integrity="sha512-w3u9q/DeneCSwUDjhiMNibTRh/1i/gScBVp2imNVAMCt6cUHIw6xzhzcPFIaL3Q1EbI2l+nu17q2aLJJLo4ZYg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.1/dist/jspdf.es.min.js"></script>
 <body class="bg-gray-100 flex h-screen">
 <!-- Preloader -->
 <div id="preloader" class="fixed inset-0 bg-white bg-opacity-80 flex items-center justify-center z-50">
@@ -181,6 +432,19 @@
       });
     });
   });
+
+        // Add event listeners for the back buttons
+    document.addEventListener('DOMContentLoaded', function() {
+    // Footer back button
+    document.getElementById('back').addEventListener('click', function() {
+    window.history.back();
+    });
+
+    // Header close button
+    document.getElementById('closePaymentBtn').addEventListener('click', function() {
+    window.history.back();
+    });
+    });
   </script>
 </body>
 </html> 

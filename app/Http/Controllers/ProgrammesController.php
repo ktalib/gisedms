@@ -25,7 +25,7 @@ class ProgrammesController extends Controller
     {
         $PageTitle = 'FIELD DATA';
         $PageDescription = '';
-  
+
         return view('programmes.field_data', compact('PageTitle', 'PageDescription'));
     }
 
@@ -34,19 +34,19 @@ class ProgrammesController extends Controller
     {
         $PageTitle = 'PAYMENTS';
         $PageDescription = '';
-          
+
         // Get payment data
         $paymentData = $this->getPaymentData();
-         
+
         return view('programmes.payments', array_merge(
             $paymentData,
             [
-                'PageTitle' => $PageTitle, 
+                'PageTitle' => $PageTitle,
                 'PageDescription' => $PageDescription
             ]
         ));
     }
-    
+
     /**
      * Filter payment data based on request parameters
      */
@@ -59,13 +59,13 @@ class ProgrammesController extends Controller
             'payment_type' => 'nullable|string|in:all,initial,betterment,final',
             'payment_status' => 'nullable|string'
         ]);
-        
+
         // Get filtered payment data
         $paymentData = $this->getPaymentData($request);
-        
+
         return response()->json($paymentData);
     }
-    
+
     /**
      * Get payment data with optional filters
      */
@@ -73,45 +73,45 @@ class ProgrammesController extends Controller
     {
         // Initialize query builders
         $billingQuery = DB::connection('sqlsrv')->table('billing');
-        
+
         // Apply date filters if provided
         if ($request && $request->filled('start_date')) {
             $billingQuery->whereDate('billing.created_at', '>=', $request->start_date);
         }
-        
+
         if ($request && $request->filled('end_date')) {
             $billingQuery->whereDate('billing.created_at', '<=', $request->end_date);
         }
-        
+
         // Apply payment type filter if provided
         if ($request && $request->filled('payment_type') && $request->payment_type !== 'all') {
             switch ($request->payment_type) {
                 case 'initial':
                     $billingQuery->whereNotNull('Scheme_Application_Fee')
-                                ->where(DB::raw('CAST(Scheme_Application_Fee AS FLOAT)'), '>', 0);
+                        ->where(DB::raw('CAST(Scheme_Application_Fee AS FLOAT)'), '>', 0);
                     break;
                 case 'betterment':
                     $billingQuery->whereNotNull('Betterment_Charges')
-                                ->where(DB::raw('CAST(Betterment_Charges AS FLOAT)'), '>', 0);
+                        ->where(DB::raw('CAST(Betterment_Charges AS FLOAT)'), '>', 0);
                     break;
                 case 'final':
                     // Final bill typically includes processing fees
                     $billingQuery->whereNotNull('Processing_Fee')
-                                ->where(DB::raw('CAST(Processing_Fee AS FLOAT)'), '>', 0);
+                        ->where(DB::raw('CAST(Processing_Fee AS FLOAT)'), '>', 0);
                     break;
             }
         }
-        
+
         // Apply payment status filter if provided
         if ($request && $request->filled('payment_status') && $request->payment_status !== 'all') {
             $billingQuery->where('Payment_Status', $request->payment_status);
         }
-        
+
         // Clone the query for different purposes
         $primaryQuery = clone $billingQuery;
         $unitQuery = clone $billingQuery;
         $summaryQuery = clone $billingQuery;
-        
+
         // Query 1: Primary Application Payments (with mother_applications join)
         $primaryPayments = $primaryQuery
             ->leftJoin('mother_applications', 'billing.application_id', '=', 'mother_applications.id')
@@ -124,7 +124,7 @@ class ProgrammesController extends Controller
                 'mother_applications.corporate_name'
             )
             ->get();
-            
+
         // Query 2: Unit Application Payments (with subapplications join)
         $unitPayments = $unitQuery
             ->leftJoin('subapplications', 'billing.sub_application_id', '=', 'subapplications.id')
@@ -132,32 +132,32 @@ class ProgrammesController extends Controller
             ->select(
                 'billing.*',
                 'subapplications.first_name',
-                'subapplications.surname', 
+                'subapplications.surname',
                 'subapplications.corporate_name'
             )
             ->get();
-        
+
         // Format owner names
         foreach ($primaryPayments as $payment) {
-            $payment->owner_name = !empty($payment->corporate_name) 
-                ? $payment->corporate_name 
+            $payment->owner_name = !empty($payment->corporate_name)
+                ? $payment->corporate_name
                 : trim($payment->first_name . ' ' . $payment->surname);
         }
-        
+
         foreach ($unitPayments as $payment) {
-            $payment->owner_name = !empty($payment->corporate_name) 
-                ? $payment->corporate_name 
+            $payment->owner_name = !empty($payment->corporate_name)
+                ? $payment->corporate_name
                 : trim($payment->first_name . ' ' . $payment->surname);
         }
-        
+
         // Combined payments for the main summary section
         $payments = collect($primaryPayments)->merge($unitPayments);
-        
+
         // Calculate general payment statistics
         $totalPayments = $payments->count();
         $pendingPayments = $payments->where('Payment_Status', 'Incomplete')->count();
         $paidPayments = $payments->where('Payment_Status', 'Complete')->count();
-            
+
         // Calculate sums for each payment type with NULL handling
         $schemeApplicationFeeSum = $summaryQuery
             ->sum(DB::raw('ISNULL(CAST(Scheme_Application_Fee AS FLOAT), 0)'));
@@ -173,7 +173,7 @@ class ProgrammesController extends Controller
             ->sum(DB::raw('ISNULL(CAST(Land_Use_Charge AS FLOAT), 0)'));
         $penaltyFeesSum = $summaryQuery
             ->sum(DB::raw('ISNULL(CAST(Penalty_Fees AS FLOAT), 0)'));
-            
+
         // Add total sum of all payment fields regardless of status with NULL handling
         $totalPaymentSum = $summaryQuery
             ->sum(DB::raw('ISNULL(CAST(Scheme_Application_Fee AS FLOAT), 0) + 
@@ -183,10 +183,10 @@ class ProgrammesController extends Controller
                          ISNULL(CAST(Unit_Application_Fees AS FLOAT), 0) + 
                          ISNULL(CAST(Land_Use_Charge AS FLOAT), 0) + 
                          ISNULL(CAST(Penalty_Fees AS FLOAT), 0)'));
-        
+
         // Primary vs Unit statistics for charts
-        $primaryTotalSum = collect($primaryPayments)->sum(function($payment) {
-            return 
+        $primaryTotalSum = collect($primaryPayments)->sum(function ($payment) {
+            return
                 floatval($payment->Scheme_Application_Fee ?? 0) +
                 floatval($payment->Site_Plan_Fee ?? 0) +
                 floatval($payment->Processing_Fee ?? 0) +
@@ -195,9 +195,9 @@ class ProgrammesController extends Controller
                 floatval($payment->Land_Use_Charge ?? 0) +
                 floatval($payment->Penalty_Fees ?? 0);
         });
-        
-        $unitTotalSum = collect($unitPayments)->sum(function($payment) {
-            return 
+
+        $unitTotalSum = collect($unitPayments)->sum(function ($payment) {
+            return
                 floatval($payment->Scheme_Application_Fee ?? 0) +
                 floatval($payment->Site_Plan_Fee ?? 0) +
                 floatval($payment->Processing_Fee ?? 0) +
@@ -206,17 +206,17 @@ class ProgrammesController extends Controller
                 floatval($payment->Land_Use_Charge ?? 0) +
                 floatval($payment->Penalty_Fees ?? 0);
         });
-        
+
         // Payment trends by month (for line chart)
-        $paymentsByMonth = $payments->groupBy(function($payment) {
+        $paymentsByMonth = $payments->groupBy(function ($payment) {
             if (is_object($payment) && isset($payment->created_at) && $payment->created_at) {
                 return \Carbon\Carbon::parse($payment->created_at)->format('Y-m');
             }
             return 'Unknown';
-        })->map(function($group) {
+        })->map(function ($group) {
             return $group->count();
         });
-        
+
         return [
             'payments' => $payments,
             'primaryPayments' => $primaryPayments,
@@ -251,7 +251,7 @@ class ProgrammesController extends Controller
                 'Surveys.fileno',
                 'Surveys.application_id',
                 'Surveys.survey_by',
-                'Surveys.survey_by_date', 
+                'Surveys.survey_by_date',
                 'Surveys.drawn_by',
                 'Surveys.drawn_by_date',
                 'Surveys.checked_by',
@@ -313,37 +313,37 @@ class ProgrammesController extends Controller
         }
 
         return view('programmes.approvals.other_departments', compact('surveys', 'Unitsurveys', 'PageTitle', 'PageDescription'));
-      }
+    }
 
 
     public function Deeds()
     {
-       $PageTitle = 'DEEDS';
-       $PageDescription = '';
-         $deeds = DB::connection('sqlsrv')->table('landAdministration')
-                ->join('mother_applications', 'landAdministration.application_id', '=', 'mother_applications.id')
-                ->select(
-                 'landAdministration.*',
-                 'mother_applications.applicant_title',
-                 'mother_applications.first_name',
-                 'mother_applications.surname',
-                 'mother_applications.corporate_name',
-                 'mother_applications.multiple_owners_names'
-                )
-                ->get();
-    
-          // Process owner names for deeds
-           foreach ($deeds as $deed) {
-                if (!empty($deed->multiple_owners_names)) {
-                 $ownerArray = json_decode($deed->multiple_owners_names, true);
-                 $deed->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-                } elseif (!empty($deed->corporate_name)) {
-                 $deed->owner_name = $deed->corporate_name;
-                } else {
-                 $deed->owner_name = trim($deed->applicant_title . ' ' . $deed->first_name . ' ' . $deed->surname);
-                }
-          }
-        
+        $PageTitle = 'DEEDS';
+        $PageDescription = '';
+        $deeds = DB::connection('sqlsrv')->table('landAdministration')
+            ->join('mother_applications', 'landAdministration.application_id', '=', 'mother_applications.id')
+            ->select(
+                'landAdministration.*',
+                'mother_applications.applicant_title',
+                'mother_applications.first_name',
+                'mother_applications.surname',
+                'mother_applications.corporate_name',
+                'mother_applications.multiple_owners_names'
+            )
+            ->get();
+
+        // Process owner names for deeds
+        foreach ($deeds as $deed) {
+            if (!empty($deed->multiple_owners_names)) {
+                $ownerArray = json_decode($deed->multiple_owners_names, true);
+                $deed->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($deed->corporate_name)) {
+                $deed->owner_name = $deed->corporate_name;
+            } else {
+                $deed->owner_name = trim($deed->applicant_title . ' ' . $deed->first_name . ' ' . $deed->surname);
+            }
+        }
+
         // Fetch deeds with subapplication owner information
         $unitDeeds = DB::connection('sqlsrv')->table('landAdministration')
             ->join('subapplications', 'landAdministration.sub_application_id', '=', 'subapplications.id')
@@ -356,20 +356,20 @@ class ProgrammesController extends Controller
                 'subapplications.multiple_owners_names'
             )
             ->get();
-            foreach ($unitDeeds as $deed) {
-                if (!empty($deed->multiple_owners_names)) {
-                    $ownerArray = json_decode($deed->multiple_owners_names, true);
-                    $deed->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-                } elseif (!empty($deed->corporate_name)) {
-                    $deed->owner_name = $deed->corporate_name;
-                } else {
-                    $deed->owner_name = trim($deed->applicant_title . ' ' . $deed->first_name . ' ' . $deed->surname);
-                }
+        foreach ($unitDeeds as $deed) {
+            if (!empty($deed->multiple_owners_names)) {
+                $ownerArray = json_decode($deed->multiple_owners_names, true);
+                $deed->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($deed->corporate_name)) {
+                $deed->owner_name = $deed->corporate_name;
+            } else {
+                $deed->owner_name = trim($deed->applicant_title . ' ' . $deed->first_name . ' ' . $deed->surname);
             }
+        }
 
 
-    
-          return view('programmes.approvals.deeds', compact('deeds', 'unitDeeds','PageTitle', 'PageDescription'));
+
+        return view('programmes.approvals.deeds', compact('deeds', 'unitDeeds', 'PageTitle', 'PageDescription'));
     }
 
 
@@ -379,135 +379,135 @@ class ProgrammesController extends Controller
         $PageDescription = '';
 
         // Fetch lands data from the database
- 
 
-        return view('programmes.approvals.lands', compact('PageTitle', 'PageDescription'));  
+
+        return view('programmes.approvals.lands', compact('PageTitle', 'PageDescription'));
     }
 
     public function PlanningRecomm()
     {
-         $PageTitle = 'Planning Recommendation';
-         $PageDescription = '';
-         
-         // Get mother applications
-         $applications = DB::connection('sqlsrv')->table('mother_applications')->get();
-         
-         // Process owner names for primary applications
-         foreach ($applications as $application) {
-             if (!empty($application->multiple_owners_names)) {
-                 $ownerArray = json_decode($application->multiple_owners_names, true);
-                 $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-             } elseif (!empty($application->corporate_name)) {
-                 $application->owner_name = $application->corporate_name;
-             } else {
-                 $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
-             }
-         }
-         
-         // Get unit applications
-         $unitApplications = DB::connection('sqlsrv')->table('subapplications')->get();
-         
-         // Process owner names for unit applications
-         foreach ($unitApplications as $unitApplication) {
-             if (!empty($unitApplication->multiple_owners_names)) {
-                 $ownerArray = json_decode($unitApplication->multiple_owners_names, true);
-                 $unitApplication->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-             } elseif (!empty($unitApplication->corporate_name)) {
-                 $unitApplication->owner_name = $unitApplication->corporate_name;
-             } else {
-                 $unitApplication->owner_name = trim($unitApplication->applicant_title . ' ' . $unitApplication->first_name . ' ' . $unitApplication->surname);
-             }
-         }
-         
-         // Calculate statistics for primary applications
-         $totalPrimaryApplications = count($applications);
-         $approvedPrimaryApplications = collect($applications)->where('planning_recommendation_status', 'Approved')->count();
-         $DeclinedPrimaryApplications = collect($applications)->where('planning_recommendation_status', 'Declined')->count();
-         $pendingPrimaryApplications = $totalPrimaryApplications - $approvedPrimaryApplications - $DeclinedPrimaryApplications;
-         
-         // Calculate statistics for unit applications
-         $totalUnitApplications = count($unitApplications);
-         $approvedUnitApplications = collect($unitApplications)->where('planning_recommendation_status', 'Approved')->count();
-         $DeclinedUnitApplications = collect($unitApplications)->where('planning_recommendation_status', 'Declined')->count();
-         $pendingUnitApplications = $totalUnitApplications - $approvedUnitApplications - $DeclinedUnitApplications;
-         
-         return view('programmes.approvals.planning_recomm', compact(
-             'applications', 
-             'unitApplications', 
-             'PageTitle', 
-             'PageDescription',
-             'totalPrimaryApplications',
-             'approvedPrimaryApplications',
-             'DeclinedPrimaryApplications',
-             'pendingPrimaryApplications',
-             'totalUnitApplications',
-             'approvedUnitApplications',
-             'DeclinedUnitApplications',
-             'pendingUnitApplications'
-         ));
+        $PageTitle = 'Planning Recommendation';
+        $PageDescription = '';
+
+        // Get mother applications
+        $applications = DB::connection('sqlsrv')->table('mother_applications')->get();
+
+        // Process owner names for primary applications
+        foreach ($applications as $application) {
+            if (!empty($application->multiple_owners_names)) {
+                $ownerArray = json_decode($application->multiple_owners_names, true);
+                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($application->corporate_name)) {
+                $application->owner_name = $application->corporate_name;
+            } else {
+                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
+            }
+        }
+
+        // Get unit applications
+        $unitApplications = DB::connection('sqlsrv')->table('subapplications')->get();
+
+        // Process owner names for unit applications
+        foreach ($unitApplications as $unitApplication) {
+            if (!empty($unitApplication->multiple_owners_names)) {
+                $ownerArray = json_decode($unitApplication->multiple_owners_names, true);
+                $unitApplication->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($unitApplication->corporate_name)) {
+                $unitApplication->owner_name = $unitApplication->corporate_name;
+            } else {
+                $unitApplication->owner_name = trim($unitApplication->applicant_title . ' ' . $unitApplication->first_name . ' ' . $unitApplication->surname);
+            }
+        }
+
+        // Calculate statistics for primary applications
+        $totalPrimaryApplications = count($applications);
+        $approvedPrimaryApplications = collect($applications)->where('planning_recommendation_status', 'Approved')->count();
+        $rejectedPrimaryApplications = collect($applications)->where('planning_recommendation_status', 'rejected')->count();
+        $pendingPrimaryApplications = $totalPrimaryApplications - $approvedPrimaryApplications - $rejectedPrimaryApplications;
+
+        // Calculate statistics for unit applications
+        $totalUnitApplications = count($unitApplications);
+        $approvedUnitApplications = collect($unitApplications)->where('planning_recommendation_status', 'Approved')->count();
+        $rejectedUnitApplications = collect($unitApplications)->where('planning_recommendation_status', 'rejected')->count();
+        $pendingUnitApplications = $totalUnitApplications - $approvedUnitApplications - $rejectedUnitApplications;
+
+        return view('programmes.approvals.planning_recomm', compact(
+            'applications',
+            'unitApplications',
+            'PageTitle',
+            'PageDescription',
+            'totalPrimaryApplications',
+            'approvedPrimaryApplications',
+            'rejectedPrimaryApplications',
+            'pendingPrimaryApplications',
+            'totalUnitApplications',
+            'approvedUnitApplications',
+            'rejectedUnitApplications',
+            'pendingUnitApplications'
+        ));
     }
 
     public function Director_approval()
     {
-         $PageTitle = 'Director\'s Approval';
-         $PageDescription = '';
-         
-         // Get mother applications
-         $applications = DB::connection('sqlsrv')->table('mother_applications')->get();
-         
-         // Process owner names for primary applications
-         foreach ($applications as $application) {
-             if (!empty($application->multiple_owners_names)) {
-                 $ownerArray = json_decode($application->multiple_owners_names, true);
-                 $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-             } elseif (!empty($application->corporate_name)) {
-                 $application->owner_name = $application->corporate_name;
-             } else {
-                 $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
-             }
-         }
-         
-         // Get unit applications
-         $unitApplications = DB::connection('sqlsrv')->table('subapplications')->get();
-         
-         // Process owner names for unit applications
-         foreach ($unitApplications as $unitApplication) {
-             if (!empty($unitApplication->multiple_owners_names)) {
-                 $ownerArray = json_decode($unitApplication->multiple_owners_names, true);
-                 $unitApplication->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-             } elseif (!empty($unitApplication->corporate_name)) {
-                 $unitApplication->owner_name = $unitApplication->corporate_name;
-             } else {
-                 $unitApplication->owner_name = trim($unitApplication->applicant_title . ' ' . $unitApplication->first_name . ' ' . $unitApplication->surname);
-             }
-         }
-         
-         // Calculate statistics for primary applications
-         $totalPrimaryApplications = count($applications);
-         $approvedPrimaryApplications = collect($applications)->where('application_status', 'Approved')->count();
-         $DeclinedPrimaryApplications = collect($applications)->where('application_status', 'Declined')->count();
-         $pendingPrimaryApplications = $totalPrimaryApplications - $approvedPrimaryApplications - $DeclinedPrimaryApplications;
-         
-         // Calculate statistics for unit applications
-         $totalUnitApplications = count($unitApplications);
-         $approvedUnitApplications = collect($unitApplications)->where('application_status', 'Approved')->count();
-         $DeclinedUnitApplications = collect($unitApplications)->where('application_status', 'Declined')->count();
-         $pendingUnitApplications = $totalUnitApplications - $approvedUnitApplications - $DeclinedUnitApplications;
-         
-         return view('programmes.approvals.director', compact(
-             'applications', 
-             'unitApplications', 
-             'PageTitle', 
-             'PageDescription',
-             'totalPrimaryApplications',
-             'approvedPrimaryApplications',
-             'DeclinedPrimaryApplications',
-             'pendingPrimaryApplications',
-             'totalUnitApplications',
-             'approvedUnitApplications',
-             'DeclinedUnitApplications',
-             'pendingUnitApplications'
-         ));
+        $PageTitle = 'Director\'s Approval';
+        $PageDescription = '';
+
+        // Get mother applications
+        $applications = DB::connection('sqlsrv')->table('mother_applications')->get();
+
+        // Process owner names for primary applications
+        foreach ($applications as $application) {
+            if (!empty($application->multiple_owners_names)) {
+                $ownerArray = json_decode($application->multiple_owners_names, true);
+                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($application->corporate_name)) {
+                $application->owner_name = $application->corporate_name;
+            } else {
+                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
+            }
+        }
+
+        // Get unit applications
+        $unitApplications = DB::connection('sqlsrv')->table('subapplications')->get();
+
+        // Process owner names for unit applications
+        foreach ($unitApplications as $unitApplication) {
+            if (!empty($unitApplication->multiple_owners_names)) {
+                $ownerArray = json_decode($unitApplication->multiple_owners_names, true);
+                $unitApplication->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($unitApplication->corporate_name)) {
+                $unitApplication->owner_name = $unitApplication->corporate_name;
+            } else {
+                $unitApplication->owner_name = trim($unitApplication->applicant_title . ' ' . $unitApplication->first_name . ' ' . $unitApplication->surname);
+            }
+        }
+
+        // Calculate statistics for primary applications
+        $totalPrimaryApplications = count($applications);
+        $approvedPrimaryApplications = collect($applications)->where('application_status', 'Approved')->count();
+        $rejectedPrimaryApplications = collect($applications)->where('application_status', 'rejected')->count();
+        $pendingPrimaryApplications = $totalPrimaryApplications - $approvedPrimaryApplications - $rejectedPrimaryApplications;
+
+        // Calculate statistics for unit applications
+        $totalUnitApplications = count($unitApplications);
+        $approvedUnitApplications = collect($unitApplications)->where('application_status', 'Approved')->count();
+        $rejectedUnitApplications = collect($unitApplications)->where('application_status', 'rejected')->count();
+        $pendingUnitApplications = $totalUnitApplications - $approvedUnitApplications - $rejectedUnitApplications;
+
+        return view('programmes.approvals.director', compact(
+            'applications',
+            'unitApplications',
+            'PageTitle',
+            'PageDescription',
+            'totalPrimaryApplications',
+            'approvedPrimaryApplications',
+            'rejectedPrimaryApplications',
+            'pendingPrimaryApplications',
+            'totalUnitApplications',
+            'approvedUnitApplications',
+            'rejectedUnitApplications',
+            'pendingUnitApplications'
+        ));
     }
 
     public function ST_Report()
@@ -517,7 +517,7 @@ class ProgrammesController extends Controller
 
         // Fetch primary applications with related billing data
         $primaryApplications = DB::connection('sqlsrv')->table('mother_applications')
-            ->leftJoin('billing', function($join) {
+            ->leftJoin('billing', function ($join) {
                 $join->on('mother_applications.id', '=', 'billing.application_id')
                     ->whereNull('billing.sub_application_id');
             })
@@ -567,16 +567,16 @@ class ProgrammesController extends Controller
         $totalApplications = count($primaryApplications);
         $approvedApplications = collect($primaryApplications)->where('application_status', 'Approved')->count();
         $pendingApplications = collect($primaryApplications)->where('application_status', '!=', 'Approved')
-                                                           ->where('application_status', '!=', 'Declined')
-                                                           ->count();
-        $DeclinedApplications = collect($primaryApplications)->where('application_status', 'Declined')->count();
-        
+            ->where('application_status', '!=', 'rejected')
+            ->count();
+        $rejectedApplications = collect($primaryApplications)->where('application_status', 'rejected')->count();
+
         // Planning recommendation stats
         $approvedPlanningRecommendations = collect($primaryApplications)->where('planning_recommendation_status', 'Approved')->count();
         $pendingPlanningRecommendations = collect($primaryApplications)->where('planning_recommendation_status', '!=', 'Approved')
-                                                                       ->where('planning_recommendation_status', '!=', 'Declined')
-                                                                       ->count();
-        $DeclinedPlanningRecommendations = collect($primaryApplications)->where('planning_recommendation_status', 'Declined')->count();
+            ->where('planning_recommendation_status', '!=', 'rejected')
+            ->count();
+        $rejectedPlanningRecommendations = collect($primaryApplications)->where('planning_recommendation_status', 'rejected')->count();
 
         // Group applications by LGA for geo chart
         $applicationsByLGA = collect($primaryApplications)
@@ -609,7 +609,7 @@ class ProgrammesController extends Controller
         // Fetch unit applications with related billing data and mother application context
         $unitApplications = DB::connection('sqlsrv')->table('subapplications')
             ->leftJoin('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
-            ->leftJoin('billing', function($join) {
+            ->leftJoin('billing', function ($join) {
                 $join->on('subapplications.id', '=', 'billing.sub_application_id');
             })
             ->select(
@@ -628,12 +628,12 @@ class ProgrammesController extends Controller
                 'subapplications.unit_number',
                 'subapplications.property_location',
                 'subapplications.ownership',
-               
+
                 'subapplications.plot_size',
                 'subapplications.commercial_type',
                 'subapplications.industrial_type',
-                'subapplications.ownershipType',
-                'subapplications.residenceType',
+                'subapplications.ownership_type',
+                'subapplications.residence_type',
                 'subapplications.application_status',
                 'subapplications.approval_date',
                 'subapplications.planning_recommendation_status',
@@ -662,16 +662,16 @@ class ProgrammesController extends Controller
         $totalUnitApplications = count($unitApplications);
         $approvedUnitApplications = collect($unitApplications)->where('application_status', 'Approved')->count();
         $pendingUnitApplications = collect($unitApplications)->where('application_status', '!=', 'Approved')
-                                                           ->where('application_status', '!=', 'Declined')
-                                                           ->count();
-        $DeclinedUnitApplications = collect($unitApplications)->where('application_status', 'Declined')->count();
-        
+            ->where('application_status', '!=', 'rejected')
+            ->count();
+        $rejectedUnitApplications = collect($unitApplications)->where('application_status', 'rejected')->count();
+
         // Planning recommendation stats for unit applications
         $approvedUnitPlanningRecommendations = collect($unitApplications)->where('planning_recommendation_status', 'Approved')->count();
         $pendingUnitPlanningRecommendations = collect($unitApplications)->where('planning_recommendation_status', '!=', 'Approved')
-                                                                       ->where('planning_recommendation_status', '!=', 'Declined')
-                                                                       ->count();
-        $DeclinedUnitPlanningRecommendations = collect($unitApplications)->where('planning_recommendation_status', 'Declined')->count();
+            ->where('planning_recommendation_status', '!=', 'rejected')
+            ->count();
+        $rejectedUnitPlanningRecommendations = collect($unitApplications)->where('planning_recommendation_status', 'rejected')->count();
 
         // Group unit applications by LGA for geo chart
         $unitApplicationsByLGA = collect($unitApplications)
@@ -701,19 +701,19 @@ class ProgrammesController extends Controller
             $unitApplicationCountByMonth[] = $count;
         }
 
-    
+
 
         return view('programmes.report', compact(
-            'PageTitle', 
-            'PageDescription', 
+            'PageTitle',
+            'PageDescription',
             'primaryApplications',
             'totalApplications',
             'approvedApplications',
             'pendingApplications',
-            'DeclinedApplications',
+            'rejectedApplications',
             'approvedPlanningRecommendations',
             'pendingPlanningRecommendations',
-            'DeclinedPlanningRecommendations',
+            'rejectedPlanningRecommendations',
             'applicationsByLGA',
             'monthLabels',
             'applicationCountByMonth',
@@ -722,17 +722,17 @@ class ProgrammesController extends Controller
             'totalUnitApplications',
             'approvedUnitApplications',
             'pendingUnitApplications',
-            'DeclinedUnitApplications',
+            'rejectedUnitApplications',
             'approvedUnitPlanningRecommendations',
             'pendingUnitPlanningRecommendations',
-            'DeclinedUnitPlanningRecommendations',
+            'rejectedUnitPlanningRecommendations',
             'unitApplicationsByLGA',
             'unitMonthLabels',
             'unitApplicationCountByMonth'
         ));
     }
 
- 
+
     public function CertificateOfOccupancy()
     {
         $PageTitle = 'ST Certificate of Occupancy';
@@ -741,6 +741,8 @@ class ProgrammesController extends Controller
         // Fetch all unit applications (not just approved ones)
         $approvedUnitApplications = DB::connection('sqlsrv')->table('subapplications')
             ->join('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
+            ->where('subapplications.planning_recommendation_status', 'Approved')
+            ->where('subapplications.application_status', 'Approved')
             ->select(
                 'subapplications.id',
                 'subapplications.fileno',
@@ -759,7 +761,7 @@ class ProgrammesController extends Controller
                 'mother_applications.land_use'
             )
             ->get();
-        
+
         // Process owner names
         foreach ($approvedUnitApplications as $application) {
             if (!empty($application->multiple_owners_names)) {
@@ -774,7 +776,7 @@ class ProgrammesController extends Controller
 
         return view('programmes.certificates', compact(
             'approvedUnitApplications',
-            'PageTitle', 
+            'PageTitle',
             'PageDescription'
         ));
     }
@@ -788,30 +790,63 @@ class ProgrammesController extends Controller
         $individualApplications = DB::connection('sqlsrv')->table('mother_applications')
             ->where('applicant_type', 'individual')
             ->select(
-                'id', 'fileno', 'applicant_type', 'first_name', 'surname', 'corporate_name', 
-                'multiple_owners_names', 'land_use', 'NoOfUnits', 'receipt_date', 
-                'planning_recommendation_status', 'application_status', 'property_street_name',
-                'property_lga', 'created_at'
+                'id',
+                'fileno',
+                'applicant_type',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'NoOfUnits',
+                'receipt_date',
+                'planning_recommendation_status',
+                'application_status',
+                'property_street_name',
+                'property_lga',
+                'created_at'
             )
             ->get();
 
         $corporateApplications = DB::connection('sqlsrv')->table('mother_applications')
             ->where('applicant_type', 'corporate')
             ->select(
-                'id', 'fileno', 'applicant_type', 'first_name', 'surname', 'corporate_name', 
-                'multiple_owners_names', 'land_use', 'NoOfUnits', 'receipt_date', 
-                'planning_recommendation_status', 'application_status', 'property_street_name',
-                'property_lga', 'created_at'
+                'id',
+                'fileno',
+                'applicant_type',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'NoOfUnits',
+                'receipt_date',
+                'planning_recommendation_status',
+                'application_status',
+                'property_street_name',
+                'property_lga',
+                'created_at'
             )
             ->get();
 
         $multipleApplications = DB::connection('sqlsrv')->table('mother_applications')
             ->where('applicant_type', 'multiple')
             ->select(
-                'id', 'fileno', 'applicant_type', 'first_name', 'surname', 'corporate_name', 
-                'multiple_owners_names', 'land_use', 'NoOfUnits', 'receipt_date', 
-                'planning_recommendation_status', 'application_status', 'property_street_name',
-                'property_lga', 'created_at'
+                'id',
+                'fileno',
+                'applicant_type',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'NoOfUnits',
+                'receipt_date',
+                'planning_recommendation_status',
+                'application_status',
+                'property_street_name',
+                'property_lga',
+                'created_at'
             )
             ->get();
 
@@ -819,27 +854,54 @@ class ProgrammesController extends Controller
         $unitIndividualApplications = DB::connection('sqlsrv')->table('subapplications')
             ->where('applicant_type', 'individual')
             ->select(
-                'id', 'fileno', 'applicant_type', 'first_name', 'surname', 'corporate_name', 
-                'multiple_owners_names', 'land_use', 'property_location', 'created_at', 
-                'planning_recommendation_status', 'application_status'
+                'id',
+                'fileno',
+                'applicant_type',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'property_location',
+                'created_at',
+                'planning_recommendation_status',
+                'application_status'
             )
             ->get();
 
         $unitCorporateApplications = DB::connection('sqlsrv')->table('subapplications')
             ->where('applicant_type', 'corporate')
             ->select(
-                'id', 'fileno', 'applicant_type', 'first_name', 'surname', 'corporate_name', 
-                'multiple_owners_names', 'land_use', 'property_location', 'created_at', 
-                'planning_recommendation_status', 'application_status'
+                'id',
+                'fileno',
+                'applicant_type',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'property_location',
+                'created_at',
+                'planning_recommendation_status',
+                'application_status'
             )
             ->get();
 
         $unitMultipleApplications = DB::connection('sqlsrv')->table('subapplications')
             ->where('applicant_type', 'multiple')
             ->select(
-                'id', 'fileno', 'applicant_type', 'first_name', 'surname', 'corporate_name', 
-                'multiple_owners_names', 'land_use', 'property_location', 'created_at', 
-                'planning_recommendation_status', 'application_status'
+                'id',
+                'fileno',
+                'applicant_type',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'property_location',
+                'created_at',
+                'planning_recommendation_status',
+                'application_status'
             )
             ->get();
 
@@ -895,7 +957,7 @@ class ProgrammesController extends Controller
         ];
 
         return view('programmes.entity.index', compact(
-            'PageTitle', 
+            'PageTitle',
             'PageDescription',
             'individualApplications',
             'corporateApplications',
@@ -906,5 +968,168 @@ class ProgrammesController extends Controller
             'primaryStats',
             'unitStats'
         ));
+    }
+
+    //Memo
+    public function Memo()
+    {
+        $PageTitle = 'Memo';
+        $PageDescription = '';
+
+        // Fetch subapplications data
+        $subapplications = DB::connection('sqlsrv')->table('subapplications')
+            ->leftJoin('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
+            ->select(
+                'subapplications.id',
+                'subapplications.scheme_no',
+                'subapplications.fileno',
+                'subapplications.applicant_title',
+                'subapplications.first_name',
+                'subapplications.surname',
+                'subapplications.corporate_name',
+                'subapplications.multiple_owners_names',
+                'subapplications.block_number',
+                'subapplications.floor_number',
+                'subapplications.unit_number',
+                'subapplications.application_status',
+                'subapplications.planning_recommendation_status',
+                'subapplications.planning_approval_date',
+                'subapplications.approval_date',
+             
+                'subapplications.created_at',
+                'mother_applications.property_lga',
+                'mother_applications.land_use'
+            )
+            ->get();
+
+        // Process owner names
+        foreach ($subapplications as $application) {
+            if (!empty($application->multiple_owners_names)) {
+                $ownerArray = json_decode($application->multiple_owners_names, true);
+                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($application->corporate_name)) {
+                $application->owner_name = $application->corporate_name;
+            } else {
+                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
+            }
+        }
+
+        //select from mother_applications table
+
+        $motherApplications = DB::connection('sqlsrv')->table('mother_applications')
+            ->select(
+                'id',
+                'fileno',
+                'applicant_title',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'NoOfUnits',
+                'receipt_date',
+                'planning_recommendation_status',
+                'application_status',
+                'planning_approval_date',
+                
+                'property_street_name',
+                'property_lga',
+                'created_at'
+            )
+            ->get();
+             // Process owner names for mother applications
+        foreach ($motherApplications as $application) {
+            if (!empty($application->multiple_owners_names)) {
+                $ownerArray = json_decode($application->multiple_owners_names, true);
+                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($application->corporate_name)) {
+                $application->owner_name = $application->corporate_name;
+            } else {
+                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
+            }
+        }
+
+        return view('programmes.memo', compact('motherApplications', 'subapplications', 'PageTitle', 'PageDescription'));
     } 
+    
+    public function RofO()
+    {
+        $PageTitle = 'RofO (Letter of Grant)';
+        $PageDescription = '';
+
+        // Fetch subapplications data
+        $subapplications = DB::connection('sqlsrv')->table('subapplications')
+            ->leftJoin('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
+            ->select(
+                'subapplications.id',
+                'subapplications.scheme_no',
+                'subapplications.fileno',
+                'subapplications.applicant_title',
+                'subapplications.first_name',
+                'subapplications.surname',
+                'subapplications.corporate_name',
+                'subapplications.multiple_owners_names',
+                'subapplications.block_number',
+                'subapplications.floor_number',
+                'subapplications.unit_number',
+                'subapplications.application_status',
+                'subapplications.planning_recommendation_status',
+                'subapplications.planning_approval_date',
+                'subapplications.approval_date',
+             
+                'subapplications.created_at',
+                'mother_applications.property_lga',
+                'mother_applications.land_use'
+            )
+            ->get();
+
+        // Process owner names
+        foreach ($subapplications as $application) {
+            if (!empty($application->multiple_owners_names)) {
+                $ownerArray = json_decode($application->multiple_owners_names, true);
+                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($application->corporate_name)) {
+                $application->owner_name = $application->corporate_name;
+            } else {
+                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
+            }
+        }
+
+        //select from mother_applications table
+
+        $motherApplications = DB::connection('sqlsrv')->table('mother_applications')
+            ->select(
+                'id',
+                'fileno',
+                'applicant_title',
+                'first_name',
+                'surname',
+                'corporate_name',
+                'multiple_owners_names',
+                'land_use',
+                'NoOfUnits',
+                'receipt_date',
+                'planning_recommendation_status',
+                'application_status',
+                'planning_approval_date',
+                
+                'property_street_name',
+                'property_lga',
+                'created_at'
+            )
+            ->get();
+             // Process owner names for mother applications
+        foreach ($motherApplications as $application) {
+            if (!empty($application->multiple_owners_names)) {
+                $ownerArray = json_decode($application->multiple_owners_names, true);
+                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
+            } elseif (!empty($application->corporate_name)) {
+                $application->owner_name = $application->corporate_name;
+            } else {
+                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
+            }
+        }
+
+        return view('programmes.rofo', compact('motherApplications', 'subapplications', 'PageTitle', 'PageDescription'));
+    }
 }

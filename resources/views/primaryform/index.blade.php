@@ -44,38 +44,7 @@
       border-color: #3b82f6;
     }
 
-    .tab {
-        overflow: hidden;
-
-    }
-
-    .tab button {
-        background-color: inherit;
-        float: left;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        padding: 10px 16px;
-        transition: 0.3s;
-        font-size: 14px;
-    }
-
-    .tab button:hover {
-        background-color: #ddd;
-    }
-
-    .tab button.active {
-        background-color: #ccc;
-    }
-
-    .tabcontent {
-        display: none;
-    }
-
-    .tabcontent.active {
-        display: block;
-    }
-
+    
     /* Loading overlay styles */
     .loading-overlay {
         position: fixed;

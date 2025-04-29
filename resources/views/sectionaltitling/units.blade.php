@@ -22,7 +22,7 @@
       <!-- Secondary Applications Table - Screenshot 135 -->
       <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold">Secondary Applications</h2>
+          <h2 class="text-xl font-bold">Unit Applications</h2>
           
           <div class="flex items-center space-x-4">
             <div class="relative">
@@ -51,26 +51,26 @@
           <table class="w-full table-auto divide-y divide-gray-200">
             <thead>
               <tr class="text-xs">
-            <th class="table-header whitespace-normal px-1 w-[7%]">Primary App ID</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Primary File No</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">ST File No</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Scheme No</th>
-            <th class="table-header whitespace-normal px-1 w-[7%]">Land Use</th>
-            <th class="table-header whitespace-normal px-1 w-[15%]">Original Owner</th>
-            <th class="table-header whitespace-normal px-1 w-[15%]">Unit Owner Name</th>
-            <th class="table-header whitespace-normal px-1 w-[5%]">Unit</th>
-            <th class="table-header whitespace-normal px-1 w-[8%]">Phone Number</th>
-  
-            <th class="table-header whitespace-normal px-1 w-[8%]">Actions</th> 
+            <th class="table-header text-green-500">PrimaryID</th>
+            <th class="table-header text-green-500">Scheme No</th>
+            <th class="table-header text-green-500">Mother FileNo</th>
+            <th class="table-header text-green-500">STFileNo</th> 
+            <th class="table-header text-green-500">Land Use</th>
+            <th class="table-header text-green-500">Original Owner</th>
+            <th class="table-header text-green-500">Unit Owner</th>
+            <th class="table-header text-green-500">UnitNo</th>
+            <th class="table-header text-green-500">Phone Number</th>
+            <th class="table-header text-green-500">Actions</th> 
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               @foreach($SecondaryApplications as $app)
               <tr class="text-xs">
-            <td class="table-cell px-1 py-1 truncate">ST-2025-0{{ $app->main_application_id ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->main_application_id ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">{{ $app->scheme_no ?? 'N/A' }}</td>
             <td class="table-cell px-1 py-1 truncate">{{ $app->mother_fileno ?? 'N/A' }}</td>
             <td class="table-cell px-1 py-1 truncate">{{ $app->fileno ?? 'N/A' }}</td>
-            <td class="table-cell px-1 py-1 truncate">{{ $app->scheme_no ?? 'N/A' }}</td>
+          
             <td class="table-cell px-1 py-1 truncate">{{ $app->land_use ?? 'N/A' }}</td>
             <td class="table-cell px-1 py-1">
               <div class="flex items-center">
@@ -201,10 +201,27 @@
               </div>
             </td>
             <td class="table-cell px-1 py-1 truncate">{{ $app->unit_number ?? 'N/A' }}</td>
-            <td class="table-cell px-1 py-1 truncate">{{ $app->phone_number ?? 'N/A' }}</td>
+            <td class="table-cell px-1 py-1 truncate">
+              @if(!empty($app->phone_number) && str_contains($app->phone_number, ','))
+                @php
+                  $phones = array_map('trim', explode(',', $app->phone_number));
+                  $firstPhone = $phones[0];
+                  $allPhones = implode('<br>', $phones);
+                @endphp
+                <div class="relative group">
+                  <span>{{ $firstPhone }}</span>
+                  <i data-lucide="more-horizontal" class="inline-block w-3 h-3 text-gray-500 ml-1"></i>
+                  <div class="absolute hidden group-hover:block bg-white border border-gray-200 shadow-lg rounded-md p-2 z-10 text-xs">
+                    {!! $allPhones !!}
+                  </div>
+                </div>
+              @else
+                {{ $app->phone_number ?? 'N/A' }}
+              @endif
+            </td>
       
             <td class="table-cell px-1 py-1">
-              @include('sectionaltitling.action_menu.sub_action')
+              @include('sectionaltitling.action_menu.unit_actions', ['app' => $app])
             </td>
               </tr>
               @endforeach

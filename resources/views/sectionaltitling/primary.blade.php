@@ -12,11 +12,12 @@
         @include('admin.header')
         <!-- Dashboard Content -->
         <div class="p-6">
-            <!-- Stats Cards -->
+            @include('sectionaltitling.partials.tabs')
+      <br>
+            {{-- <!-- Stats Cards --> --}}
             @include('sectionaltitling.partials.statistic.statistic_card')
             <!-- Tabs -->
-            @include('sectionaltitling.partials.tabs')
-      
+          
             <!-- Primary Applications Overview - Screenshot 129 -->
             @include('sectionaltitling.partials.statistic.PrimaryApplications')
             <!-- Primary Applications Table -->
@@ -36,11 +37,16 @@
                             <i data-lucide="chevron-down"
                                 class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
                         </div>
-
-                        <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
-                            <i data-lucide="upload" class="w-4 h-4 text-gray-600"></i>
-                            <span>Import Field Data</span>
+                        <button style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background-color: #fff8f1; border: 2px solid #f97316; border-radius: 0.375rem; cursor: pointer; transition: background-color 0.2s ease;">
+                            <i data-lucide="upload" style="width: 1rem; height: 1rem; color: #ea580c;"></i>
+                            <span style="font-weight: 500; color: #ea580c;">Import Field Data</span>
                         </button>
+
+                        <style>
+                            button:hover {
+                                background-color: #fed7aa;
+                            }
+                        </style>
 
                         <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
                             <i data-lucide="download" class="w-4 h-4 text-gray-600"></i>
@@ -166,9 +172,83 @@
                                                 @endif
                                             </span>
                                         </div>
+ 
+                                    </td>
+                                    <td class="table-cell">{{ $PrimaryApplication->NoOfUnits }}</td>
+                                    <td class="table-cell">
+                                        {{ \Carbon\Carbon::parse($PrimaryApplication->created_at)->format('Y-m-d') }}</td>
+                                    <td class="table-cell">
+                                        <div class="flex items-center">
+                                            <span class="badge badge-{{ strtolower($PrimaryApplication->planning_recommendation_status) }}">
+                                                {{ $PrimaryApplication->planning_recommendation_status }}
+                                            </span>
+                                            @if($PrimaryApplication->planning_recommendation_status == 'Declined')
+                                                <i data-lucide="info" class="w-4 h-4 ml-1 text-blue-500 cursor-pointer" 
+                                                   onclick="showDeclinedInfo(event, 'Planning Recommendation', {{ json_encode($PrimaryApplication->recomm_comments) }}, {{ json_encode($PrimaryApplication->director_comments) }})"></i>
+                                            @endif
+                                        </div>
+                                    </td>  
+                                    <td class="table-cell">
+                                        <div class="flex items-center">
+                                            <span class="badge badge-{{ strtolower($PrimaryApplication->application_status) }}">
+                                                {{ $PrimaryApplication->application_status }}
+                                            </span>
+                                            @if($PrimaryApplication->application_status == 'Declined')
+                                                <i data-lucide="info" class="w-4 h-4 ml-1 text-blue-500 cursor-pointer" 
+                                                   onclick="showDeclinedInfo(event, 'Application Status', {{ json_encode($PrimaryApplication->recomm_comments) }}, {{ json_encode($PrimaryApplication->director_comments) }})"></i>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="table-cell overflow-visible relative">
+                                        @include('sectionaltitling.action_menu.action')
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
-                                        <script>
-                                            function showPassportPreview(imageSrc, title) {
+                <div class="flex justify-between items-center mt-6 text-sm">
+                    <div class="text-gray-500">Showing 5 of 68 applications</div>
+                    <div class="flex items-center space-x-2">
+                        <button class="px-3 py-1 border border-gray-200 rounded-md flex items-center">
+                            <i data-lucide="chevron-left" class="w-4 h-4 mr-1"></i>
+                            <span>Previous</span>
+                        </button>
+                        <button class="px-3 py-1 border border-gray-200 rounded-md flex items-center">
+                            <span>Next</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        @include('admin.footer')
+      </div>
+   
+@include('sectionaltitling.action_modals.eRegistry_modal') 
+
+<script>
+  
+
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdownMenu = event.currentTarget.nextElementSibling;
+            if (dropdownMenu) {
+                dropdownMenu.classList.toggle('hidden');
+            }
+        }
+
+        document.addEventListener('click', () => {
+            const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+            dropdownMenus.forEach(menu => menu.classList.add('hidden'));
+        });
+
+
+
+        function showPassportPreview(imageSrc, title) {
                                                 Swal.fire({
                                                     title: title,
                                                     html: `<img src="${imageSrc}" class="img-fluid" style="max-height: 400px;">`,
@@ -217,69 +297,44 @@
                                                     });
                                                 }
                                             }
-                                        </script>
-                                    </td>
-                                    <td class="table-cell">{{ $PrimaryApplication->NoOfUnits }}</td>
-                                    <td class="table-cell">
-                                        {{ \Carbon\Carbon::parse($PrimaryApplication->created_at)->format('Y-m-d') }}</td>
-                                    <td class="table-cell">
-                                        <span class="badge badge-{{ strtolower($PrimaryApplication->planning_recommendation_status) }}">
-                                            {{ $PrimaryApplication->planning_recommendation_status }}
-                                        </span>
-                                    </td>  
-                                         <td class="table-cell">
-                                        <span class="badge badge-{{ strtolower($PrimaryApplication->application_status) }}">
-                                            {{ $PrimaryApplication->application_status }}
-                                        </span>
-                                    </td>
-                                    <td class="table-cell overflow-visible relative">
-                                        @include('sectionaltitling.action_menu.action')
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="flex justify-between items-center mt-6 text-sm">
-                    <div class="text-gray-500">Showing 5 of 68 applications</div>
-                    <div class="flex items-center space-x-2">
-                        <button class="px-3 py-1 border border-gray-200 rounded-md flex items-center">
-                            <i data-lucide="chevron-left" class="w-4 h-4 mr-1"></i>
-                            <span>Previous</span>
-                        </button>
-                        <button class="px-3 py-1 border border-gray-200 rounded-md flex items-center">
-                            <span>Next</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        @include('admin.footer')
-      </div>
-    @include('sectionaltitling.action_modals.payment_modal')
-    @include('sectionaltitling.action_modals.other_departments')
-    @include('sectionaltitling.action_modals.eRegistry_modal')
-    @include('sectionaltitling.action_modals.recommendation')
-    @include('sectionaltitling.action_modals.directorApproval')
-    @include('sectionaltitling.action_modals.finalconveyance')
-<script>
-  
-
-        function toggleDropdown(event) {
-            event.stopPropagation();
-            const dropdownMenu = event.currentTarget.nextElementSibling;
-            if (dropdownMenu) {
-                dropdownMenu.classList.toggle('hidden');
-            }
-        }
-
-        document.addEventListener('click', () => {
-            const dropdownMenus = document.querySelectorAll('.dropdown-menu');
-            dropdownMenus.forEach(menu => menu.classList.add('hidden'));
-        });
-</script>
+                                            
+                                            function showDeclinedInfo(event, title, recommComments, directorComments) {
+                                                event.stopPropagation();
+                                                
+                                                let htmlContent = '<div class="text-left">';
+                                                if (recommComments) {
+                                                    htmlContent += `
+                                                        <div class="mb-3">
+                                                            <h3 class="font-bold text-gray-700">Recommendation Comments:</h3>
+                                                            <p class="text-gray-600 mt-1 p-2 bg-gray-100 rounded">${recommComments}</p>
+                                                        </div>
+                                                    `;
+                                                }
+                                                
+                                                if (directorComments) {
+                                                    htmlContent += `
+                                                        <div>
+                                                            <h3 class="font-bold text-gray-700">Director Comments:</h3>
+                                                            <p class="text-gray-600 mt-1 p-2 bg-gray-100 rounded">${directorComments}</p>
+                                                        </div>
+                                                    `;
+                                                }
+                                                
+                                                if (!recommComments && !directorComments) {
+                                                    htmlContent += '<p>No comments available.</p>';
+                                                }
+                                                
+                                                htmlContent += '</div>';
+                                                
+                                                Swal.fire({
+                                                    title: `Declined: ${title}`,
+                                                    html: htmlContent,
+                                                    icon: 'info',
+                                                    width: 'auto',
+                                                    showCloseButton: true,
+                                                    showConfirmButton: true,
+                                                    confirmButtonText: 'Close'
+                                                });
+                                            }
+    </script>
 @endsection

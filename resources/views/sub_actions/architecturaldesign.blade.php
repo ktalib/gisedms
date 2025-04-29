@@ -1,12 +1,21 @@
 <!-- architecturaldesign Bill Tab -->
-<div id="detterment-tab" class="tab-content active">
+<div id="detterment-tab" class="tab-content">
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="p-4 border-b">
             <h3 class="text-sm font-medium"> Architectural Design</h3>
             <p class="text-xs text-gray-500"> </p>
+            <!-- Primary Application Reference -->
+            @if(isset($application->primary_fileno))
+            <p class="text-xs text-gray-500 mt-1">
+                Primary Application: {{$application->primary_applicant_title ?? ''}} {{$application->primary_first_name ?? ''}} {{$application->primary_surname ?? ''}} 
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                    <i data-lucide="link" class="w-3 h-3 mr-1"></i>File No: {{$application->primary_fileno ?? 'N/A'}}
+                </span>
+            </p>
+            @endif
         </div>
         <input type="hidden" id="application_id" value="{{ $application->id }}">
-        <input type="hidden" name="fileno" value="{{ $application->fileno }}">
+        <input type="hidden" name="fileno" value="{{ $application->fileno ?? '' }}">
         <div class="p-4 space-y-4">
 
             <!-- Blade Template for displaying architecturaldesign -->
@@ -99,11 +108,11 @@
            
               <div class="flex gap-2">
             
-                <button class="flex items-center px-3 py-1 text-xs bg-white text-black p-2 border border-gray-500 rounded-md hover:bg-gray-800">
-            <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
-                     
-                Back
-                </button>    
+                <a  href="{{route('sectionaltitling.secondary')}}" class="flex items-center px-3 py-1 text-xs bg-white text-black p-2 border border-gray-500 rounded-md hover:bg-gray-800">
+                    <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
+                    Back
+                  </a>    
+                    
                 
                 <!-- <button class="flex items-center px-3 py-1 text-xs bg-green-700 text-white rounded-md hover:bg-gray-800">
                     <i data-lucide="send-horizontal" class="w-3.5 h-3.5 mr-1.5"></i>
