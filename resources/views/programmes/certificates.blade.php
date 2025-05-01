@@ -247,16 +247,16 @@
                                               </a>
                                             </li>
                                             <li>
-                                              <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2" onclick="openCertificateModal('{{ $application->id }}')">
+                                              <a href="{{route('programmes.generate_cofo', $application->id)}}" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
                                                 <i data-lucide="file-text" class="w-4 h-4 text-green-500"></i>
-                                                <span>Generate Front Page</span>
-                                              </button>
+                                                <span> Generate Front Page</span>
+                                              </a>
                                             </li>
                                             <li>
-                                              <button type="button" class="w-full text-left px-4 py-2 flex items-center space-x-2 text-gray-400 cursor-not-allowed pointer-events-none bg-gray-50" onclick="openCertificateModal('{{ $application->id }}')">
-                                                <i data-lucide="file-text" class="w-4 h-4 text-gray-300"></i>
-                                                <span>View Front Page</span>
-                                              </button>
+                                              <a href="{{route('programmes.view_cofo', $application->id)}}" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2 {{ !$application->certificate_issued ? 'text-gray-400 cursor-not-allowed pointer-events-none bg-gray-50' : '' }}">
+                                                <i data-lucide="file-text" class="w-4 h-4 {{ $application->certificate_issued ? 'text-blue-500' : 'text-gray-300' }}"></i>
+                                                <span>View Certificate</span>
+                                              </a>
                                             </li>
                                             <li>
                                               <a href="#" class="w-full text-left px-4 py-2 flex items-center space-x-2 text-gray-400 cursor-not-allowed pointer-events-none bg-gray-50">
@@ -265,15 +265,9 @@
                                               </a>
                                             </li>
                                             <li>
-                                              <a href="#" class="w-full text-left px-4 py-2 flex items-center space-x-2 text-gray-400 cursor-not-allowed pointer-events-none bg-gray-50">
-                                                <i data-lucide="file-text" class="w-4 h-4 text-gray-300"></i>
-                                                <span>View CofO</span>
-                                              </a>
-                                            </li>
-                                            <li>
-                                              <a href="#" class="w-full text-left px-4 py-2 flex items-center space-x-2 text-gray-400 cursor-not-allowed pointer-events-none bg-gray-50">
-                                                <i data-lucide="printer" class="w-4 h-4 text-gray-300"></i>
-                                                <span>Print CofO</span>
+                                              <a href="{{ $application->certificate_issued ? route('programmes.view_cofo', $application->id) : '#' }}" class="w-full text-left px-4 py-2 flex items-center space-x-2 {{ !$application->certificate_issued ? 'text-gray-400 cursor-not-allowed pointer-events-none bg-gray-50' : '' }}">
+                                                <i data-lucide="printer" class="w-4 h-4 {{ $application->certificate_issued ? 'text-green-500' : 'text-gray-300' }}"></i>
+                                                <span>Print Certificate</span>
                                               </a>
                                             </li>
                                           </ul>
@@ -329,86 +323,7 @@
         </div>
     </div>
     
-    <!-- Certificate Issuance Modal -->
-    <div id="certificate-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-      <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity backdrop-blur-sm"></div>
-        
-        <div class="relative bg-white rounded-xl shadow-2xl max-w-3xl w-full p-8 z-10">
-          <div class="flex items-center justify-between mb-6 border-b pb-4">
-            <h3 class="text-2xl font-bold text-gray-800">Issue Certificate of Occupancy</h3>
-            <button type="button" onclick="closeCertificateModal()" class="text-gray-400 hover:text-gray-700 transition-colors duration-200 rounded-full p-2 hover:bg-gray-100">
-              <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-          </div>
-          
-          <form id="certificate-form" class="space-y-6">
-            <input type="hidden" id="application-id">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Certificate Number</label>
-                <input type="text" id="certificate-number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-25 bg-white">
-                <p class="mt-1 text-xs text-gray-500">Unique identifier for this certificate</p>
-              </div>
-              
-              <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Issue Date</label>
-                <input type="date" id="issue-date" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-25 bg-white">
-                <p class="mt-1 text-xs text-gray-500">Official date of certificate issuance</p>
-              </div>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Authorized Officer</label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i data-lucide="user" class="h-5 w-5 text-gray-400"></i>
-                </div>
-                <input type="text" id="authorized-officer" class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-25 bg-white">
-              </div>
-              <p class="mt-1 text-xs text-gray-500">Name of the government official authorizing this certificate</p>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Certificate Comments</label>
-              <div class="relative">
-                <div class="absolute top-3 left-3 pointer-events-none">
-                  <i data-lucide="message-square" class="h-5 w-5 text-gray-400"></i>
-                </div>
-                <textarea id="certificate-comments" rows="3" class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-25 bg-white" placeholder="Add any relevant notes about this certificate..."></textarea>
-              </div>
-            </div>
-            
-            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Upload Signed Certificate (PDF)</label>
-              <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md bg-white">
-                <div class="space-y-1 text-center">
-                  <i data-lucide="upload-cloud" class="mx-auto h-12 w-12 text-gray-400"></i>
-                  <div class="flex text-sm text-gray-600">
-                    <label for="certificate-file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                      <span>Upload a file</span>
-                      <input id="certificate-file" type="file" class="sr-only" accept=".pdf">
-                    </label>
-                    <p class="pl-1">or drag and drop</p>
-                  </div>
-                  <p class="text-xs text-gray-500">PDF up to 10MB</p>
-                </div>
-              </div>
-            </div>
-            
-            <div class="flex justify-end space-x-4 pt-4 border-t">
-              <button type="button" onclick="closeCertificateModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
-                Cancel
-              </button>
-              <button type="button" onclick="issueCertificate()" class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                Issue Certificate
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+ 
     <!-- Page Footer -->
     @include($footerPartial ?? 'admin.footer')
 </div>

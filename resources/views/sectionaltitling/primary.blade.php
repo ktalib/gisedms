@@ -336,5 +336,6 @@
                                                     confirmButtonText: 'Close'
                                                 });
                                             }
-    </script>
+    
+                         </script>
 @endsection

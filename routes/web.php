@@ -545,3 +545,5 @@ Route::get('/map', [\App\Http\Controllers\SectionalTitlingController::class, 'Ma
  
 // Payment filtering route
 Route::get('/programmes/payments/filter', [App\Http\Controllers\ProgrammesController::class, 'filterPayments'])->name('programmes.payments.filter');
+
+Route::get('/programmes/memo/{id}', 'App\Http\Controllers\ProgrammeController@viewMemo')->name('programmes.memo');

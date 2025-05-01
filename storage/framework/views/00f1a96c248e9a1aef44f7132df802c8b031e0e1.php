@@ -391,7 +391,7 @@
         </div>
         
 
-        <a href="" class="sidebar-item flex items-center gap-2 py-2 px-3 rounded-md transition-all duration-200">
+        <a href="<?php echo e(route('programmes.memo')); ?>" class="sidebar-item flex items-center gap-2 py-2 px-3 rounded-md transition-all duration-200 <?php echo e(request()->routeIs('programmes.memo') ? 'active' : ''); ?>">
           <i data-lucide="clipboard-list" class="h-3.5 w-3.5"></i>
           <span> Memo</span>
       </a>
@@ -406,7 +406,7 @@
       </div>
       
       <div class="pl-4 mt-1 mb-1 space-y-0.5 hidden" data-content="eRegistry">
-        <a href="/sectional-titling/e-registry/files" class="sidebar-item flex items-center gap-2 py-2 px-3 rounded-md transition-all duration-200">
+        <a href="<?php echo e(route('programmes.rofo')); ?>" class="sidebar-item flex items-center gap-2 py-2 px-3 rounded-md transition-all duration-200 <?php echo e(request()->routeIs('programmes.rofo') ? 'active' : ''); ?>">
           <i data-lucide="folder" class="h-3.5 w-3.5"></i>
           <span>RofO</span>
         </a>

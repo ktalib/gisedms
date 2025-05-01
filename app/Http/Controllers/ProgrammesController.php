@@ -733,53 +733,7 @@ class ProgrammesController extends Controller
     }
 
 
-    public function CertificateOfOccupancy()
-    {
-        $PageTitle = 'ST Certificate of Occupancy';
-        $PageDescription = '';
-
-        // Fetch all unit applications (not just approved ones)
-        $approvedUnitApplications = DB::connection('sqlsrv')->table('subapplications')
-            ->join('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
-            ->where('subapplications.planning_recommendation_status', 'Approved')
-            ->where('subapplications.application_status', 'Approved')
-            ->select(
-                'subapplications.id',
-                'subapplications.fileno',
-                'subapplications.applicant_title',
-                'subapplications.first_name',
-                'subapplications.surname',
-                'subapplications.corporate_name',
-                'subapplications.multiple_owners_names',
-                'subapplications.block_number',
-                'subapplications.floor_number',
-                'subapplications.unit_number',
-                'subapplications.application_status',
-                'subapplications.scheme_no',
-                'subapplications.planning_recommendation_status',
-                'mother_applications.property_lga',
-                'mother_applications.land_use'
-            )
-            ->get();
-
-        // Process owner names
-        foreach ($approvedUnitApplications as $application) {
-            if (!empty($application->multiple_owners_names)) {
-                $ownerArray = json_decode($application->multiple_owners_names, true);
-                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-            } elseif (!empty($application->corporate_name)) {
-                $application->owner_name = $application->corporate_name;
-            } else {
-                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
-            }
-        }
-
-        return view('programmes.certificates', compact(
-            'approvedUnitApplications',
-            'PageTitle',
-            'PageDescription'
-        ));
-    }
+  
 
     public function Entity($applicationId = null)
     {
@@ -970,166 +924,20 @@ class ProgrammesController extends Controller
         ));
     }
 
-    //Memo
-    public function Memo()
-    {
-        $PageTitle = 'Memo';
-        $PageDescription = '';
-
-        // Fetch subapplications data
-        $subapplications = DB::connection('sqlsrv')->table('subapplications')
-            ->leftJoin('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
-            ->select(
-                'subapplications.id',
-                'subapplications.scheme_no',
-                'subapplications.fileno',
-                'subapplications.applicant_title',
-                'subapplications.first_name',
-                'subapplications.surname',
-                'subapplications.corporate_name',
-                'subapplications.multiple_owners_names',
-                'subapplications.block_number',
-                'subapplications.floor_number',
-                'subapplications.unit_number',
-                'subapplications.application_status',
-                'subapplications.planning_recommendation_status',
-                'subapplications.planning_approval_date',
-                'subapplications.approval_date',
-             
-                'subapplications.created_at',
-                'mother_applications.property_lga',
-                'mother_applications.land_use'
-            )
-            ->get();
-
-        // Process owner names
-        foreach ($subapplications as $application) {
-            if (!empty($application->multiple_owners_names)) {
-                $ownerArray = json_decode($application->multiple_owners_names, true);
-                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-            } elseif (!empty($application->corporate_name)) {
-                $application->owner_name = $application->corporate_name;
-            } else {
-                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
-            }
-        }
-
-        //select from mother_applications table
-
-        $motherApplications = DB::connection('sqlsrv')->table('mother_applications')
-            ->select(
-                'id',
-                'fileno',
-                'applicant_title',
-                'first_name',
-                'surname',
-                'corporate_name',
-                'multiple_owners_names',
-                'land_use',
-                'NoOfUnits',
-                'receipt_date',
-                'planning_recommendation_status',
-                'application_status',
-                'planning_approval_date',
-                
-                'property_street_name',
-                'property_lga',
-                'created_at'
-            )
-            ->get();
-             // Process owner names for mother applications
-        foreach ($motherApplications as $application) {
-            if (!empty($application->multiple_owners_names)) {
-                $ownerArray = json_decode($application->multiple_owners_names, true);
-                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-            } elseif (!empty($application->corporate_name)) {
-                $application->owner_name = $application->corporate_name;
-            } else {
-                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
-            }
-        }
-
-        return view('programmes.memo', compact('motherApplications', 'subapplications', 'PageTitle', 'PageDescription'));
-    } 
+  
+  
+ 
+  
     
-    public function RofO()
-    {
-        $PageTitle = 'RofO (Letter of Grant)';
-        $PageDescription = '';
+   
+   
+ 
+ 
 
-        // Fetch subapplications data
-        $subapplications = DB::connection('sqlsrv')->table('subapplications')
-            ->leftJoin('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
-            ->select(
-                'subapplications.id',
-                'subapplications.scheme_no',
-                'subapplications.fileno',
-                'subapplications.applicant_title',
-                'subapplications.first_name',
-                'subapplications.surname',
-                'subapplications.corporate_name',
-                'subapplications.multiple_owners_names',
-                'subapplications.block_number',
-                'subapplications.floor_number',
-                'subapplications.unit_number',
-                'subapplications.application_status',
-                'subapplications.planning_recommendation_status',
-                'subapplications.planning_approval_date',
-                'subapplications.approval_date',
-             
-                'subapplications.created_at',
-                'mother_applications.property_lga',
-                'mother_applications.land_use'
-            )
-            ->get();
+ 
+ 
 
-        // Process owner names
-        foreach ($subapplications as $application) {
-            if (!empty($application->multiple_owners_names)) {
-                $ownerArray = json_decode($application->multiple_owners_names, true);
-                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-            } elseif (!empty($application->corporate_name)) {
-                $application->owner_name = $application->corporate_name;
-            } else {
-                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
-            }
-        }
+     
+ 
 
-        //select from mother_applications table
-
-        $motherApplications = DB::connection('sqlsrv')->table('mother_applications')
-            ->select(
-                'id',
-                'fileno',
-                'applicant_title',
-                'first_name',
-                'surname',
-                'corporate_name',
-                'multiple_owners_names',
-                'land_use',
-                'NoOfUnits',
-                'receipt_date',
-                'planning_recommendation_status',
-                'application_status',
-                'planning_approval_date',
-                
-                'property_street_name',
-                'property_lga',
-                'created_at'
-            )
-            ->get();
-             // Process owner names for mother applications
-        foreach ($motherApplications as $application) {
-            if (!empty($application->multiple_owners_names)) {
-                $ownerArray = json_decode($application->multiple_owners_names, true);
-                $application->owner_name = $ownerArray ? implode(', ', $ownerArray) : null;
-            } elseif (!empty($application->corporate_name)) {
-                $application->owner_name = $application->corporate_name;
-            } else {
-                $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
-            }
-        }
-
-        return view('programmes.rofo', compact('motherApplications', 'subapplications', 'PageTitle', 'PageDescription'));
-    }
 }

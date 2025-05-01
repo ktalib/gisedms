@@ -225,26 +225,36 @@
                         
                         <!-- Dropdown Menu Primary Application Surveys -->
                         <ul class="fixed action-menu z-50 bg-white border rounded-lg shadow-lg hidden w-56">
-                            <li>
-                                <a href="{{ route('sectionaltitling.viewrecorddetail')}}?id={{$application->id}}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                    <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
-                                    <span>View Record</span>
-                                </a>
-                            </li>
-                          
-                            <li>
-                                <a href="" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                    <i data-lucide="file-plus" class="w-4 h-4 text-indigo-600"></i>
-                                    <span>Generate Memo</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                    <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
-                                    <span>View Memo</span>
-                                </a>
-                            </li>
-                             
+                          <li>
+                            <a href="{{ route('sectionaltitling.viewrecorddetail')}}?id={{$application->id}}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                              <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
+                              <span>View Record</span>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                              <i data-lucide="pencil" class="w-4 h-4 text-amber-600"></i>
+                              <span>Edit Record</span>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('programmes.generate_memo', $application->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                              <i data-lucide="file-plus" class="w-4 h-4 text-indigo-600"></i>
+                              <span>Generate Memo</span>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="{{ route('programmes.view_memo_primary', $application->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                              <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
+                              <span>View Memo</span>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                              <i data-lucide="pencil" class="w-4 h-4 text-green-600"></i>
+                              <span>Edit Memo</span>
+                            </a>
+                          </li>
                         </ul>
                       </td>
                     </tr>
@@ -293,7 +303,7 @@
           </div>
         </div>
         
-        <div class="overflow-x-auto">
+        <div  >
             <table id="unitApplicationTable" class="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
@@ -336,26 +346,36 @@
                     
                     <!-- Dropdown Menu Unit Application Surveys -->
                     <ul class="action-menu z-50 bg-white border rounded-lg shadow-lg hidden w-56">
-                        <li>
-                            <a href="{{ route('sectionaltitling.viewrecorddetail_sub', $unitApplication->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
-                                <span>View Record</span>
-                            </a>
-                        </li>
-                     
-                        <li>
-                            <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                <i data-lucide="file-plus" class="w-4 h-4 text-indigo-600"></i>
-                                <span>Generate Memo</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
-                                <span>View Memo</span>
-                            </a>
-                        </li>
-                         
+                      <li>
+                        <a href="{{ route('sectionaltitling.viewrecorddetail_sub', $unitApplication->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
+                          <span>View Record</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="pencil" class="w-4 h-4 text-amber-600"></i>
+                          <span>Edit Record</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{{route('programmes.view_memo' , $unitApplication->id)}}?action=generate" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="file-plus" class="w-4 h-4 text-indigo-600"></i>
+                          <span>Generate Memo</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{{route('programmes.view_memo' , $unitApplication->id)}}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
+                          <span>View Memo</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="pencil" class="w-4 h-4 text-green-600"></i>
+                          <span>Edit Memo</span>
+                        </a>
+                      </li>
                     </ul>
                   </td>
                 </tr>

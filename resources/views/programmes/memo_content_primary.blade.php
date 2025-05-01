@@ -109,24 +109,24 @@
 
         <div class="space-y-4 text-sm md:text-base">
             <p>
-                Kindly find  <span class="highlight">page  {{ $landAdmin->page_no ?? 'N/A' }}</span> is an application for sectional titling in respect of a property (plaza) covered by Certificate of Occupancy No. <span class="highlight">{{ $memo->fileno ?? 'N/A' }}</span> situated at  {{ $memo->property_street_name ?? '' }} {{ $memo->property_district ? ', '.$memo->property_district : '' }}   {{ $memo->property_state ? ', '.$memo->property_state : '' }} in the name of <span class="highlight">{{ $memo->applicant_title ?? '' }} {{ $memo->first_name ?? '' }} {{ $memo->middle_name ?? '' }} {{ $memo->surname ?? 'N/A' }}</span>
+                Kindly find  <span class="highlight">page {{ $memo->page_no ?? ($landAdmin->page_no ?? 'N/A') }}</span> is an application for sectional titling in respect of a property (plaza) covered by Certificate of Occupancy No. <span class="highlight">{{ $memo->certificate_number ?? $memo->fileno ?? 'N/A' }}</span> situated at {{ $memo->property_location ?? ($memo->property_street_name . ', ' . $memo->property_district . ', ' . $memo->property_lga) }} in the name of <span class="highlight">{{ $memo->memo_applicant_name ?? $memo->owner_name ?? 'N/A' }}</span>
             </p>
             <p>
                 As well as change of name to various shop owners as per attached on the application.
             </p>
     
             <p>
-                The application was referred to Physical Planning Department for planning, engineering as well as architectural views. Subsequently, the planners at  <span class="highlight">page  {{ $landAdmin->page_no ?? 'N/A' }}</span> recommended the application, because the application is feasible, and the shops meet the minimum requirements for commercial titles. Moreover, the proposal is accessible and conforms with the existing commercial development in the area.
+                {{ $memo->planner_recommendation ?? 'The application was referred to Physical Planning Department for planning, engineering as well as architectural views. Subsequently, the planners recommended the application, because the application is feasible, and the shops meet the minimum requirements for commercial titles. Moreover, the proposal is accessible and conforms with the existing commercial development in the area.' }}
             </p>
     
             <p>
-                However, the recommendation is based on the recommended site plan at <span class="highlight">page {{ $landAdmin->page_no ?? 'N/A' }}</span> and architectural design at <span class="highlight">page  {{ $landAdmin->page_no ?? 'N/A' }}</span> and back cover with the following measurements:
+                However, the recommendation is based on the recommended site plan at <span class="highlight">page {{ $memo->page_no ?? ($landAdmin->page_no ?? 'N/A') }}</span> and architectural design at <span class="highlight">page {{ $memo->page_no ?? ($landAdmin->page_no ?? 'N/A') }}</span> and back cover with the following measurements:
             </p>
     
             <div class="my-6"></div>
     
             <p>
-                Meanwhile, the title was granted for commercial purposes for a term of <span class="highlight">{{ $totalYears ?? '40' }}</span> years commencing from <span class="highlight">{{ $memo->approval_date ? date('d/m/Y', strtotime($memo->approval_date)) : 'N/A/N/A/2025' }}</span> and has a residual term of <span class="highlight">{{ $residualYears ?? '20' }}</span> years to expire.
+                Meanwhile, the title was granted for commercial purposes for a term of <span class="highlight">{{ $memo->term_years ?? ($totalYears ?? '40') }}</span> years commencing from <span class="highlight">{{ $memo->commencement_date ? date('d/m/Y', strtotime($memo->commencement_date)) : ($memo->approval_date ? date('d/m/Y', strtotime($memo->approval_date)) : 'N/A/N/A/2025') }}</span> and has a residual term of <span class="highlight">{{ $memo->residual_years ?? ($residualYears ?? '20') }}</span> years to expire.
             </p>
     
             <p>
@@ -135,13 +135,13 @@
     
             <ol class="list-none space-y-2 pl-4 md:pl-8">
                 <li>
-                    a) Consider and approve the application for Sectional Titling over plot <span class="highlight">{{ $memo->property_plot_no ?? 'N/A' }}</span> situated at <span class="highlight">{{ $memo->property_street_name ?? '' }} {{ $memo->property_district ? ', '.$memo->property_district : '' }}  </span> covered by Certificate of Occupancy No. <span class="highlight">{{ $memo->fileno ?? 'N/A' }}</span> in Favor of <span class="highlight">{{ $memo->applicant_title ?? '' }}  {{ $memo->first_name ?? '' }} {{ $memo->middle_name ?? '' }} {{ $memo->surname ?? 'N/A' }}</span>
+                    a) Consider and approve the application for Sectional Titling over plot <span class="highlight">{{ $memo->property_plot_no ?? 'N/A' }}</span> situated at <span class="highlight">{{ $memo->property_location ?? ($memo->property_street_name . ', ' . $memo->property_district) }}</span> covered by Certificate of Occupancy No. <span class="highlight">{{ $memo->certificate_number ?? $memo->fileno ?? 'N/A' }}</span> in Favor of <span class="highlight">{{ $memo->memo_applicant_name ?? $memo->owner_name ?? 'N/A' }}</span>
                 </li>
                 <li>
                     b) Consider and approve the change of name of various shop owners as per provisions of the Bill.
                 </li>
                 <li>
-                    c) Consider and approve the Revocation of old Certificate of Occupancy <span class="highlight">{{ $memo->fileno ?? 'N/A' }}</span> to pave the way for new Sectional Titles to the new owners.
+                    c) Consider and approve the Revocation of old Certificate of Occupancy <span class="highlight">{{ $memo->certificate_number ?? $memo->fileno ?? 'N/A' }}</span> to pave the way for new Sectional Titles to the new owners.
                 </li>
             </ol>
     
@@ -155,7 +155,7 @@
                 </div>
                 <div>
                     <p>Counter Sign: -__________________</p>
-                    <p class="text-right font-bold">Director Section Titling</p>
+                    <p class="text-right font-bold">{{ $memo->director_rank ?? 'Director Section Titling' }}</p>
                     <p class="mt-4">Date: __________________________</p>
                 </div>
             </div>

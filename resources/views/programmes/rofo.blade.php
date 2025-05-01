@@ -129,6 +129,18 @@
         width: 90%;
       }
     }
+
+    /* Filter toggle styles */
+    .filter-container {
+        display: none;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+
+    .filter-container.show {
+        display: block;
+    }
   </style>
 <div class="flex-1 overflow-auto">
     <!-- Header -->
@@ -136,182 +148,99 @@
     
     <!-- Main Content -->
     <div class="p-6">
-        <div class="flex space-x-3 mb-6">
-            <button 
-            onclick="showTab('primary-survey')"
-            id="primary-survey-tab"
-            class="flex items-center px-4 py-2 text-sm font-medium rounded-lg shadow-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 bg-green-600 text-white hover:bg-green-700"
-            >
-            <span>Primary Applications</span>
-            </button>
-            <button 
-            onclick="showTab('unit-survey')"
-            id="unit-survey-tab"
-            class="flex items-center px-4 py-2 text-sm font-medium rounded-lg shadow-sm transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-            >
-            <span>Unit Applications</span>
-            </button>
-        </div>
-     <!-- Primary Application  -->
-     <div id="primary-survey">
-     
-        <div  class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-xl font-bold">RofO (Letter of Grant)</h2>
-                    <p class="text-sm text-gray-600 mt-1">Primary Application</p>
-                  </div>
-              <div class="flex items-center space-x-4">
-                <div class="relative">
-                  <select id="primaryStatusFilter" class="pl-4 pr-8 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
-                    <option>All...</option>
-                    <option>Approved</option>
-                    <option>Pending</option>
-                    <option>Declined</option>
-                  </select>
-                  <i data-lucide="chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
-                </div>
-                
-                <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
-                  <i data-lucide="upload" class="w-4 h-4 text-gray-600"></i>
-                  <span>Import</span>
-                </button>
-                
-                <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
-                  <i data-lucide="download" class="w-4 h-4 text-gray-600"></i>
-                  <span>Export</span>
-                </button>
-              </div>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table id="primaryApplicationTable" class="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                        <th class="table-header">FileNo</th>
-                        
-                        <th class="table-header">Owner</th>
-                        <th class="table-header">LGA</th>
-                        <th class="table-header">No. of Units</th>
-                        <th class="table-header">Land Use</th>
-                        <th class="table-header">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($motherApplications as $application)
-                    <tr>
-                        <td class="table-cell">{{ $application->fileno ?? 'N/A' }}</td>
-                        <td class="table-cell">
-                            @if(!empty($application->multiple_owners_names) && json_decode($application->multiple_owners_names))
-                                @php
-                                    $owners = json_decode($application->multiple_owners_names);
-                                    $firstOwner = isset($owners[0]) ? $owners[0] : 'N/A';
-                                    $allOwners = json_encode($owners);
-                                @endphp
-                                {{ $firstOwner }}
-                                <span class="info-icon" onclick="showOwners({{ $allOwners }})">i</span>
-                            @else
-                                {{ $application->owner_name ?? 'N/A' }}
-                            @endif
-                        </td>
-                        <td class="table-cell">{{ $application->property_lga ?? 'N/A' }}</td>
-                        <td class="table-cell">{{ $application->NoOfUnits ?? 'N/A' }}</td>
-                        <td class="table-cell">{{ $application->land_use ?? 'N/A' }}</td>
-                      <td class="table-cell relative">
-                        <!-- Dropdown Toggle Button -->
-                        <button type="button" class="p-2 hover:bg-gray-100 focus:outline-none rounded-full" onclick="customToggleDropdown(this, event)">
-                          <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-                        </button>
-                        
-                        <!-- Dropdown Menu Primary Application Surveys -->
-                        <ul class="fixed action-menu z-50 bg-white border rounded-lg shadow-lg hidden w-56">
-                            <li>
-                                <a href="{{ route('sectionaltitling.viewrecorddetail')}}?id={{$application->id}}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                    <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
-                                    <span>View Record</span>
-                                </a>
-                            </li>
-                           
-                            <li>
-                                <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                    <i data-lucide="file-plus" class="w-4 h-4 text-indigo-600"></i>
-                                    <span>Generate Memo</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                    <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
-                                    <span>View Memo</span>
-                                </a>
-                            </li>
-                           
-                        </ul>
-                      </td>
-                    </tr>
-                    @empty
-                    <tr>
-                      <td colspan="7" class="table-cell text-center py-4 text-gray-500">No primary survey records found</td>
-                    </tr>
-                    @endforelse
-                  </tbody>
-                </table>
-              </div>
-          </div>
-      </div>
+    
      
         
       <!-- Unit Application  -->
-    <div id="unit-survey" class="hidden">
+    <div >
        
       <div  class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
-        <div class="flex justify-between items-center mb-6">
-          <div>
-            <h2 class="text-xl font-bold">RofO (Letter of Grant)</h2>
-            <p class="text-sm text-gray-600 mt-1">Unit Application</p>
-          </div>
-
-          <div class="flex items-center space-x-4">
-            <div class="relative">
-              <select id="unitStatusFilter" class="pl-4 pr-8 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
-                <option>All...</option>
-                <option>Approved</option>
-                <option>Pending</option>
-                <option>Declined</option>
-              </select>
-              <i data-lucide="chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+        <!-- Filter Toggle and Export Buttons -->
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center space-x-2">
+                <button id="toggleFilters" class="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                    <i data-lucide="filter" class="w-4 h-4"></i>
+                    <span>Filters</span>
+                </button>
+                
+                <!-- Add search bar that's always visible -->
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search records..." 
+                        class="pl-10 pr-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 w-64"
+                    >
+                    <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                </div>
             </div>
             
             <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
-              <i data-lucide="upload" class="w-4 h-4 text-gray-600"></i>
-              <span>Import</span>
+                <i data-lucide="download" class="w-4 h-4 text-gray-600"></i>
+                <span>Export</span>
             </button>
-            
-            <button class="flex items-center space-x-2 px-4 py-2 border border-gray-200 rounded-md">
-              <i data-lucide="download" class="w-4 h-4 text-gray-600"></i>
-              <span>Export</span>
-            </button>
-          </div>
         </div>
         
-        <div class="overflow-x-auto">
-            <table id="unitApplicationTable" class="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th class="table-header">ST FileNo</th>
-                  <th class="table-header">SchemeNo</th>
-                  <th class="table-header">Unit Owner</th>
-                  <th class="table-header">LGA</th>
-                  <th class="table-header">Block/Floor/Unit</th>
-                  <th class="table-header">Land Use</th>
-                  <th class="table-header">Actions</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($subapplications as $unitApplication)
-                <tr>
-                  <td class="table-cell">{{ $unitApplication->fileno ?? 'N/A' }}</td>
-                  <td class="table-cell">{{ $unitApplication->scheme_no ?? 'N/A' }}</td>
-                  <td class="table-cell">
+        <!-- Filters Container (Hidden by Default) -->
+        <div id="filterContainer" class="filter-container mb-6">
+            <div class="flex flex-wrap items-center gap-4 w-full">
+                <!-- Land Use Filter -->
+                <div class="relative min-w-[160px]">
+                    <label for="landUseFilter" class="block text-xs font-medium text-gray-700 mb-1">Land Use</label>
+                    <select id="landUseFilter" class="pl-4 pr-8 py-2 w-full border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none">
+                        <option value="">All</option>
+                        <option value="Residential">Residential</option>
+                        <option value="Commercial">Commercial</option>
+                        <option value="Industrial">Industrial</option>
+                        <option value="Mixed Use">Mixed Use</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="absolute right-3 top-[60%] transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                </div>
+                
+                <!-- Date Range Filter -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div>
+                        <label for="dateFrom" class="block text-xs font-medium text-gray-700 mb-1">Date From</label>
+                        <input type="date" id="dateFrom" class="pl-4 pr-2 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label for="dateTo" class="block text-xs font-medium text-gray-700 mb-1">Date To</label>
+                        <input type="date" id="dateTo" class="pl-4 pr-2 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                
+                <!-- Apply and Reset Buttons -->
+                <div class="flex items-end space-x-2">
+                    <button id="applyFilter" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
+                        Apply Filters
+                    </button>
+                    <button id="resetFilter" class="border border-gray-300 hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-md">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div  >
+          <table id="unitApplicationTable" class="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th class="table-header">ST FileNo</th>
+                <th class="table-header">SchemeNo</th>
+                <th class="table-header">Unit Owner</th>
+                <th class="table-header">LGA</th>
+                <th class="table-header">Block/Floor/Unit</th>
+                <th class="table-header">Land Use</th>
+                <th class="table-header">Date Created</th>
+                <th class="table-header">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              @forelse($subapplications as $unitApplication)
+              <tr data-land-use="{{ strtolower($unitApplication->land_use ?? '') }}" data-date="{{ $unitApplication->created_at ? date('Y-m-d', strtotime($unitApplication->created_at)) : '' }}">
+                <td class="table-cell">{{ $unitApplication->fileno ?? 'N/A' }}</td>
+                <td class="table-cell">{{ $unitApplication->scheme_no ?? 'N/A' }}</td>
+                <td class="table-cell">
                       @if(!empty($unitApplication->multiple_owners_names) && json_decode($unitApplication->multiple_owners_names))
                           @php
                               $owners = json_decode($unitApplication->multiple_owners_names);
@@ -324,11 +253,11 @@
                           {{ $unitApplication->owner_name ?? 'N/A' }}
                       @endif
                   </td>
-                  <td class="table-cell">{{ $unitApplication->property_lga ?? 'N/A' }}</td>
-                  <td class="table-cell">{{ $unitApplication->block_number ?? '' }}/{{ $unitApplication->floor_number ?? '' }}/{{ $unitApplication->unit_number ?? '' }}</td>
-                  <td class="table-cell">{{ $unitApplication->land_use ?? 'N/A' }}</td>
-           
-                  <td class="table-cell relative">
+                <td class="table-cell">{{ $unitApplication->property_lga ?? 'N/A' }}</td>
+                <td class="table-cell">{{ $unitApplication->block_number ?? '' }}/{{ $unitApplication->floor_number ?? '' }}/{{ $unitApplication->unit_number ?? '' }}</td>
+                <td class="table-cell">{{ $unitApplication->land_use ?? 'N/A' }}</td>
+                <td class="table-cell">{{ $unitApplication->created_at ? date('d-m-Y', strtotime($unitApplication->created_at)) : 'N/A' }}</td>
+                <td class="table-cell relative">
                     <!-- Dropdown Toggle Button -->
                     <button type="button" class="p-2 hover:bg-gray-100 focus:outline-none rounded-full" onclick="customToggleDropdown(this, event)">
                       <i data-lucide="more-horizontal" class="w-5 h-5"></i>
@@ -336,42 +265,50 @@
                     
                     <!-- Dropdown Menu Unit Application Surveys -->
                     <ul class="action-menu z-50 bg-white border rounded-lg shadow-lg hidden w-56">
-                        <li>
-                            <a href="{{ route('sectionaltitling.viewrecorddetail_sub', $unitApplication->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
-                                <span>View Record</span>
-                            </a>
-                        </li>
-                       
-                        <li>
-                            <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                <i data-lucide="file-plus" class="w-4 h-4 text-indigo-600"></i>
-                                <span>Generate Memo</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
-                                <span>View Memo</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
-                                <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
-                                <span>View Planning Recommendation</span>
-                            </a>
-                        </li>
+                      <li>
+                        <a href="{{ route('sectionaltitling.viewrecorddetail_sub', $unitApplication->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="eye" class="w-4 h-4 text-blue-600"></i>
+                          <span>View Record</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="edit" class="w-4 h-4 text-green-600"></i>
+                          <span>Edit Record</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{{ route('programmes.generate_rofo', $unitApplication->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="file-plus" class="w-4 h-4 text-indigo-600"></i>
+                          <span>Generate RofO</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{{ route('programmes.view_rofo', $unitApplication->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
+                          <span>View RofO</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="{{ route('programmes.generate_rofo', $unitApplication->id) }}?edit=yes" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
+                          <i data-lucide="edit-3" class="w-4 h-4 text-purple-600"></i>
+                          <span>Edit RofO</span>
+                        </a>
+                      </li>
                     </ul>
                   </td>
-                </tr>
-                @empty
-                <tr>
-                  <td colspan="8" class="table-cell text-center py-4 text-gray-500">No unit applications found</td>
-                </tr>
-                @endforelse
-              </tbody>
-            </table>
-          </div>
+              </tr>
+              @empty
+              <tr id="noRecordsRow" class="hidden">
+                <td colspan="8" class="table-cell text-center py-4 text-gray-500">No matching records found</td>
+              </tr>
+              <tr id="emptyRow">
+                <td colspan="8" class="table-cell text-center py-4 text-gray-500">No unit applications found</td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
       </div>
       </div>
     </div>
@@ -452,6 +389,101 @@
     document.querySelectorAll('.action-menu').forEach(menu => {
       menu.classList.add('hidden');
     });
+  });
+
+  // Table filtering functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleFiltersBtn = document.getElementById('toggleFilters');
+    const filterContainer = document.getElementById('filterContainer');
+    const applyFilterBtn = document.getElementById('applyFilter');
+    const resetFilterBtn = document.getElementById('resetFilter');
+    const landUseFilter = document.getElementById('landUseFilter');
+    const dateFromFilter = document.getElementById('dateFrom');
+    const dateToFilter = document.getElementById('dateTo');
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#unitApplicationTable tbody tr:not(#noRecordsRow):not(#emptyRow)');
+    const noRecordsRow = document.getElementById('noRecordsRow');
+    const emptyRow = document.getElementById('emptyRow');
+    
+    // Toggle filters visibility
+    toggleFiltersBtn.addEventListener('click', function() {
+        filterContainer.classList.toggle('show');
+    });
+    
+    // Apply filters when button is clicked
+    applyFilterBtn.addEventListener('click', function() {
+      applyFilters();
+    });
+    
+    // Reset filters when reset button is clicked
+    resetFilterBtn.addEventListener('click', function() {
+      landUseFilter.value = '';
+      dateFromFilter.value = '';
+      dateToFilter.value = '';
+      applyFilters();
+    });
+    
+    // Apply search on typing with small delay
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            applyFilters();
+        }, 300);
+    });
+    
+    function applyFilters() {
+      const landUse = landUseFilter.value.toLowerCase();
+      const dateFrom = dateFromFilter.value ? new Date(dateFromFilter.value) : null;
+      const dateTo = dateToFilter.value ? new Date(dateToFilter.value) : null;
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      
+      let visibleRowCount = 0;
+      
+      tableRows.forEach(row => {
+        const rowLandUse = row.getAttribute('data-land-use');
+        const rowDate = row.getAttribute('data-date') ? new Date(row.getAttribute('data-date')) : null;
+        const rowText = row.textContent.toLowerCase();
+        
+        let showRow = true;
+        
+        // Apply search filter if specified
+        if (searchTerm && !rowText.includes(searchTerm)) {
+            showRow = false;
+        }
+        
+        // Apply land use filter if specified
+        if (showRow && landUse && rowLandUse && !rowLandUse.includes(landUse)) {
+          showRow = false;
+        }
+        
+        // Apply date from filter if specified
+        if (showRow && dateFrom && rowDate && rowDate < dateFrom) {
+          showRow = false;
+        }
+        
+        // Apply date to filter if specified
+        if (showRow && dateTo && rowDate && rowDate > dateTo) {
+          showRow = false;
+        }
+        
+        // Show or hide row based on filters
+        row.style.display = showRow ? '' : 'none';
+        
+        if (showRow) {
+          visibleRowCount++;
+        }
+      });
+      
+      // Show "no records" message if no rows match the filters
+      if (visibleRowCount === 0 && tableRows.length > 0) {
+        noRecordsRow.style.display = '';
+        emptyRow.style.display = 'none';
+      } else {
+        noRecordsRow.style.display = 'none';
+        emptyRow.style.display = tableRows.length === 0 ? '' : 'none';
+      }
+    }
   });
   </script>
 @endsection

@@ -9,6 +9,9 @@ use App\Http\Controllers\ProgrammesController;
 use App\Http\Controllers\CustomerCareController;
 use App\Http\Controllers\SecondaryFormController;
 use App\Http\Controllers\SubActionsController;
+use App\Http\Controllers\MemoController;
+use App\Http\Controllers\RofoController;
+use App\Http\Controllers\CofoController;
 
 
 
@@ -86,10 +89,27 @@ Route::prefix('programmes')->group(function () {
       Route::get('/approvals/planning_recomm', [ProgrammesController::class, 'PlanningRecomm'])->name('programmes.approvals.planning_recomm');
     Route::get('/approvals/director', [ProgrammesController::class, 'Director_approval'])->name('programmes.approvals.director');
     Route::get('/report', [ProgrammesController::class, 'ST_Report'])->name('programmes.report');
-    Route::get('/certificates', [ProgrammesController::class, 'CertificateOfOccupancy'])->name('programmes.certificates');
+    Route::get('/certificates', [CofoController::class, 'CertificateOfOccupancy'])->name('programmes.certificates');
+    Route::get('/generate_cofo/{id}', [CofoController::class, 'generateCofO'])->name('programmes.generate_cofo');
+    Route::post('/save_cofo', [CofoController::class, 'saveCofO'])->name('programmes.save_cofo');
     Route::get('/entity/{applicationId?}', [ProgrammesController::class, 'Entity'])->name('programmes.entity');
-    Route::get('/memo', [ProgrammesController::class, 'Memo'])->name('programmes.memo'); 
-    Route::get('/rofo', [ProgrammesController::class, 'RofO'])->name('programmes.rofo');
+
+    Route::get('/memo', [MemoController::class, 'Memo'])->name('programmes.memo'); 
+    Route::get('/view_memo/{id}', [MemoController::class, 'viewMemo'])->name('programmes.view_memo');
+    Route::get('/view_memo_primary/{id}', [MemoController::class, 'viewMemoPrimary'])->name('programmes.view_memo_primary');
+    
+    // New routes for memo generation
+    Route::get('/generate_memo/{id}', [MemoController::class, 'generateMemo'])->name('programmes.generate_memo');
+    Route::post('/save_memo', [MemoController::class, 'saveMemo'])->name('programmes.save_memo');
+
+    Route::get('/rofo', [RofoController::class, 'RofO'])->name('programmes.rofo');
+    Route::get('/generate_rofo/{id}', [RofoController::class, 'generateRofO'])->name('programmes.generate_rofo');
+    Route::post('/save_rofo', [RofoController::class, 'saveRofO'])->name('programmes.save_rofo');
+    Route::get('/view_rofo/{id}', [RofoController::class, 'viewRofO'])->name('programmes.view_rofo');
+     
+
+    
+    Route::get('/view_cofo/{id}', [CofoController::class, 'ViewCofO'])->name('programmes.view_cofo');
 });
 
 
