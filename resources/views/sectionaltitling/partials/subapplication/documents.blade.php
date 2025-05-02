@@ -26,10 +26,10 @@
         <div class="flex items-center mr-4">
           <div class="step-circle inactive-tab">2</div>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center  mr-4">
           <div class="step-circle active-tab">3</div>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center  mr-4">
           <div class="step-circle inactive-tab">4</div>
         </div>
         <div class="ml-4">Step 3</div>

@@ -70,7 +70,7 @@
             <th  class="table-header text-green-500">Unit Owner</th>
             <th  class="table-header text-green-500">Unit</th>
             <th  class="table-header text-green-500">Phone Number</th>
-            <th  class="table-header text-green-500">Planning Rec.</th>
+            <th  class="table-header text-green-500">Planning Recommendation</th>
             <th  class="table-header text-green-500">Status</th>
             <th  class="table-header text-green-500">Actions</th> 
               </tr>

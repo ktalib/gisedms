@@ -58,14 +58,14 @@
                                   <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                       <i data-lucide="file-text" class="w-5 h-5 mr-2 text-green-600"></i>
-                                      <h3 class="text-lg font-bold items-center">Application for Sectional Titling - Secondary Application</h3>
+                                      <h3 class="text-lg font-bold items-center">Application for Sectional Titling - Unit Application (Secondary)</h3>
                                     </div>
                                     <div class="flex items-center">
                                       <span class="text-gray-600 mr-2">Land Use:</span>
                                       <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm"><?php echo e($motherApplication->land_use ?? 'N/A'); ?></span>
                                     </div>
                                   </div>
-                                  <p class="text-gray-600 mt-1">Complete the form below to submit a new secondary application for sectional titling</p>
+                                  <p class="text-gray-600 mt-1">Complete the form below to submit a new unit application for sectional titling</p>
                                 </div>
                         
                                 <div class="flex items-center mb-6">
@@ -75,10 +75,10 @@
                                   <div class="flex items-center mr-4">
                                     <div class="step-circle inactive-tab flex items-center justify-center">2</div>
                                   </div>
-                                  <div class="flex items-center">
+                                  <div class="flex items-center mr-4">
                                     <div class="step-circle inactive-tab flex items-center justify-center">3</div>
                                   </div>    
-                                   <div class="flex items-center">
+                                   <div class="flex items-center mr-4">
                                     <div class="step-circle inactive-tab flex items-center justify-center">4</div>
                                   </div>
                                   <div class="ml-4">Step 1</div>
@@ -252,10 +252,14 @@
                                           <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="prefix" value="<?php echo e($prefix); ?>" >
                                           <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="year" value="<?php echo e($currentYear); ?>"  >
                                           <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="serial_number" value="<?php echo e($formattedSerialNumber); ?>"  >
-                                            <input type="text"  class="w-full p-2 border border-gray-300 rounded-md"  name="fileno" value="<?php echo e($prefix); ?>-<?php echo e($currentYear); ?>-<?php echo e($formattedSerialNumber); ?>" >
+                                           
                                         </div> 
                                         
                                         
+                                        <div>
+                                          <label class="block text-sm mb-1">ST FileNo</label>
+                                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-700 cursor-not-allowed" name="fileno" value="<?php echo e($prefix); ?>-<?php echo e($currentYear); ?>-<?php echo e($formattedSerialNumber); ?>" readonly>
+                                        </div>            
                                         <div>
                                             <label class="block text-sm mb-1">Scheme No</label>
                                             <input type="text" id="schemeName" class="w-full p-2 border border-gray-300 rounded-md"    name="scheme_no" placeholder="enter scheme number. eg: ST/SP/0001">

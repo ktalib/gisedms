@@ -107,12 +107,12 @@
                         APPROVAL
                       </button>
 
-                        <button class="tab-button {{ (strtolower($application->application_status ?? '') !== 'approved' || strtolower($application->planning_recommendation_status ?? '') !== 'approved') ? 'opacity-50 cursor-not-allowed bg-gray-100' : '' }}" 
+                        {{-- <button class="tab-button {{ (strtolower($application->application_status ?? '') !== 'approved' || strtolower($application->planning_recommendation_status ?? '') !== 'approved') ? 'opacity-50 cursor-not-allowed bg-gray-100' : '' }}" 
                         data-tab="final"
                         {{ (strtolower($application->application_status ?? '') !== 'approved' || strtolower($application->planning_recommendation_status ?? '') !== 'approved') ? 'disabled' : '' }}>
                         <i data-lucide="file-check" class="w-3.5 h-3.5 mr-1.5"></i>
                         FINAL BILL
-                        </button>
+                        </button> --}}
 
                       </div>
                   

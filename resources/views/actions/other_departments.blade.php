@@ -167,8 +167,16 @@
                           <input type="hidden" id="application_id" value="{{$application->id}}">
                       <input type="hidden" name="fileno" value="{{$application->fileno}}">
                           <div class="p-4 space-y-4">
-                            @include('primaryform.fileno')
+                            
                             <div class="grid grid-cols-2 gap-4">
+                                
+                                <div class="space-y-2">
+                                    <label for="file-name" class="text-xs font-medium block">
+                                        FileNo
+                                    </label>
+                                    <input id="file-fileno" type="text" class="w-full p-2 border border-gray-300 rounded-md text-sm bg-gray-100 text-gray-500 cursor-not-allowed" value="{{$application->fileno}}" disabled>
+                                </div> 
+                                
                                 
                                 <div class="space-y-2">
                                     <label for="file-name" class="text-xs font-medium block">
@@ -384,6 +392,161 @@
                               icon: 'error',
                               title: 'Submission Failed',
                               text: 'There was an error submitting the deeds information. Please try again.',
+                              confirmButtonColor: '#3085d6'
+                          });
+                      });
+                  });
+
+                  // Edit survey button click handler
+                  document.getElementById('edit-survey').addEventListener('click', function(e) {
+                      e.preventDefault();
+                      
+                      // Get application ID
+                      const applicationId = document.getElementById('application_id').value;
+                      
+                      // Show loading message
+                      Swal.fire({
+                          title: 'Loading...',
+                          text: 'Retrieving survey information',
+                          allowOutsideClick: false,
+                          didOpen: () => {
+                              Swal.showLoading();
+                          }
+                      });
+                      
+                      // Fetch existing survey data
+                      fetch(`{{ url('/survey') }}/${applicationId}`)
+                          .then(response => {
+                              if (!response.ok) {
+                                  throw new Error('Network response was not ok');
+                              }
+                              return response.json();
+                          })
+                          .then(data => {
+                              if (data.success) {
+                                  // Populate form with existing data
+                                  const survey = data.survey;
+                                  
+                                  // Update all form fields with data from the server
+                                  for (const key in survey) {
+                                      const input = document.querySelector(`[name="${key}"]`);
+                                      if (input) {
+                                          input.value = survey[key];
+                                      }
+                                  }
+                                  
+                                  // Mark form as being in edit mode
+                                  document.getElementById('survey-form').setAttribute('data-mode', 'update');
+                                  
+                                  // Change submit button text
+                                  document.getElementById('submit-survey').innerHTML = '<i data-lucide="save" class="w-3.5 h-3.5 mr-1.5"></i> Update';
+                                  
+                                  // Re-initialize Lucide icons for the new button
+                                  lucide.createIcons();
+                                  
+                                  Swal.close();
+                              } else {
+                                  Swal.fire({
+                                      icon: 'error',
+                                      title: 'Error',
+                                      text: data.message || 'No survey record found'
+                                  });
+                              }
+                          })
+                          .catch(error => {
+                              console.error('Error:', error);
+                              
+                              // If 404, we might not have a record yet
+                              if (error.message.includes('404')) {
+                                  Swal.fire({
+                                      icon: 'info',
+                                      title: 'No Record Found',
+                                      text: 'No survey record exists yet. Please create a new one.'
+                                  });
+                              } else {
+                                  Swal.fire({
+                                      icon: 'error',
+                                      title: 'Error',
+                                      text: 'Could not retrieve survey data'
+                                  });
+                              }
+                          });
+                  });
+                  
+                  // Survey form submission - updated to handle both create and update
+                  document.getElementById('submit-survey').addEventListener('click', function(e) {
+                      e.preventDefault();
+                      
+                      // Show loading message
+                      Swal.fire({
+                          title: 'Processing...',
+                          text: 'Submitting survey information',
+                          allowOutsideClick: false,
+                          didOpen: () => {
+                              Swal.showLoading();
+                          }
+                      });
+                      
+                      // Get the form data
+                      const form = document.getElementById('survey-form');
+                      const formData = new FormData(form);
+                      
+                      // Determine if we're creating or updating
+                      const isUpdate = form.getAttribute('data-mode') === 'update';
+                      const url = isUpdate 
+                          ? '{{ route("survey.update") }}' 
+                          : '{{ route("primary-applications.store") }}';
+                      
+                      // Send AJAX request
+                      fetch(url, {
+                          method: 'POST',
+                          body: formData,
+                          headers: {
+                              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                          },
+                          credentials: 'same-origin'
+                      })
+                      .then(response => {
+                          // First check if response is ok
+                          if (!response.ok) {
+                              return response.text().then(text => {
+                                  throw new Error('Server error: ' + text);
+                              });
+                          }
+                          
+                          // Try to parse as JSON, but handle text responses too
+                          const contentType = response.headers.get('content-type');
+                          if (contentType && contentType.includes('application/json')) {
+                              return response.json();
+                          } else {
+                              return response.text().then(text => {
+                                  return { success: true, message: 'Operation completed', text: text };
+                              });
+                          }
+                      })
+                      .then(data => {
+                          // Show success message
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'Success!',
+                              text: data.message || (isUpdate ? 'Survey information updated successfully' : 'Survey information submitted successfully'),
+                              confirmButtonColor: '#3085d6'
+                          });
+                          
+                          // If we were updating, reset the form to create mode
+                          if (isUpdate) {
+                              form.setAttribute('data-mode', 'create');
+                              document.getElementById('submit-survey').innerHTML = '<i data-lucide="send-horizontal" class="w-3.5 h-3.5 mr-1.5"></i> Submit';
+                              lucide.createIcons();
+                          }
+                      })
+                      .catch(error => {
+                          // Show error message
+                          console.error('Error:', error);
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Submission Failed',
+                              text: 'There was an error ' + (isUpdate ? 'updating' : 'submitting') + ' the survey information. Please try again.',
                               confirmButtonColor: '#3085d6'
                           });
                       });

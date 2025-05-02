@@ -41,8 +41,14 @@
         
             <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
               
+@php
+  $surveyRecord = DB::connection('sqlsrv')->table('surveyCadastralRecord')
+    ->where('application_id', $application->id)
+    ->first();
+@endphp
+    
 
-                <div class="modal-content p-6">
+<div class="modal-content p-6">
                     <div class="flex justify-between items-center mb-4">
                       <h2 class="text-lg font-medium">Planning Recommendation</h2>
                       <button id="closeModal" class="text-gray-500 hover:text-gray-700">

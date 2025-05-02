@@ -27,9 +27,13 @@ class CofoController  extends Controller
         $PageTitle = 'ST Certificate of Occupancy';
         $PageDescription = '';
 
-        // Fetch all unit applications (not just approved ones)
+        // Fetch all unit applications with st_cofo data
         $approvedUnitApplications = DB::connection('sqlsrv')->table('subapplications')
             ->join('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
+            ->leftJoin('st_cofo', function($join) {
+                $join->on('subapplications.id', '=', 'st_cofo.sub_application_id')
+                     ->where('st_cofo.is_active', 1);
+            })
             ->where('subapplications.planning_recommendation_status', 'Approved')
             ->where('subapplications.application_status', 'Approved')
             ->select(
@@ -47,7 +51,8 @@ class CofoController  extends Controller
                 'subapplications.scheme_no',
                 'subapplications.planning_recommendation_status',
                 'mother_applications.property_lga',
-                'mother_applications.land_use'
+                'mother_applications.land_use',
+                'st_cofo.certificate_number'
             )
             ->get();
 
@@ -62,13 +67,8 @@ class CofoController  extends Controller
                 $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
             }
             
-            // Check if a CofO exists for this application
-            $cofoExists = DB::connection('sqlsrv')->table('st_cofo')
-                ->where('sub_application_id', $application->id)
-                ->where('is_active', 1)
-                ->exists();
-                
-            $application->certificate_issued = $cofoExists;
+            // Check if a certificate number exists to determine if certificate is issued
+            $application->certificate_issued = !empty($application->certificate_number);
         }
 
         return view('programmes.certificates', compact(
@@ -76,6 +76,28 @@ class CofoController  extends Controller
             'PageTitle',
             'PageDescription'
         ));
+    }
+
+    /**
+     * Generate the next available certificate number
+     * 
+     * @return string
+     */
+    private function generateNextCertificateNumber()
+    {
+        $year = date('Y');
+        $lastCofO = DB::connection('sqlsrv')->table('st_cofo')
+            ->where('certificate_number', 'like', "ST/COFO/$year/%")
+            ->orderBy('id', 'desc')
+            ->first();
+            
+        $lastNumber = 0;
+        if ($lastCofO) {
+            $parts = explode('/', $lastCofO->certificate_number);
+            $lastNumber = (int)end($parts);
+        }
+        $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        return "ST/COFO/$year/$newNumber";
     }
 
     // Generate CofO form
@@ -116,6 +138,22 @@ class CofoController  extends Controller
                 $application->owner_name = trim($application->applicant_title . ' ' . $application->first_name . ' ' . $application->surname);
             }
 
+            // Check if a CofO already exists for this application
+            $existingCofO = DB::connection('sqlsrv')->table('st_cofo')
+                ->where('sub_application_id', $id)
+                ->where('is_active', 1)
+                ->first();
+
+            $certificateNumber = null;
+            $nextAvailableCertificateNumber = null;
+            
+            if ($existingCofO) {
+                $certificateNumber = $existingCofO->certificate_number;
+            } else {
+                // Generate the next available certificate number
+                $nextAvailableCertificateNumber = $this->generateNextCertificateNumber();
+            }
+
             // Calculate default values for certificate
             $startDate = now()->format('Y-m-d');
             $totalYears = 40; // Default value
@@ -125,7 +163,9 @@ class CofoController  extends Controller
                 'startDate',
                 'totalYears',
                 'PageTitle',
-                'PageDescription'
+                'PageDescription',
+                'certificateNumber',
+                'nextAvailableCertificateNumber'
             ));
             
         } catch (\Exception $e) {
@@ -157,20 +197,20 @@ class CofoController  extends Controller
             $elapsedYears = $currentYear - $startDate->year;
             $remainingTerm = max(0, $request->total_term - $elapsedYears);
             
-            // Generate a unique certificate number (format: ST-COFO-YEAR-XXXX)
+            // Generate a unique certificate number (format: ST/COFO/YEAR/XXXX)
             $year = date('Y');
             $lastCofO = DB::connection('sqlsrv')->table('st_cofo')
-                ->where('certificate_number', 'like', "ST-COFO-$year-%")
+                ->where('certificate_number', 'like', "ST/COFO/$year/%")
                 ->orderBy('id', 'desc')
                 ->first();
                 
             $lastNumber = 0;
             if ($lastCofO) {
-                $parts = explode('-', $lastCofO->certificate_number);
+                $parts = explode('/', $lastCofO->certificate_number);
                 $lastNumber = (int)end($parts);
             }
             $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
-            $certificateNumber = "ST-COFO-$year-$newNumber";
+            $certificateNumber = "ST/COFO/$year/$newNumber";
             
             // Insert record into st_cofo table
             $id = DB::connection('sqlsrv')->table('st_cofo')->insertGetId([
@@ -203,11 +243,11 @@ class CofoController  extends Controller
             ]);
             
             return redirect()->route('programmes.view_cofo', $request->sub_application_id)
-                ->with('success', 'Certificate of Occupancy generated successfully');
+                ->with('success', ' CofO Front Page Generated Successfully');
                 
         } catch (\Exception $e) {
             \Log::error('Error saving CofO: ' . $e->getMessage());
-            return back()->with('error', 'An error occurred while saving the Certificate of Occupancy: ' . $e->getMessage())
+            return back()->with('error', 'An error occurred while saving the CofO Front Page: ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -237,7 +277,7 @@ class CofoController  extends Controller
                 }
                 
                 return redirect()->route('programmes.generate_cofo', $id)
-                    ->with('info', 'Certificate of Occupancy has not been generated yet. Please generate it.');
+                    ->with('info', 'CofO Front Page has not been generated yet. Please generate it.');
             }
 
             return view('programmes.view_cofo', compact(

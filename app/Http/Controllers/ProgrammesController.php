@@ -244,20 +244,20 @@ class ProgrammesController extends Controller
         $PageDescription = '';
 
         // Fetch surveys with mother application owner information
-        $surveys = DB::connection('sqlsrv')->table('Surveys')
-            ->join('mother_applications', 'Surveys.application_id', '=', 'mother_applications.id')
-            ->whereNull('Surveys.sub_application_id')
+        $surveys = DB::connection('sqlsrv')->table('surveyCadastralRecord')
+            ->join('mother_applications', 'surveyCadastralRecord.application_id', '=', 'mother_applications.id')
+            ->whereNull('surveyCadastralRecord.sub_application_id')
             ->select(
-                'Surveys.fileno',
-                'Surveys.application_id',
-                'Surveys.survey_by',
-                'Surveys.survey_by_date',
-                'Surveys.drawn_by',
-                'Surveys.drawn_by_date',
-                'Surveys.checked_by',
-                'Surveys.checked_by_date',
-                'Surveys.approved_by',
-                'Surveys.approved_by_date',
+                'surveyCadastralRecord.fileno',
+                'surveyCadastralRecord.application_id',
+                'surveyCadastralRecord.survey_by',
+                'surveyCadastralRecord.survey_by_date',
+                'surveyCadastralRecord.drawn_by',
+                'surveyCadastralRecord.drawn_by_date',
+                'surveyCadastralRecord.checked_by',
+                'surveyCadastralRecord.checked_by_date',
+                'surveyCadastralRecord.approved_by',
+                'surveyCadastralRecord.approved_by_date',
                 'mother_applications.applicant_title',
                 'mother_applications.first_name',
                 'mother_applications.surname',
@@ -266,21 +266,21 @@ class ProgrammesController extends Controller
             )->get();
 
         // Fetch unit surveys with subapplication owner information
-        $Unitsurveys = DB::connection('sqlsrv')->table('Surveys')
-            ->join('subapplications', 'Surveys.sub_application_id', '=', 'subapplications.id')
-            ->whereNotNull('Surveys.sub_application_id')
+        $Unitsurveys = DB::connection('sqlsrv')->table('surveyCadastralRecord')
+            ->join('subapplications', 'surveyCadastralRecord.sub_application_id', '=', 'subapplications.id')
+            ->whereNotNull('surveyCadastralRecord.sub_application_id')
             ->select(
-                'Surveys.fileno',
-                'Surveys.application_id',
-                'Surveys.sub_application_id',
-                'Surveys.survey_by',
-                'Surveys.survey_by_date',
-                'Surveys.drawn_by',
-                'Surveys.drawn_by_date',
-                'Surveys.checked_by',
-                'Surveys.checked_by_date',
-                'Surveys.approved_by',
-                'Surveys.approved_by_date',
+                'surveyCadastralRecord.fileno',
+                'surveyCadastralRecord.application_id',
+                'surveyCadastralRecord.sub_application_id',
+                'surveyCadastralRecord.survey_by',
+                'surveyCadastralRecord.survey_by_date',
+                'surveyCadastralRecord.drawn_by',
+                'surveyCadastralRecord.drawn_by_date',
+                'surveyCadastralRecord.checked_by',
+                'surveyCadastralRecord.checked_by_date',
+                'surveyCadastralRecord.approved_by',
+                'surveyCadastralRecord.approved_by_date',
                 'subapplications.applicant_title',
                 'subapplications.first_name',
                 'subapplications.surname',

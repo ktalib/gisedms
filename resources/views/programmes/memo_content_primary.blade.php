@@ -6,45 +6,53 @@
     <title>Official Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-            /* Regular styling */
-            .highlight {
-                font-weight: bold;
-                background-color: transparent;
-            }
-            
-            /* Print-specific styling */
+        /* Regular styling */
+        .highlight {
+            font-weight: bold;
+            background-color: transparent;
+        }
+        
+        /* Print-specific styling */
         @media print {
-            /* Set up for A4 page */
             @page {
                 size: A4;
-                margin: 10mm; /* Standard margin for A4 */
+                margin: 10mm; /* Match content padding */
             }
             
-            /* Hide everything by default */
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%; /* Ensure no extra space */
+            }
+            
             body * {
                 visibility: hidden;
             }
             
-            /* Only show the memo content */
             .memo-content, .memo-content * {
                 visibility: visible;
             }
             
-            /* Position the memo for proper A4 printing */
             .memo-content {
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 210mm;
-                max-height: 297mm;
+                width: 190mm; /* Adjusted width to fit within A4 margins */
+                height: 277mm; /* Strict height to fit A4 dimensions */
                 background-color: white;
-                padding: 0;
+                padding: 10mm; /* Consistent padding */
                 margin: 0;
-                font-size: 9pt; /* Even smaller font for better fit */
-                line-height: 1.1; /* Even tighter line spacing */
+                font-size: 9pt;
+                line-height: 1.1;
+                overflow: hidden; /* Prevent content overflow */
+                box-sizing: border-box; /* Include padding in dimensions */
             }
             
-            /* Adjust spacing to fit on one page */
+            .memo-content * {
+                margin: 0; /* Remove unintended margins */
+                padding: 0; /* Remove unintended paddings */
+            }
+            
             .memo-content .space-y-4 {
                 margin-top: 0.2rem;
                 margin-bottom: 0.2rem;
@@ -55,19 +63,22 @@
                 margin-bottom: 0.2rem;
             }
             
-            .memo-content .mt-8 {
-                margin-top: 0.3rem;
+            .memo-content .mt-10 {
+                margin-top: 0.1rem; /* Further reduced spacing */
             }
             
-            .memo-content .mb-6 {
-                margin-bottom: 0.2rem;
+            .memo-content .mb-10 {
+                margin-bottom: 0.3rem; /* Further reduced spacing */
             }
             
-            /* Reduce list spacing */
+            .memo-content .mb-6{
+                margin-bottom: 0.1rem; /* Further reduced spacing */
+            }
+
             .memo-content ol {
                 margin-top: 0;
                 margin-bottom: 0;
-                padding-left: 1rem; /* Adjust padding for better alignment */
+                padding-left: 1rem;
             }
             
             .memo-content .space-y-2 > * {
@@ -75,9 +86,8 @@
                 margin-bottom: 0;
             }
             
-            /* Reduce gap in grid */
             .memo-content .gap-4 {
-                gap: 0.5rem; /* Reduce grid gap further */
+                gap: 0.5rem;
             }
             
             .memo-content .text-center {
@@ -85,7 +95,6 @@
                 margin-bottom: 0;
             }
             
-            /* Ensure highlight color prints */
             .highlight {
                 font-weight: bold !important;
                 background-color: transparent !important;
@@ -93,16 +102,33 @@
                 -webkit-print-color-adjust: exact;
             }
             
-            /* Hide the print button when printing */
             #printButton {
+                display: none !important;
+            }
+
+            .no-print {
                 display: none !important;
             }
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex justify-center p-4 md:p-8">
+
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back
+    </a>
+    <div class="no-print">
+        <br>
+        <br>
+        <br>
+    </div>
+  
     <div class="bg-white shadow-md max-w-4xl w-full p-6 md:p-10 mx-auto memo-content">
         <!-- Header -->
+        
         <div class="text-center mb-6">
             <h1 class="font-bold text-lg md:text-xl underline">PERMANENT SECRETARY</h1>
         </div>
@@ -155,7 +181,7 @@
                 </div>
                 <div>
                     <p>Counter Sign: -__________________</p>
-                    <p class="text-right font-bold">{{ $memo->director_rank ?? 'Director Section Titling' }}</p>
+                    <p class="font-bold">{{ $memo->director_rank ?? 'Director Section Titling' }}</p>
                     <p class="mt-4">Date: __________________________</p>
                 </div>
             </div>

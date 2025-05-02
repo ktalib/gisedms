@@ -226,11 +226,13 @@
             <thead>
               <tr>
                 <th class="table-header">ST FileNo</th>
+                <th class="table-header">RofONo</th>
                 <th class="table-header">SchemeNo</th>
                 <th class="table-header">Unit Owner</th>
                 <th class="table-header">LGA</th>
                 <th class="table-header">Block/Floor/Unit</th>
                 <th class="table-header">Land Use</th>
+                
                 <th class="table-header">Date Created</th>
                 <th class="table-header">Actions</th>
               </tr>
@@ -239,6 +241,7 @@
               @forelse($subapplications as $unitApplication)
               <tr data-land-use="{{ strtolower($unitApplication->land_use ?? '') }}" data-date="{{ $unitApplication->created_at ? date('Y-m-d', strtotime($unitApplication->created_at)) : '' }}">
                 <td class="table-cell">{{ $unitApplication->fileno ?? 'N/A' }}</td>
+                <td class="table-cell">{{ $unitApplication->rofo_no ?? 'N/A' }}</td>s
                 <td class="table-cell">{{ $unitApplication->scheme_no ?? 'N/A' }}</td>
                 <td class="table-cell">
                       @if(!empty($unitApplication->multiple_owners_names) && json_decode($unitApplication->multiple_owners_names))
@@ -256,6 +259,7 @@
                 <td class="table-cell">{{ $unitApplication->property_lga ?? 'N/A' }}</td>
                 <td class="table-cell">{{ $unitApplication->block_number ?? '' }}/{{ $unitApplication->floor_number ?? '' }}/{{ $unitApplication->unit_number ?? '' }}</td>
                 <td class="table-cell">{{ $unitApplication->land_use ?? 'N/A' }}</td>
+        
                 <td class="table-cell">{{ $unitApplication->created_at ? date('d-m-Y', strtotime($unitApplication->created_at)) : 'N/A' }}</td>
                 <td class="table-cell relative">
                     <!-- Dropdown Toggle Button -->
@@ -284,26 +288,41 @@
                         </a>
                       </li>
                       <li>
+                        @if($unitApplication)
                         <a href="{{ route('programmes.view_rofo', $unitApplication->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
                           <i data-lucide="clipboard" class="w-4 h-4 text-amber-600"></i>
                           <span>View RofO</span>
                         </a>
+                        @else
+                        <div class="block w-full text-left px-4 py-2 text-gray-400 flex items-center space-x-2 cursor-not-allowed">
+                          <i data-lucide="clipboard" class="w-4 h-4"></i>
+                          <span>View RofO</span>
+                       
+                        </div>
+                        @endif
                       </li>
                       <li>
+                        @if($unitApplication)
                         <a href="{{ route('programmes.generate_rofo', $unitApplication->id) }}?edit=yes" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
                           <i data-lucide="edit-3" class="w-4 h-4 text-purple-600"></i>
                           <span>Edit RofO</span>
                         </a>
+                        @else
+                        <div class="block w-full text-left px-4 py-2 text-gray-400 flex items-center space-x-2 cursor-not-allowed">
+                          <i data-lucide="edit-3" class="w-4 h-4"></i>
+                          <span>Edit RofO</span>
+                        </div>
+                        @endif
                       </li>
                     </ul>
                   </td>
               </tr>
               @empty
               <tr id="noRecordsRow" class="hidden">
-                <td colspan="8" class="table-cell text-center py-4 text-gray-500">No matching records found</td>
+                <td colspan="9" class="table-cell text-center py-4 text-gray-500">No matching records found</td>
               </tr>
               <tr id="emptyRow">
-                <td colspan="8" class="table-cell text-center py-4 text-gray-500">No unit applications found</td>
+                <td colspan="9" class="table-cell text-center py-4 text-gray-500">No unit applications found</td>
               </tr>
               @endforelse
             </tbody>

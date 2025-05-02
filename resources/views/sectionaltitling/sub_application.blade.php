@@ -74,10 +74,10 @@
                                   <div class="flex items-center mr-4">
                                     <div class="step-circle inactive-tab flex items-center justify-center">2</div>
                                   </div>
-                                  <div class="flex items-center">
+                                  <div class="flex items-center mr-4">
                                     <div class="step-circle inactive-tab flex items-center justify-center">3</div>
                                   </div>    
-                                   <div class="flex items-center">
+                                   <div class="flex items-center mr-4">
                                     <div class="step-circle inactive-tab flex items-center justify-center">4</div>
                                   </div>
                                   <div class="ml-4">Step 1</div>
@@ -249,10 +249,14 @@
                                           <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="prefix" value="{{ $prefix }}" >
                                           <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="year" value="{{ $currentYear }}"  >
                                           <input type="text"   class="w-full p-2 border border-gray-300 rounded-md"  name="serial_number" value="{{ $formattedSerialNumber }}"  >
-                                            <input type="text"  class="w-full p-2 border border-gray-300 rounded-md"  name="fileno" value="{{ $prefix }}-{{ $currentYear }}-{{ $formattedSerialNumber }}" >
+                                           
                                         </div> 
                                         
                                         
+                                        <div>
+                                          <label class="block text-sm mb-1">ST FileNo</label>
+                                          <input type="text" class="w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-700 cursor-not-allowed" name="fileno" value="{{ $prefix }}-{{ $currentYear }}-{{ $formattedSerialNumber }}" readonly>
+                                        </div>            
                                         <div>
                                             <label class="block text-sm mb-1">Scheme No</label>
                                             <input type="text" id="schemeName" class="w-full p-2 border border-gray-300 rounded-md"    name="scheme_no" placeholder="enter scheme number. eg: ST/SP/0001">

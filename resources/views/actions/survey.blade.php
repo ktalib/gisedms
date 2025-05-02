@@ -38,21 +38,21 @@
         </div>
         </div>
 
-        <!-- Beacon Control Information Card -->
-        <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
-        <h4 class="text-sm font-medium mb-3">Beacon Control Information</h4>
+      <!-- Unit Control Beacon Information Card -->
+      <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <h4 class="text-sm font-medium mb-3">Unit Control Beacon Information</h4>
         <div class="grid grid-cols-3 gap-4">
           <div class="space-y-2">
-          <label for="beacon-control-name" class="text-xs font-medium block">Beacon Control Name</label>
-          <input id="beacon-control-name" name="beacon_control_name" type="text" placeholder="Enter beacon control name" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+          <label for="unit-beacon-control-name" class="text-xs font-medium block">Unit Control Beacon Name</label>
+          <input id="unit-beacon-control-name" name="unit_beacon_control_name" type="text" placeholder="Enter unit control beacon name" class="w-full p-2 border border-gray-300 rounded-md text-sm">
           </div>
           <div class="space-y-2">
-          <label for="beacon-control-x" class="text-xs font-medium block">Beacon Control X</label>
-          <input id="beacon-control-x" name="Control_Beacon_Coordinate_X" type="text" placeholder="Enter X coordinate" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+          <label for="unit-beacon-control-x" class="text-xs font-medium block">Unit Control Beacon X</label>
+          <input id="unit-beacon-control-x" name="Unit_Control_Beacon_Coordinate_X" type="text" placeholder="Enter X coordinate" class="w-full p-2 border border-gray-300 rounded-md text-sm">
           </div>
           <div class="space-y-2">
-          <label for="beacon-control-y" class="text-xs font-medium block">Beacon Control Y</label>
-          <input id="beacon-control-y" name="Control_Beacon_Coordinate_Y" type="text" placeholder="Enter Y coordinate" class="w-full p-2 border border-gray-300 rounded-md text-sm">
+          <label for="unit-beacon-control-y" class="text-xs font-medium block">Unit Control Beacon Y</label>
+          <input id="unit-beacon-control-y" name="Unit_Control_Beacon_Coordinate_Y" type="text" placeholder="Enter Y coordinate" class="w-full p-2 border border-gray-300 rounded-md text-sm">
           </div>
         </div>
         </div>

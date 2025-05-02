@@ -40,7 +40,12 @@
         <div class="p-6">
         
             <div class="bg-white rounded-md shadow-sm border border-gray-200 p-6">
-              
+                            
+@php
+$surveyRecord = DB::connection('sqlsrv')->table('surveyCadastralRecord')
+  ->where('sub_application_id', $application->id)
+  ->first();
+@endphp
 
                 <div class="modal-content p-6">
                     <div class="flex justify-between items-center mb-4">
@@ -89,14 +94,18 @@
                   
 
                       <div class="grid grid-cols-3 gap-2 mb-4">
-                        <button class="tab-button active" data-tab="initial">
-                          <i data-lucide="banknote" class="w-3.5 h-3.5 mr-1.5"></i>
-                          Approve Recommendation
-                        </button>
-                        <button class="tab-button" data-tab="detterment">
+
+                        <button class="tab-button active" data-tab="detterment">
                           <i data-lucide="calculator" class="w-3.5 h-3.5 mr-1.5"></i>
                          Architectural Design
                         </button>
+
+
+                        <button class="tab-button" data-tab="initial">
+                          <i data-lucide="banknote" class="w-3.5 h-3.5 mr-1.5"></i>
+                          Approve Recommendation
+                        </button>
+                       
                         <button class="tab-button" data-tab="final">
                           <i data-lucide="file-check" class="w-3.5 h-3.5 mr-1.5"></i>
                           Planning Recommendation
@@ -104,8 +113,11 @@
                         </button>
                       </div>
                 
+
+                      @include('sub_actions.architecturaldesign')
                       <!-- Survey Tab -->
-                      <div id="initial-tab" class="tab-content active">
+                      
+                      <div id="initial-tab" class="tab-content">
                         <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                           <div class="p-4 border-b">
                             <h3 class="text-sm font-medium">Approve Recommendation</h3>
@@ -175,7 +187,7 @@
                       </div>
                         
 
-                      @include('actions.architecturaldesign')
+                    
                             
                       
                 
@@ -190,7 +202,7 @@
                       <input type="hidden" name="fileno" value="{{$application->fileno}}">
                           <div class="p-4 space-y-4">
                              
-                            @include('actions.planning_recomm')
+                            @include('sub_actions.planning_recomm')
                             <hr class="my-4">
                 
                             <div class="flex justify-between items-center">

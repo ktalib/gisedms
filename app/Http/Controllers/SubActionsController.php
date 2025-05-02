@@ -23,6 +23,14 @@ class SubActionsController extends Controller
                 'mother_applications.application_status as primary_application_status',
                 'mother_applications.land_use as primary_land_use',
                 'mother_applications.id as main_application_id',
+
+                // Property fields with proper aliases
+                'mother_applications.property_house_no as property_house_no',
+                'mother_applications.property_plot_no as property_plot_no',
+                'mother_applications.property_street_name as property_street_name',
+                'mother_applications.property_lga as property_lga',
+                 
+
                 'mother_applications.applicationID as primary_applicationID' // Get primary app's applicationID
             )
             ->leftJoin('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')

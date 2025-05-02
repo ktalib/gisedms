@@ -29,6 +29,7 @@ class PrimaryActionsController extends Controller
             $validatedData = $request->validate([
                 'application_id' => 'required|integer',
                 'fileno' => 'required|string|max:255',
+                // Survey personnel information
                 'survey_by' => 'required|string|max:255',
                 'survey_by_date' => 'required|date',
                 'drawn_by' => 'required|string|max:255',
@@ -37,10 +38,28 @@ class PrimaryActionsController extends Controller
                 'checked_by_date' => 'required|date',
                 'approved_by' => 'required|string|max:255',
                 'approved_by_date' => 'required|date',
+                // Property Identification
+                'plot_no' => 'nullable|string|max:255',
+                'block_no' => 'nullable|string|max:255',
+                'approved_plan_no' => 'nullable|string|max:255',
+                'tp_plan_no' => 'nullable|string|max:255',
+                // Beacon Control Information
+                'beacon_control_name' => 'nullable|string|max:255',
+                'Control_Beacon_Coordinate_X' => 'nullable|string|max:255',
+                'Control_Beacon_Coordinate_Y' => 'nullable|string|max:255',
+                // Sheet Information
+                'Metric_Sheet_Index' => 'nullable|string|max:255',
+                'Metric_Sheet_No' => 'nullable|string|max:255',
+                'Imperial_Sheet' => 'nullable|string|max:255',
+                'Imperial_Sheet_No' => 'nullable|string|max:255',
+                // Location Information
+                'layout_name' => 'nullable|string|max:255',
+                'district_name' => 'nullable|string|max:255',
+                'lga_name' => 'nullable|string|max:255',
             ]);
 
             // Insert the data into the database
-            DB::connection('sqlsrv')->table('Surveys')->insert($validatedData);
+            DB::connection('sqlsrv')->table('surveyCadastralRecord')->insert($validatedData);
             
             // Return JSON response for AJAX
             return response()->json([
@@ -434,5 +453,101 @@ class PrimaryActionsController extends Controller
         return view('sectionaltitling.action_modals.buyers_list', [
             'PrimaryApplication' => $primaryApplication
         ])->render();
+    }
+
+    /**
+     * Get survey data for an application
+     */
+    public function getSurvey($applicationId)
+    {
+        try {
+            $survey = DB::connection('sqlsrv')
+                        ->table('surveyCadastralRecord')
+                        ->where('application_id', $applicationId)
+                        ->first();
+
+            if (!$survey) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No survey record found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'survey' => $survey
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update an existing survey record
+     */
+    public function updateSurvey(Request $request)
+    {
+        try {
+            // Validate the request data - same validation as in store method
+            $validatedData = $request->validate([
+                'application_id' => 'required|integer',
+                'fileno' => 'required|string|max:255',
+                // Survey personnel information
+                'survey_by' => 'required|string|max:255',
+                'survey_by_date' => 'required|date',
+                'drawn_by' => 'required|string|max:255',
+                'drawn_by_date' => 'required|date',
+                'checked_by' => 'required|string|max:255',
+                'checked_by_date' => 'required|date',
+                'approved_by' => 'required|string|max:255',
+                'approved_by_date' => 'required|date',
+                // Property Identification
+                'plot_no' => 'nullable|string|max:255',
+                'block_no' => 'nullable|string|max:255',
+                'approved_plan_no' => 'nullable|string|max:255',
+                'tp_plan_no' => 'nullable|string|max:255',
+                // Beacon Control Information
+                'beacon_control_name' => 'nullable|string|max:255',
+                'Control_Beacon_Coordinate_X' => 'nullable|string|max:255',
+                'Control_Beacon_Coordinate_Y' => 'nullable|string|max:255',
+                // Sheet Information
+                'Metric_Sheet_Index' => 'nullable|string|max:255',
+                'Metric_Sheet_No' => 'nullable|string|max:255',
+                'Imperial_Sheet' => 'nullable|string|max:255',
+                'Imperial_Sheet_No' => 'nullable|string|max:255',
+                // Location Information
+                'layout_name' => 'nullable|string|max:255',
+                'district_name' => 'nullable|string|max:255',
+                'lga_name' => 'nullable|string|max:255',
+            ]);
+
+            // Update the record in the database
+            $updated = DB::connection('sqlsrv')
+                ->table('surveyCadastralRecord')
+                ->where('application_id', $validatedData['application_id'])
+                ->update($validatedData);
+            
+            if (!$updated) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Survey record not found or no changes made'
+                ], 404);
+            }
+            
+            // Return JSON response for AJAX
+            return response()->json([
+                'success' => true,
+                'message' => 'Survey updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            // Return JSON error response
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 422);
+        }
     }
 }

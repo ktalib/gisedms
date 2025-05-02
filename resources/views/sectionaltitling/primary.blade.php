@@ -95,8 +95,8 @@
                                 <th class="table-header text-green-500">Owner</th>
                                 <th class="table-header text-green-500">Units</th>
                                 <th class="table-header text-green-500">Date</th>
-                                <th class="table-header text-green-500">Planning</th>
-                                <th class="table-header text-green-500">Status</th>
+                                <th class="table-header text-green-500">Planning Recommendation Approval</th>
+                                <th class="table-header text-green-500">Director's pproval</th>
                                 <th class="table-header text-green-500">Actions</th>
                             </tr>
                         </thead>

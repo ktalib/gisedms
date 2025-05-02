@@ -34,6 +34,7 @@ class MemoController extends Controller
             ->select(
                 'subapplications.id',
                 'subapplications.scheme_no',
+                'subapplications.main_application_id',
                 'subapplications.fileno',
                 'subapplications.applicant_title',
                 'subapplications.first_name',
@@ -104,11 +105,38 @@ class MemoController extends Controller
         return view('programmes.memo', compact('motherApplications', 'subapplications', 'PageTitle', 'PageDescription'));
     } 
     
+    private function generateCertificateNumber()
+    {
+        $currentYear = date('Y');
+        $prefix = 'COM'; // Prefix for commercial properties
+        
+        // Get the highest number for the current year
+        $lastMemo = DB::connection('sqlsrv')->table('memos')
+            ->where('certificate_number', 'like', $prefix . '/' . $currentYear . '/%')
+            ->orderByRaw('LEN(certificate_number) DESC, certificate_number DESC')
+            ->first();
+        
+        if ($lastMemo) {
+            // Extract the numeric part and increment
+            $parts = explode('/', $lastMemo->certificate_number);
+            $lastNumber = (int)end($parts);
+            $newNumber = $lastNumber + 1;
+        } else {
+            // First record for this year
+            $newNumber = 1;
+        }
+        
+        // Format with leading zeros (4 digits)
+        return $prefix . '/' . $currentYear . '/' . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+    }
+    
     // Generate memo form
     public function generateMemo($id)
     {
-        $PageTitle = 'Generate Memo';
+       
+        $PageTitle = request()->query('edit') === 'yes' ? 'Edit Memo' : 'Generate Memo';
         $PageDescription = '';
+ 
         
         // Fetch the mother application data
         $application = DB::connection('sqlsrv')->table('mother_applications')
@@ -147,6 +175,9 @@ class MemoController extends Controller
             ->where('application_id', $id)
             ->where('memo_type', 'primary')
             ->first();
+        
+        // Generate a certificate number if creating a new memo
+        $certificateNumber = $existingMemo ? $existingMemo->certificate_number : $this->generateCertificateNumber();
             
         return view('programmes.generate_memo', compact(
             'application',
@@ -156,7 +187,8 @@ class MemoController extends Controller
             'expiryDate',
             'existingMemo',
             'PageTitle',
-            'PageDescription'
+            'PageDescription',
+            'certificateNumber'
         ));
     }
     

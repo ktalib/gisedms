@@ -14,6 +14,34 @@
         <div class="bg-white rounded-md shadow-sm p-6">
             <h2 class="text-xl font-bold mb-6">Generate Certificate of Occupancy</h2>
             
+            @if(isset($certificateNumber))
+            <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-green-700">
+                            ST CofO No: <strong>{{ $certificateNumber }}</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @elseif(isset($nextAvailableCertificateNumber))
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i data-lucide="info" class="w-5 h-5 text-blue-500"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            Next Available COFO NO: <strong>{{ $nextAvailableCertificateNumber }}</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @endif
+            
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -90,7 +118,7 @@
                                     <select id="land_use" name="land_use" 
                                         class="border border-gray-300 rounded-md w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                                         <option value="">Select Land Use</option>
-                                        <option value="Residential" {{ $application->land_use == 'Residential' ? 'selected' : '' }}>Residential</option>
+                                        <option value="Residential" {{ $application->land_use == 'Residential' ? 'selected' : '' }}@readonly(true)>Residential</option>
                                         <option value="Commercial" {{ $application->land_use == 'Commercial' ? 'selected' : '' }}>Commercial</option>
                                         <option value="Mixed Use" {{ $application->land_use == 'Mixed Use' ? 'selected' : '' }}>Mixed Use</option>
                                         <option value="Industrial" {{ $application->land_use == 'Industrial' ? 'selected' : '' }}>Industrial</option>
@@ -199,6 +227,9 @@
                     <a href="{{ route('programmes.certificates') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Cancel
                     </a>
+                    <button type="submit"  class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        EDIT
+                    </button>
                     <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Generate Certificate
                     </button>
@@ -210,4 +241,46 @@
     <!-- Page Footer -->
     @include($footerPartial ?? 'admin.footer')
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Make all inputs in specific sections readonly except for Signatory Information and Certificate Term Details
+        const readonlySections = [
+            'file_no', 'scheme_no',
+            'plot_no', 'block_no', 'floor_no', 'flat_no', 'land_use',
+            'holder_name', 'holder_address',
+            'property_house_no', 'property_street_name', 'property_district', 'property_lga', 'property_state'
+        ];
+        
+        // Set initial readonly state
+        readonlySections.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.readOnly = true;
+                input.classList.add('bg-gray-100', 'text-gray-600');
+            }
+        });
+        
+        // Add edit button functionality
+        const editButton = document.getElementById('edit-button');
+        editButton.addEventListener('click', function() {
+            const isEditing = editButton.getAttribute('data-editing') === 'true';
+            
+            readonlySections.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.readOnly = isEditing;
+                    if (isEditing) {
+                        input.classList.add('bg-gray-100', 'text-gray-600');
+                    } else {
+                        input.classList.remove('bg-gray-100', 'text-gray-600');
+                    }
+                }
+            });
+            
+            editButton.setAttribute('data-editing', isEditing ? 'false' : 'true');
+            editButton.textContent = isEditing ? 'Finish Editing' : 'EDIT';
+        });
+    });
+</script>
 @endsection

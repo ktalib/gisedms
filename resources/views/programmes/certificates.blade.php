@@ -47,8 +47,6 @@
     }
 
 </style>
- 
-
 
 <div class="flex-1 overflow-auto">
     <!-- Header -->
@@ -57,7 +55,7 @@
     <!-- Main Content -->
     <div class="p-6">
         <div class="bg-white rounded-md shadow-sm p-6">
-            <h2 class="text-xl font-bold mb-6">ST  Certificate of Occupancy Management</h2>
+            <h2 class="text-xl font-bold mb-6">ST Certificate of Occupancy Management</h2>
             
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
                 <div class="flex">
@@ -194,12 +192,14 @@
                         <thead>
                             <tr>
                                 <th class="table-header">File No</th>
+                                <th class="table-header">CofONo </th>
                                 <th class="table-header">Scheme No</th>
                                 <th class="table-header">Unit Owner</th>
                                 <th class="table-header">LGA</th>
                                 <th class="table-header">Block/Floor/Unit</th>
                                 <th class="table-header">Land Use</th>
-                                <th class="table-header">Certificate Status</th>
+                                <th class="table-header">Cofo Status</th>
+                              
                                 <th class="table-header">Actions</th>
                             </tr>
                         </thead>
@@ -208,6 +208,7 @@
                                 @foreach($approvedUnitApplications as $application)
                                     <tr>
                                         <td class="table-cell">{{ $application->fileno }}</td> 
+                                        <td class="table-cell">{{ $application->certificate_number ?? 'N/A' }}</td>
                                         <td class="table-cell">{{ $application->scheme_no }}</td>
                                         <td class="table-cell">{{ $application->owner_name }}</td>
                                         <td class="table-cell">{{ $application->property_lga }}</td>
@@ -226,6 +227,7 @@
                                                 <span class="badge badge-declined">Not Eligible</span>
                                             @endif
                                         </td>
+                                      
                                         <td class="table-cell">
                                         <div class="relative dropdown-container">
                                           <!-- Dropdown Toggle Button -->
@@ -313,7 +315,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="7" class="table-cell text-center py-4">No approved applications found</td>
+                                    <td colspan="9" class="table-cell text-center py-4">No approved applications found</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -323,24 +325,22 @@
         </div>
     </div>
     
- 
     <!-- Page Footer -->
     @include($footerPartial ?? 'admin.footer')
 </div>
 <script>
- 
- function toggleDropdown(event) {
-            event.stopPropagation();
-            const dropdownMenu = event.currentTarget.nextElementSibling;
-            if (dropdownMenu) {
-                dropdownMenu.classList.toggle('hidden');
-            }
+    function toggleDropdown(event) {
+        event.stopPropagation();
+        const dropdownMenu = event.currentTarget.nextElementSibling;
+        if (dropdownMenu) {
+            dropdownMenu.classList.toggle('hidden');
         }
+    }
 
-        document.addEventListener('click', () => {
-            const dropdownMenus = document.querySelectorAll('.dropdown-menu');
-            dropdownMenus.forEach(menu => menu.classList.add('hidden'));
-        });
+    document.addEventListener('click', () => {
+        const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+        dropdownMenus.forEach(menu => menu.classList.add('hidden'));
+    });
 
     // Toggle advanced filter section
     document.getElementById('show-advanced-filters').addEventListener('click', function() {
@@ -352,7 +352,6 @@
     document.getElementById('reset-filters').addEventListener('click', function() {
         document.getElementById('date-from').value = '';
         document.getElementById('date-to').value = '';
-        document.getElementById('filter-status').selectedIndex = 0;
         document.getElementById('filter-land-use').selectedIndex = 0;
         document.getElementById('filter-generation').selectedIndex = 0;
         document.getElementById('search-certificates').value = '';
@@ -368,7 +367,6 @@
     document.getElementById('apply-filters').addEventListener('click', function() {
         const dateFrom = document.getElementById('date-from').value;
         const dateTo = document.getElementById('date-to').value;
-        const status = document.getElementById('filter-status').value;
         const landUse = document.getElementById('filter-land-use').value;
         const generation = document.getElementById('filter-generation').value;
         const searchText = document.getElementById('search-certificates').value.toLowerCase();
@@ -382,8 +380,8 @@
         let notGeneratedVisible = 0;
         
         rows.forEach(row => {
-            const landUseCell = row.querySelector('td:nth-child(5)').textContent.trim();
-            const statusCell = row.querySelector('td:nth-child(6)').textContent.trim();
+            const landUseCell = row.querySelector('td:nth-child(6)').textContent.trim();
+            const statusCell = row.querySelector('td:nth-child(7)').textContent.trim();
             const rowText = row.textContent.toLowerCase();
             
             // Hide row by default, then check if it meets filter criteria
@@ -391,11 +389,6 @@
             
             // Apply land use filter
             if (landUse && landUseCell !== landUse) {
-                showRow = false;
-            }
-            
-            // Apply status filter
-            if (status && !statusCell.includes(status)) {
                 showRow = false;
             }
             
@@ -408,9 +401,6 @@
             if (searchText && !rowText.includes(searchText)) {
                 showRow = false;
             }
-            
-            // Apply date filter (if implemented in the backend)
-            // This would require date information in the table
             
             // Show or hide row based on filter results
             row.style.display = showRow ? '' : 'none';
@@ -443,7 +433,7 @@
         
         rows.forEach(row => {
             const rowText = row.textContent.toLowerCase();
-            const statusCell = row.querySelector('td:nth-child(6)').textContent.trim();
+            const statusCell = row.querySelector('td:nth-child(7)').textContent.trim();
             const isVisible = rowText.includes(searchText);
             
             row.style.display = isVisible ? '' : 'none';
@@ -464,31 +454,8 @@
         document.getElementById('generated-count').textContent = generatedVisible;
         document.getElementById('not-generated-count').textContent = notGeneratedVisible;
     });
-    
-    // Make the land use filter work
-    document.getElementById('filter-land-use-mobile').addEventListener('change', function() {
-        const landUse = this.value;
-        const rows = document.querySelectorAll('#certificates-table tbody tr');
-        
-        rows.forEach(row => {
-            if (!landUse) {
-                row.style.display = '';
-                return;
-            }
-            
-            const landUseCell = row.querySelector('td:nth-child(5)').textContent.trim();
-            row.style.display = landUseCell === landUse ? '' : 'none';
-        });
-    });
-    
-    // Sync the two land use filters
-    document.getElementById('filter-land-use').addEventListener('change', function() {
-        document.getElementById('filter-land-use-mobile').value = this.value;
-    });
-    
-    document.getElementById('filter-land-use-mobile').addEventListener('change', function() {
-        document.getElementById('filter-land-use').value = this.value;
-    });
 </script>
 @endsection
+
+
 

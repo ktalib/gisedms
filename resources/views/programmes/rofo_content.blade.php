@@ -5,19 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Land Grant/Conveyance Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="print-styles.css">
     <style>
-        @media print {
-            body {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
-            .no-print {
-                display: none;
-            }
-            .page-break {
-                page-break-after: always;
-            }
-        }
         .checkbox {
             display: inline-block;
             width: 16px;
@@ -26,13 +15,122 @@
             margin-right: 8px;
             vertical-align: middle;
         }
+
+        /* Print-specific styles */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1cm;
+  }
+
+  html,
+  body {
+    width: 210mm; /* A4 width */
+    height: 297mm; /* A4 height */
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    color: black !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure each page fits on A4 */
+  #first-page,
+  #second-page {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    page-break-after: always;
+    padding: 1cm !important;
+    border: none !important;
+  }
+
+  /* Preserve colors in print */
+  .border-green-500 {
+    border-color: #10b981 !important;
+  }
+
+  .border-black {
+    border-color: #000000 !important;
+  }
+
+  /* Ensure proper spacing */
+  .mb-8 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Fix table layout for printing */
+  table {
+    width: 100% !important;
+    table-layout: fixed;
+  }
+
+  /* Ensure checkboxes print properly */
+  .checkbox {
+    border: 1px solid #000 !important;
+    background-color: white !important;
+  }
+
+  /* Ensure text is black for better printing */
+  p,
+  span,
+  div,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  li,
+  td,
+  th {
+    color: black !important;
+  }
+}
+
+/* Additional styles for the document */
+.print-buttons {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Preview modal styles */
+#preview-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
     </style>
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
+
+    <a href="javascript:history.back()" class="bg-blue-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back
+    </a>
+    <br> <br> <br> 
     <div class="max-w-4xl mx-auto bg-white shadow-md">
-       
-  
         <!-- First Page -->
+       
         <div id="first-page" class="p-6 border border-gray-300 mb-8">
             <div class="text-xl font-bold mb-6">TO</div>
             
@@ -63,17 +161,17 @@
                     
                     <div class="mb-2">
                         <label class="font-bold">SHOP/HOUSE NO.</label>
-                        <span class="ml-2 border-b border-black border-dotted inline-block font-bold">{{ $rofoData->shop_house_no ?? $rofo->property_house_no ?? 'N/A' }}&nbsp;</span>
+                        <span class="ml-2 border-b  font-bold">{{ $rofoData->shop_house_no ?? $rofo->property_house_no ?? 'N/A' }}&nbsp;</span>
                     </div>
                     
                     <div class="mb-2">
                         <label class="font-bold">FLOOR NO.</label>
-                        <span class="ml-2 border-b border-black border-dotted inline-block font-bold">{{ $rofoData->floor_no ?? $rofo->floor_number ?? 'N/A' }}&nbsp;</span>
+                        <span class="ml-2 border-b     font-bold">{{ $rofoData->floor_no ?? $rofo->floor_number ?? 'N/A' }}&nbsp;</span>
                     </div>
                     
                     <div class="mb-2">
                         <label class="font-bold">LOCATION.</label>
-                        <span class="ml-2 border-b border-black border-dotted inline-block font-bold">{{ $rofoData->location ?? 'N/A' }}&nbsp;</span>
+                        <span class="ml-2 border-b   font-bold">{{ $rofoData->location ?? 'N/A' }}&nbsp;</span>
                     </div>
                 </div>
             </div>
@@ -237,126 +335,169 @@
             </div>
         </div>
     </div>
-    <button onclick="printDocument()" class="no-print bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 mx-auto block">
-        Print ROFO
-    </button>
+    
+    <div class="print-buttons no-print flex gap-2 justify-center my-4">
+        <button onclick="printROFO()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Print ROFO
+        </button>
+    </div>
+    
+    <!-- Hidden iframe for printing purposes -->
+    <iframe id="print-frame" style="display:none;"></iframe>
     
     <script>
-        function printDocument() {
-            try {
-                // Create a hidden iframe to handle printing
-                const iframe = document.createElement('iframe');
-                iframe.style.position = 'absolute';
-                iframe.style.top = '-9999px';
-                iframe.style.left = '-9999px';
-                document.body.appendChild(iframe);
-                
-                // Get the content of both pages
-                const firstPage = document.getElementById('first-page').innerHTML;
-                const secondPage = document.getElementById('second-page').innerHTML;
-                
-                // Write content to iframe
-                const iframeDoc = iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Print Document</title>
-                        <style>
-                            @page {
-                                size: A4;
-                                margin: 0;
-                            }
-                            body {
-                                margin: 0;
-                                padding: 0;
-                                print-color-adjust: exact;
-                                -webkit-print-color-adjust: exact;
-                            }
-                            .page {
-                                width: 100%;
-                                height: 100vh;
-                                padding: 20px;
-                                box-sizing: border-box;
-                                position: relative;
-                                overflow: hidden;
-                                page-break-after: always;
-                            }
-                            .checkbox {
-                                display: inline-block;
-                                width: 16px;
-                                height: 16px;
-                                border: 1px solid #000;
-                                margin-right: 8px;
-                                vertical-align: middle;
-                            }
-                            .border-green-500 { border-color: rgb(34, 197, 94); }
-                            .border-black { border-color: #000; }
-                            .border { border-width: 1px; border-style: solid; }
-                            .border-2 { border-width: 2px; border-style: solid; }
-                            .border-4 { border-width: 4px; border-style: solid; }
-                            .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
-                            .p-2 { padding: 0.5rem; }
-                            .p-4 { padding: 1rem; }
-                            .p-6 { padding: 1.5rem; }
-                            .mb-2 { margin-bottom: 0.5rem; }
-                            .mb-4 { margin-bottom: 1rem; }
-                            .mb-6 { margin-bottom: 1.5rem; }
-                            .mb-8 { margin-bottom: 2rem; }
-                            .mt-1 { margin-top: 0.25rem; }
-                            .mt-8 { margin-top: 2rem; }
-                            .mt-12 { margin-top: 3rem; }
-                            .ml-2 { margin-left: 0.5rem; }
-                            .grid { display: grid; }
-                            .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-                            .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-                            .gap-4 { gap: 1rem; }
-                            .gap-6 { gap: 1.5rem; }
-                            .text-center { text-align: center; }
-                            .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-                            .font-bold { font-weight: 700 !important; }
-                            .rounded-tr-3xl { border-top-right-radius: 1.5rem; }
-                            .rounded-bl-3xl { border-bottom-left-radius: 1.5rem; }
-                            .w-full { width: 100%; }
-                            .flex { display: flex; }
-                            .flex-grow { flex-grow: 1; }
-                            .items-start { align-items: flex-start; }
-                            .pl-4 { padding-left: 1rem; }
-                            .pl-6 { padding-left: 1.5rem; }
-                            .space-y-2 > * + * { margin-top: 0.5rem; }
-                            .space-y-4 > * + * { margin-top: 1rem; }
-                            .border-dotted { border-style: dotted; }
-                            .inline-block { display: inline-block; }
-                            .list-decimal { list-style-type: decimal; }
-                            .border-collapse { border-collapse: collapse; }
-                            table, th, td { border: 1px solid black; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="page">
-                            ${firstPage}
-                        </div>
-                        <div class="page">
-                            ${secondPage}
-                        </div>
-                    </body>
-                    </html>
-                `);
-                iframeDoc.close();
-                
-                // Wait for content to load before printing
-                setTimeout(() => {
+        function printROFO() {
+            // Get the iframe
+            const iframe = document.getElementById('print-frame');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            
+            // Get our content
+            const firstPage = document.getElementById('first-page').innerHTML;
+            const secondPage = document.getElementById('second-page').innerHTML;
+            
+            // Write the custom print-only HTML to the iframe with simplified, more direct styling
+            iframeDoc.open();
+            iframeDoc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>ROFO Document</title>
+                    <style>
+                        @page { 
+                            size: A4 portrait !important; 
+                            margin: 1cm !important; 
+                        }
+                        
+                        html, body { 
+                            width: 210mm !important;
+                            font-family: Arial, sans-serif !important; 
+                            margin: 0 !important; 
+                            padding: 0 !important;
+                            color: black !important;
+                        }
+                        
+                        * {
+                            color: black !important;
+                            box-sizing: border-box !important;
+                        }
+                        
+                        #page1 {
+                            padding: 1cm !important;
+                            page-break-after: always !important;
+                        }
+                        
+                        #page2 {
+                            padding: 0.7cm !important;
+                            font-size: 0.95em !important;
+                        }
+                        
+                        .grid {
+                            display: grid !important;
+                            grid-template-columns: 1fr 1fr !important;
+                            gap: 0.8rem !important;
+                        }
+                        
+                        .border, .border-black {
+                            border: 1px solid black !important;
+                        }
+                        
+                        .border-green-500, .border-4 {
+                            border: 2px solid #10B981 !important;
+                        }
+                        
+                        .border-b {
+                            border-bottom: 1px solid black !important;
+                        }
+                        
+                        .rounded-tr-3xl {
+                            border-top-right-radius: 1.5rem !important;
+                        }
+                        
+                        .rounded-bl-3xl {
+                            border-bottom-left-radius: 1.5rem !important;
+                        }
+                        
+                        .mb-2 { margin-bottom: 0.5rem !important; }
+                        .mb-4 { margin-bottom: 1rem !important; }
+                        .mb-6 { margin-bottom: 1.5rem !important; }
+                        .mb-8 { margin-bottom: 2rem !important; }
+                        
+                        .p-2 { padding: 0.5rem !important; }
+                        .p-4 { padding: 1rem !important; }
+                        .p-6 { padding: 1.5rem !important; }
+                        
+                        .text-center { text-align: center !important; }
+                        .font-bold { font-weight: bold !important; }
+                        
+                        table {
+                            width: 100% !important;
+                            border-collapse: collapse !important;
+                            margin-bottom: 1rem !important;
+                        }
+                        
+                        table, th, td {
+                            border: 1px solid black !important;
+                        }
+                        
+                        th, td {
+                            padding: 0.4rem !important;
+                            text-align: left !important;
+                        }
+                        
+                        .checkbox {
+                            display: inline-block !important;
+                            width: 14px !important;
+                            height: 14px !important;
+                            border: 1px solid black !important;
+                            margin-right: 6px !important;
+                            vertical-align: middle !important;
+                        }
+                        
+                        ol {
+                            margin-left: 1.5rem !important;
+                            padding-left: 0 !important;
+                        }
+                        
+                        li {
+                            margin-bottom: 0.5rem !important;
+                        }
+                        
+                        /* Fixed positioning to ensure proper layout */
+                        #page2 p {
+                            margin-top: 0.2rem !important;
+                            margin-bottom: 0.2rem !important;
+                        }
+                        
+                        /* Reduce font-size further for table content on second page */
+                        #page2 table {
+                            font-size: 0.9em !important;
+                        }
+                        
+                        #page2 table td p {
+                            margin: 1px 0 !important;
+                            line-height: 1.1 !important;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="page1">${firstPage}</div>
+                    <div id="page2">${secondPage}</div>
+                </body>
+                </html>
+            `);
+            iframeDoc.close();
+            
+            // Increase timeout to ensure styles are loaded
+            setTimeout(function() {
+                try {
+                    // Focus and print
                     iframe.contentWindow.focus();
                     iframe.contentWindow.print();
-                    
-                    // Remove iframe after printing
-                    setTimeout(() => document.body.removeChild(iframe), 1000);
-                }, 1000);
-            } catch (e) {
-                console.error('Print error:', e);
-                alert('There was an error while printing. Please try again.');
-            }
+                } catch (e) {
+                    console.error("Printing failed:", e);
+                    alert("Printing failed. Please try again.");
+                }
+            }, 1000); // Increased timeout to 1 second
         }
     </script>
 </body>

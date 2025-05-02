@@ -30,7 +30,13 @@
             <span>Other Departments</span>
          </a>
       </li>
-   
+      <li>
+         <button type="button" class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
+            onclick="openERegistryModal('{{ $app->id }}')">
+         <i data-lucide="database" class="w-4 h-4 text-red-500"></i>
+         <span>e-Registry</span>
+         </button>
+      </li>
       <li>
          <a href="{{ route('sub-actions.recommendation', $app->id) }}" class="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-2">
             <i data-lucide="clipboard-check" class="w-4 h-4 text-blue-500"></i>

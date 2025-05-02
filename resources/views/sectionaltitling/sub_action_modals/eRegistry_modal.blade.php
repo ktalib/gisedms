@@ -9,7 +9,7 @@
         <div class="px-4 py-4">
             <form id="eRegistryForm">
                 @csrf
-                <input type="text" id="eRegistryApplicationId" name="application_id" value="">
+                <input type="hidden" id="eRegistryApplicationId" name="application_id" value="">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">eRegistry ID</label>

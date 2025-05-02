@@ -126,7 +126,15 @@
                                     <h3 class="text-sm font-medium">Initial Application Fee</h3>
                                     <p class="text-xs text-gray-500">Generate and manage initial application payment</p>
                                   </div>
+                                  
                                   <div class="p-4 space-y-4">
+                                    <div class="space-y-2">
+                                      <label for="file_no" class="text-xs font-medium text-green-600">Enter Bill Ref ID</label>
+                                      <input id="file_no" type="text"  placeholder="Enter Bill Ref ID"
+                                          class="w-full p-2 border border-gray-300 rounded-md text-sm ">
+                                    </div> 
+                                   <br>
+  
                                     <div class="grid grid-cols-2 gap-4">
                                       <div class="space-y-2">
                                         <label for="application-fee" class="text-xs font-medium block">

@@ -1,5 +1,5 @@
 <!-- architecturaldesign Bill Tab -->
-<div id="detterment-tab" class="tab-content">
+<div id="detterment-tab" class="tab-content active">
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
         <div class="p-4 border-b">
             <h3 class="text-sm font-medium"> Architectural Design</h3>

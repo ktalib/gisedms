@@ -101,8 +101,11 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex justify-center p-4 md:p-8">
-    <div class="bg-white shadow-md max-w-4xl w-full p-6 md:p-10 mx-auto memo-content">
-        <!-- Header -->
+    
+
+        <br>
+        <br>
+        <br>
         <div class="text-center mb-6">
             <h1 class="font-bold text-lg md:text-xl underline">PERMANENT SECRETARY</h1>
         </div>

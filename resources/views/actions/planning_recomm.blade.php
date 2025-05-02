@@ -41,27 +41,27 @@
       <p class="text-sm">REF............./............./.............</p>
     </div>
     <div>
-      <p class="text-sm">DATE____/____/____</p>
+      <p class="text-sm">DATE {{$application->planning_approval_date }}</p>
     </div>
   </div>
 
   <!-- Applicant Information Section -->
   <div class="mb-6">
-    <p class="text-sm mb-1">NAME OF APPLICANT:</p>
-    <p class="text-sm mb-4">ADDRESS:</p>
+    <p class="text-sm mb-1">NAME OF APPLICANT:  {{ strtoupper($application->applicant_title) }} {{ strtoupper($application->first_name) }} {{ strtoupper($application->surname) }}</p>
+    <p class="text-sm mb-4">ADDRESS:  {{ strtoupper($application->address) }}</p>
   </div>
 
   <!-- RE: Application Section -->
   <div class="mb-6">
-    <p class="text-sm font-bold underline">RE: APPLICATION FOR SECTIONAL TITLE OVER LKN NO___ WITH SECTIONAL TITLE APPLICATION NO:__AT___ PART OF____ WITH TP NO:__ AND SCHEME PLAN NO___</p>
+    <p class="text-sm font-bold underline">RE: APPLICATION FOR SECTIONAL TITLE OVER LKN NO {{ strtoupper($surveyRecord->tp_plan_no ?? '') }}  WITH SECTIONAL TITLE APPLICATION NO:{{ strtoupper($application->fileno) }} AT {{ strtoupper($application->property_house_no) }} {{ strtoupper($application->property_plot_no) }} {{ strtoupper($application->property_street_name) }} {{ strtoupper($application->property_lga) }}  PART OF {{ strtoupper($surveyRecord->approved_plan_no ?? '') }} WITH TP NO:__ AND SCHEME PLAN NO {{ strtoupper($application->scheme_no) }}</p>
     <p class="text-sm text-justify mt-2">
-      Reference to your letter dated____related to the above subject I am directed to convey the Approval for fragmentation of
-      LKN___ in to multiple units/sections as described in table A, with approved shared compound of ___ and utilities
+      Reference to your letter dated {{$application->planning_approval_date }} related to the above subject I am directed to convey the Approval for fragmentation of
+      LKN {{ $surveyRecord->tp_plan_no ?? '' }}  in to multiple units/sections as described in table A, with approved shared compound of ___ and utilities
       described in table B. The scheme and its fragmentation are suitable for environment where it is located.
-    </p>
+    </p> 
   </div>
 
-  <!-- Table A Section -->
+  <!-- Table A Section -->  
   <div class="mb-6">
     <p class="text-sm font-bold">TABLE A: APPROVED SITE PLAN DIMENSIONS</p>
     <table class="w-full mb-4">

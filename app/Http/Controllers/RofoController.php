@@ -35,9 +35,13 @@ class RofoController extends Controller
         $PageTitle = 'RofO (Letter of Grant)';
         $PageDescription = '';
 
-        // Fetch subapplications data
+        // Fetch subapplications data with rofo_no
         $subapplications = DB::connection('sqlsrv')->table('subapplications')
             ->leftJoin('mother_applications', 'subapplications.main_application_id', '=', 'mother_applications.id')
+            ->leftJoin('rofo', function($join) {
+                $join->on('subapplications.id', '=', 'rofo.sub_application_id')
+                     ->where('rofo.active', 1);
+            })
             ->select(
                 'subapplications.id',
                 'subapplications.scheme_no',
@@ -56,7 +60,8 @@ class RofoController extends Controller
                 'subapplications.approval_date',
                 'subapplications.created_at',
                 'mother_applications.property_lga',
-                'mother_applications.land_use'
+                'mother_applications.land_use',
+                'rofo.rofo_no'
             )
             ->get();
 
@@ -141,6 +146,16 @@ class RofoController extends Controller
                 ->where('sub_application_id', $id)
                 ->first();
 
+            // Fetch financial data from final_bills table
+            $finalBill = DB::connection('sqlsrv')->table('final_bills')
+                ->where('sub_application_id', $id)
+                ->first();
+
+            // Fetch survey cadastral record for plan number
+            $surveyRecord = DB::connection('sqlsrv')->table('surveyCadastralRecord')
+                ->where('sub_application_id', $id)
+                ->first();
+
             // Process owner names
             if (!empty($rofo->multiple_owners_names)) {
                 $ownerArray = json_decode($rofo->multiple_owners_names, true);
@@ -156,10 +171,19 @@ class RofoController extends Controller
                 ->where('sub_application_id', $id)
                 ->first();
 
+            // Calculate next ROFO number
+            $lastId = DB::connection('sqlsrv')->table('rofo')->max('id') ?? 0;
+            $nextId = $lastId + 1;
+            $currentYear = Carbon::now()->format('Y');
+            $nextRofoNo = 'ST/ROFO/' . $currentYear . '/' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+
             return view('programmes.generate_rofo', compact(
                 'rofo',
                 'landAdmin',
                 'existingRofo',
+                'finalBill',
+                'surveyRecord',
+                'nextRofoNo',
                 'PageTitle',
                 'PageDescription'
             ));

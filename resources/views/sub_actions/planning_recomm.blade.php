@@ -17,7 +17,7 @@
     th, td {
       border: 1px solid #718096;
       padding: 8px;
-      text-align: left;
+      text-align: center;
     }
     th {
       background-color: #cbd5e0;
@@ -38,7 +38,7 @@
   <!-- Reference and Date Section -->
   <div class="flex justify-between mb-8">
     <div>
-      <p class="text-sm">REF............./............./............. □□□□</p>
+      <p class="text-sm">REF............./............./.............</p>
     </div>
     <div>
       <p class="text-sm">DATE____/____/____</p>
@@ -53,24 +53,31 @@
 
   <!-- RE: Application Section -->
   <div class="mb-6">
-    <p class="text-sm font-bold underline">RE: APPLICATION FOR SECTIONAL TITLE OVER LKN NO______ WITH SECTIONAL TITLE APPLICATION NO:</p>
-    <p class="text-sm">AT _________ PART OF __________ WITH TPD&S __________ AND SCHEME PLAN NO: __________</p>
+    <p class="text-sm font-bold underline">RE: APPLICATION FOR SECTIONAL TITLE OVER LKN NO {{ $surveyRecord->tp_plan_no ?? '' }}  WITH SECTIONAL TITLE APPLICATION NO:{{$application->fileno }} AT {{$application->property_house_no }} {{$application->property_plot_no }} {{$application->property_street_name }}      {{$application->property_lga }}   PART OF {{$surveyRecord->approved_plan_no }} WITH TP NO:__ AND SCHEME PLAN NO {{$application->scheme_no }}</p>
     <p class="text-sm text-justify mt-2">
-      Reference to your letter dated _________ related to the above subject I am directed to convey the Approval for fragmentation of
-      LKN _________ in to multiple units / sections as described in table A with approved shared compound of _________ and utilities
+      Reference to your letter dated {{$application->planning_approval_date }} related to the above subject I am directed to convey the Approval for fragmentation of
+      LKN {{ $surveyRecord->tp_plan_no ?? '' }} into multiple units/sections as described in Table A, with approved shared compound of 
+      @php
+          $sharedAreas = $application->shared_areas;
+          if (is_string($sharedAreas) && json_decode($sharedAreas)) {
+          $sharedAreas = json_decode($sharedAreas, true);
+          }
+          echo is_array($sharedAreas) ? implode(', ', array_map('ucfirst', $sharedAreas)) : ucfirst($sharedAreas);
+      @endphp
+      and utilities
       described in table B. The scheme and its fragmentation are suitable for environment where it is located.
-    </p>
-  </div>
+    </p> 
+  </div> 
 
-  <!-- Table A Section -->
+  <!-- Table A Section -->  
   <div class="mb-6">
-    <p class="text-sm font-bold">TABLE A: APPROVED SITE PALN DIMENSSIONS</p>
+    <p class="text-sm font-bold">TABLE A: APPROVED SITE PLAN DIMENSIONS</p>
     <table class="w-full mb-4">
       <thead>
         <tr class="bg-gray-200">
           <th class="w-1/6">SN</th>
           <th class="w-1/3">DESCRIPTION</th>
-          <th class="w-1/2">DIMESSION (m)</th>
+          <th class="w-1/2">DIMENSION (m)</th>
         </tr>
       </thead>
       <tbody>
@@ -105,13 +112,13 @@
 
   <!-- Table B Section -->
   <div class="mb-8">
-    <p class="text-sm font-bold">TABLE B: ARC DESING SHARED UTILITIES</p>
+    <p class="text-sm font-bold">TABLE B: ARC DESIGN SHARED UTILITIES</p>
     <table class="w-full">
       <thead>
         <tr class="bg-gray-200">
           <th class="w-1/6">SN</th>
           <th class="w-1/3">UTILITY TYPE</th>
-          <th class="w-1/4">DIMESSION (m²)</th>
+          <th class="w-1/4">DIMENSION (m²)</th>
           <th class="w-1/4">COUNT</th>
         </tr>
       </thead>

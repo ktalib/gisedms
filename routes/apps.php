@@ -12,12 +12,15 @@ use App\Http\Controllers\SubActionsController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\RofoController;
 use App\Http\Controllers\CofoController;
+use App\Http\Controllers\FinalBillController;
 
 
 
 // Place this route OUTSIDE the middleware group if you want it public
 Route::get('/primary-applications/{id}', [PrimaryActionsController::class, 'show']);
 Route::post('/primary-applications', [PrimaryActionsController::class, 'store'])->name('primary-applications.store');
+Route::get('/survey/{applicationId}', [PrimaryActionsController::class, 'getSurvey'])->name('survey.get');
+Route::post('/survey/update', [PrimaryActionsController::class, 'updateSurvey'])->name('survey.update');
 Route::post('/primary-applications/storeDeeds', [PrimaryActionsController::class, 'storeDeeds'])->name('primary-applications.storeDeeds');
 Route::post('/planning-recommendation/update', [PrimaryActionsController::class, 'updatePlanningRecommendation'])->name('planning-recommendation.update');
 Route::post('/director-approval/update', [PrimaryActionsController::class, 'updateDirectorApproval'])->name('director-approval.update');
@@ -112,6 +115,12 @@ Route::prefix('programmes')->group(function () {
     Route::get('/view_cofo/{id}', [CofoController::class, 'ViewCofO'])->name('programmes.view_cofo');
 });
 
+// Final Bill Routes
+Route::prefix('final-bill')->group(function () {
+    Route::get('/generate/{id}', [FinalBillController::class, 'generateBill'])->name('final-bill.generate');
+    Route::post('/save', [FinalBillController::class, 'saveBill'])->name('final-bill.save');
+    Route::get('/print/{id}', [FinalBillController::class, 'printBill'])->name('final-bill.print');
+});
 
 Route::prefix('customer_care')->group(function () {
     Route::get('/', [CustomerCareController::class, 'index'])->name('customer-care.index');

@@ -88,14 +88,17 @@
                     
 
                       <div class="grid grid-cols-3 gap-2 mb-4">
-                      <button class="tab-button active" data-tab="initial">
-                        <i data-lucide="banknote" class="w-3.5 h-3.5 mr-1.5"></i>
-                        APPROVAL
-                      </button>
-                      <button class="tab-button" data-tab="detterment">
+                      
+                      <button class="tab-button active" data-tab="detterment">
                         <i data-lucide="calculator" class="w-3.5 h-3.5 mr-1.5"></i>
                         DOCUMENTS
                       </button>
+
+                      <button class="tab-button" data-tab="initial">
+                        <i data-lucide="banknote" class="w-3.5 h-3.5 mr-1.5"></i>
+                        APPROVAL
+                      </button>
+
                       <button class="tab-button" data-tab="final">
                         <i data-lucide="file-check" class="w-3.5 h-3.5 mr-1.5"></i>
                         FINAL BILL
@@ -103,67 +106,10 @@
                       </div>
                   
                       <!-- Survey Tab -->
-                      <div id="initial-tab" class="tab-content active">
-                        <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                          <div class="p-4 border-b">
-                            <h3 class="text-sm font-medium">Director's Approval</h3>
-                            <p class="text-xs text-gray-500"></p>
-                          </div>
-                          <form id="directorApprovalForm">
-                            <input type="hidden" name="application_id" id="directorApprovalApplicationId" value="">
-                            <!-- CSRF token for Laravel -->
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            <div class="p-4 space-y-4">
-                            <input type="hidden" id="application_id" value="{{$application->id}}">
-                            
-                            <div class="mb-4">
-                              <label class="block text-sm font-medium text-gray-700">Decision</label>
-                              <div class="mt-2 flex items-center space-x-4">
-                              <label class="inline-flex items-center">
-                              <input type="radio" name="decision" value="approve" class="form-radio" checked>
-                              <span class="ml-2">Approve</span>
-                              </label>
-                              <label class="inline-flex items-center">
-                              <input type="radio" name="decision" value="decline" class="form-radio">
-                              <span class="ml-2">Decline</span>
-                              </label>
-                              </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                              <div>
-                                  <label for="daApprovalDate" class="block text-gray-700 mb-2">Approval/Decline Date</label>
-                                  <input type="date" class="w-full border rounded px-3 py-2" id="daApprovalDate"
-                                      name="approval_date" required>
-                              </div>
-                          </div>
-                            <div id="reasonForDeclineContainer" class="mb-4 hidden">
-                              <label for="reasonForDecline" class="block text-sm font-medium text-gray-700">Reason For Decline</label>
-                              <textarea id="reasonForDecline" name="comments" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"></textarea>
-                            </div>
- 
-                            <hr class="my-4">
-                            <div class="flex justify-between items-center">
-                               
-                              <div class="flex gap-2">
-                                <button class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
-                                  <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
-                                 Back
-                                </button>
-                             
-                                <button class="flex items-center px-3 py-1 text-xs bg-green-700 text-white rounded-md hover:bg-gray-800">
-                                    <i data-lucide="send-horizontal" class="w-3.5 h-3.5 mr-1.5"></i>
-                                    Submit
-                                </button>
-                              </div>
-                            </div>             
-                          </div>
-
-                          </form>
-                        </div>
-                      </div>
+        
                 
                       <!-- Detterment Bill Tab -->
-                        <div id="detterment-tab" class="tab-content">
+                        <div id="detterment-tab" class="tab-content active">
                         <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                           <div class="p-4 border-b">
                           <h3 class="text-sm font-medium">Documents</h3>
@@ -363,7 +309,64 @@
                           </div>
                         </div>
                         </div>
- 
+                        <div id="initial-tab" class="tab-content">
+                          <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                            <div class="p-4 border-b">
+                              <h3 class="text-sm font-medium">Director's Approval</h3>
+                              <p class="text-xs text-gray-500"></p>
+                            </div>
+                            <form id="directorApprovalForm">
+                              <input type="hidden" name="application_id" id="directorApprovalApplicationId" value="">
+                              <!-- CSRF token for Laravel -->
+                              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                              <div class="p-4 space-y-4">
+                              <input type="hidden" id="application_id" value="{{$application->id}}">
+                              
+                              <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700">Decision</label>
+                                <div class="mt-2 flex items-center space-x-4">
+                                <label class="inline-flex items-center">
+                                <input type="radio" name="decision" value="approve" class="form-radio" checked>
+                                <span class="ml-2">Approve</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                <input type="radio" name="decision" value="decline" class="form-radio">
+                                <span class="ml-2">Decline</span>
+                                </label>
+                                </div>
+                              </div>
+                              <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label for="daApprovalDate" class="block text-gray-700 mb-2">Approval/Decline Date</label>
+                                    <input type="date" class="w-full border rounded px-3 py-2" id="daApprovalDate"
+                                        name="approval_date" required>
+                                </div>
+                            </div>
+                              <div id="reasonForDeclineContainer" class="mb-4 hidden">
+                                <label for="reasonForDecline" class="block text-sm font-medium text-gray-700">Reason For Decline</label>
+                                <textarea id="reasonForDecline" name="comments" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"></textarea>
+                              </div>
+   
+                              <hr class="my-4">
+                              <div class="flex justify-between items-center">
+                                 
+                                <div class="flex gap-2">
+                                  <button class="flex items-center px-3 py-1 text-xs border border-gray-300 rounded-md bg-white hover:bg-gray-50">
+                                    <i data-lucide="undo-2" class="w-3.5 h-3.5 mr-1.5"></i>
+                                   Back
+                                  </button>
+                               
+                                  <button class="flex items-center px-3 py-1 text-xs bg-green-700 text-white rounded-md hover:bg-gray-800">
+                                      <i data-lucide="send-horizontal" class="w-3.5 h-3.5 mr-1.5"></i>
+                                      Submit
+                                  </button>
+                                </div>
+                              </div>             
+                            </div>
+  
+                            </form>
+                          </div>
+                        </div>
                       <!-- Final Bill Tab -->
                       <div id="final-tab" class="tab-content">
                         @include('actions.final_bill')

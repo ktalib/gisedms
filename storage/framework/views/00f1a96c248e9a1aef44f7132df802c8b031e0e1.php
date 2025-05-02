@@ -834,10 +834,42 @@
   
   // Toggle modules and sections
   document.addEventListener('DOMContentLoaded', function() {
-    // Set dashboard as open by default
-    toggleModule('dashboard');
+    // Auto-expand menu sections with active items
+    const activeItems = document.querySelectorAll('.sidebar-item.active');
     
-   
+    activeItems.forEach(item => {
+      // Find parent sections and modules
+      let parent = item.closest('[data-content]');
+      if (parent) {
+        // Show this content section
+        parent.classList.remove('hidden');
+        
+        // Rotate the chevron
+        const sectionName = parent.getAttribute('data-content');
+        const chevron = document.querySelector(`[data-chevron="${sectionName}"]`);
+        if (chevron) {
+          chevron.classList.add('rotate-90');
+        }
+        
+        // Now check if this section is inside another section
+        const grandParent = parent.parentElement.closest('[data-content]');
+        if (grandParent) {
+          grandParent.classList.remove('hidden');
+          
+          const parentSectionName = grandParent.getAttribute('data-content');
+          const parentChevron = document.querySelector(`[data-chevron="${parentSectionName}"]`);
+          if (parentChevron) {
+            parentChevron.classList.add('rotate-90');
+          }
+        }
+      }
+    });
+    
+    // Set dashboard as open by default if no active items
+    if (activeItems.length === 0) {
+      toggleModule('dashboard');
+    }
+    
     // Module toggle handlers
     const moduleHeaders = document.querySelectorAll('[data-module]');
     moduleHeaders.forEach(header => {
